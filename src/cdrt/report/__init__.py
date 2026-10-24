@@ -3,9 +3,11 @@
 Every value is read from the locked campaign's own outputs: the functional records and acceptance of Lab 7,
 the timing records, statistics and run manifest of Lab 8, the fixture parameters and the frozen bundle.
 `generate()` returns the five generated blocks of the manuscript, the figure files and a trace of where each
-value came from. Wording follows R-REP-5: "within the 5 s budget at p95 for the measured workload" only when
-every p95 is at most 5 s, any exceedance is stated with its count, never "real-time". Development data are
-marked as such in every generated sentence and caption.
+value came from. RQ2 is reported as one number (D-015): T_max, the slowest update of the whole campaign, read
+against the budget. Wording follows R-REP-5 as amended: "within the budget" only when T_max is at most the
+budget, any exceedance is stated with its count, never "real-time". The abstract and introduction carry the
+same number through \ScaleAbstractText and \ScaleIntroText. Development data are marked as such in every
+generated sentence and caption.
 
 `fill()` replaces the `% BEGIN GENERATED:<name>` … `% END GENERATED:<name>` blocks of a manuscript text.
 A block the manuscript does not have yet is inserted after its anchor block and reported, so that a copy can
@@ -138,26 +140,34 @@ def texts(d: dict[str, Any], dev: bool) -> dict[str, str]:
               "of Green Verdict Ambiguity and are not part of $A_{\\mathrm{comp}}$.")
     functional = f"{mark}The functional protocol ran in full on the sealed corpus under {lock}. {f}"
 
+    from ..harness.scale import headline
+    h = headline(d["scale"]["stats"], budget)
     sizes = listing([num(r["N"]) for r in rows])
-    p95 = listing([secs(r["p95_s"]) for r in rows])
-    total = sum(r["observations"] for r in rows)
-    over = sum(r["exceedances"] for r in rows)
-    within = all(r["p95_s"] is not None and r["p95_s"] <= budget for r in rows)
-    s = (f"{mark}Across {num(total)} timed cycles at {sizes} decision-basis records, the nearest-rank p95 of "
-         f"requirement-change-to-posture latency was {p95}\\,s respectively.")
-    s += f" This is within the {budget:g}\\,s budget at p95 for the measured workload." if within else \
-        " The p95 exceeds the budget at " + listing([num(r["N"]) for r in rows if r["p95_s"] is None or r["p95_s"] > budget]) + " records."
-    s += " No observation exceeded the budget." if over == 0 else f" {over} of {num(total)} observations exceeded it."
+    total, over, nmax = num(h["total"]), h["over"], num(rows[-1]["N"])
+    w = f"{secs(h['worst_s'])}\\,s" if h["worst_s"] is not None else "an unknown time"
+    if h["within"]:
+        s = (f"{mark}Across {total} timed updates at {sizes} decision-basis records, the slowest took {w}, at "
+             f"{num(h['worst_N'])} records. Every update reached the gateway within the {budget:g}\\,s budget for the "
+             "measured workload.")
+        abstract = f"{mark}The slowest of {total} timed updates took {w}, within that budget."
+        intro = (f"{mark}Every one of its {total} timed updates, at decision bases of up to {nmax} records, reached "
+                 f"the gateway in at most {w}, inside the {budget:g}-second budget.")
+    else:
+        s = (f"{mark}Across {total} timed updates at {sizes} decision-basis records, the slowest took {w}, at "
+             f"{num(h['worst_N'])} records, and {over} of {total} updates exceeded the {budget:g}\\,s budget.")
+        abstract = f"{mark}The slowest of {total} timed updates took {w}; {over} exceeded that budget."
+        intro = (f"{mark}The slowest of its {total} timed updates, at decision bases of up to {nmax} records, took "
+                 f"{w}, and {over} of them exceeded the {budget:g}-second budget.")
     extra = [f"{sum(r[k] for r in rows)} {k}" for k in ("mismatches", "late", "timeouts") if sum(r[k] for r in rows)]
     if extra:
         s += " Recorded and kept: " + listing(extra) + "."
     state = "development data, not a result" if dev else f"measured (campaign {tex(d['lock']['campaign_id'])})"
     conclusion = (f"{mark}On the measured workload, $A_{{\\mathrm{{comp}}}}$ is "
-                  f"{'true' if d['acceptance']['A_comp'] else 'false'}, and the p95 latency "
-                  f"{'stays within' if within else 'exceeds'} the {budget:g}\\,s budget at "
-                  f"{'every size' if within else 'some sizes'} up to {num(rows[-1]['N'])} basis records.")
+                  f"{'true' if d['acceptance']['A_comp'] else 'false'}, and the slowest of {total} updates, at up to "
+                  f"{nmax} basis records, took {w}, {'within' if h['within'] else 'beyond'} the {budget:g}\\,s budget.")
     return {"ResultState": state, "FunctionalResultText": functional, "ScaleResultText": s,
-            "ConclusionResultText": conclusion, "ScaleFigureSentence": tex(d["scale"]["sentence"])}   # the caption carries the dev mark
+            "ConclusionResultText": conclusion, "ScaleFigureSentence": tex(d["scale"]["sentence"]),  # caption carries the dev mark
+            "ScaleAbstractText": abstract, "ScaleIntroText": intro, "ScaleWorstCase": w}
 
 
 # ------------------------------------------------------------------ blocks
@@ -175,7 +185,8 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> t
     p, proto, rows = d["params"], d["protocol"], scale_rows(d)
     trace: dict[str, Any] = {}
 
-    res = {**t, "CorpusHash": d["bundle"]["corpus_sha256"], "PWVersion": d["lock"]["components"]["pwexp"]["tag"],
+    sha = d["bundle"]["corpus_sha256"]
+    res = {**t, "CorpusHash": "\\allowbreak ".join(sha[i:i + 16] for i in range(0, len(sha), 16)), "PWVersion": d["lock"]["components"]["pwexp"]["tag"],
            "RepoAuditCommit": repoaudit_commit[:7], "ModelId": tex(proto["acquisition"]["models"][0]["model"]),
            "TargetRepo": tex(f"{proto['target']['repository']}@{proto['target']['commit']}")}
     for k in t:
@@ -220,14 +231,13 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> t
              r"\begin{table}[pos=tbp]", r"\centering\small",
              r"\caption{Requirement-change-to-posture latency per decision-basis size" +
              (" (development data, not a result)" if dev else "") +
-             f": {rows[0]['observations']} timed cycles each. $N$ basis records, $k$ copies of the main run; median, "
-             f"nearest-rank p95 and maximum in seconds; Over counts observations above the {budget:g}\\,s budget.}}",
+             f": {rows[0]['observations']} timed updates each. $N$ basis records, $k$ copies of the main run; the slowest "
+             f"update in seconds and the updates over the {budget:g}\\,s budget. The slowest overall is $T_{{\\max}}$.}}",
              r"\label{tab:scale-results}",
-             r"\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}rrrrrr@{}}", r"\toprule",
-             r"$N$ & $k$ & Median & p95 & Max & Over \\", r"\midrule"]
+             r"\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}rrrr@{}}", r"\toprule",
+             r"Records $N$ & Copies $k$ & Slowest update (s) & Over budget \\", r"\midrule"]
     for r in rows:
-        lines.append(f"{num(r['N'])} & {num(r['k'])} & {secs(r['median_s'])} & {secs(r['p95_s'])} & {secs(r['max_s'])} & "
-                     f"{r['exceedances']}/{r['observations']} \\\\")
+        lines.append(f"{num(r['N'])} & {num(r['k'])} & {secs(r['slowest_s'])} & {r['exceedances']}/{r['observations']} \\\\")
     lines += [r"\bottomrule", r"\end{tabular*}", r"\end{table}"]
     out["scale_table"] = "\n".join(lines)
     trace["scale_table"] = ["scale_stats", "parameters"]
@@ -238,7 +248,8 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> t
         r"\caption{Requirement-change-to-posture latency at four decision-basis sizes (\FixSizes{} records), "
         f"{rows[0]['observations']} observations each on a single warm host"
         + (" (development data, not a result)" if dev else "") +
-        r". Markers show the nearest-rank p95 and the median; the dashed line is the 5\,s gateway budget. "
+        r". Each dot is one update; the line joins the slowest update at each size; the dashed line is the 5\,s "
+        r"gateway budget, with the number of updates over it above each size. "
         r"\ScaleFigureSentence{}}", r"\label{fig:scale-latency}", r"\end{figure}"])
     trace["scale_figure"] = ["timing_records", "scale_stats"]
     return out, trace
@@ -246,8 +257,8 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> t
 
 # ------------------------------------------------------------------ figure (A12.1)
 def figure(d: dict[str, Any], seed: int) -> tuple[str, str]:
-    """(pgfplots .tex, .csv). All observations as a jittered strip, p95 joined by a line, medians, the
-    budget line and the exceedance count above each size. Jitter is seeded, so the file is reproducible."""
+    """(pgfplots .tex, .csv). All observations as a jittered strip, the slowest update per size joined by a
+    line, the budget line and the exceedance count above each size. Jitter is seeded, so the file is reproducible."""
     rows = scale_rows(d)
     budget = float(d["manifest"]["deadline_s"])
     rng = random.Random(seed)
@@ -274,10 +285,8 @@ def figure(d: dict[str, Any], seed: int) -> tuple[str, str]:
             r"\addplot[only marks, mark=*, mark size=0.8pt, black!30] table {",
             *strip, "};", r"\addlegendentry{observations}",
             r"\addplot[thick, mark=square*, mark size=1.6pt, black] coordinates {"
-            + " ".join(f"({r['N']},{r['p95_s']:.6f})" for r in rows if r["p95_s"]) + "};", r"\addlegendentry{p95}",
-            r"\addplot[only marks, mark=o, mark size=1.8pt, black!70] coordinates {"
-            + " ".join(f"({r['N']},{r['median_s']:.6f})" for r in rows if r["median_s"]) + "};",
-            r"\addlegendentry{median}",
+            + " ".join(f"({r['N']},{r['slowest_s']:.6f})" for r in rows if r["slowest_s"]) + "};",
+            r"\addlegendentry{slowest update}",
             f"\\addplot[dashed, black!60, domain={xs[0] / 2:g}:{xs[-1] * 2:g}] {{{budget:g}}};",
             r"\addlegendentry{gateway budget}",
             *[f"\\node[font=\\scriptsize, anchor=south] at (axis cs:{r['N']},{budget * 1.3:g}) "

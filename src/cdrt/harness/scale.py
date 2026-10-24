@@ -13,12 +13,13 @@ built (one retrieval), and the rev-2 verdicts of each plane's decision are compu
 
 T_assess = t_gateway_read − t_activation (Eq. 9). Every cycle checks H = SUCCESS, A = FAIL and the revision;
 a mismatch, a late completion or a timeout is recorded, never dropped. Five warm-ups per size, then blocks
-of all four sizes in a seeded order. Statistics: nearest-rank p95, median, maximum, exceedances (Eq. 10).
+of all four sizes in a seeded order. The result is one number, the slowest update of the whole campaign
+(T_max), read against the budget, with the number of updates over it; the slowest update per size is kept
+for the table and figure (D-015).
 """
 from __future__ import annotations
 
 import copy
-import math
 import os
 import platform
 import random
@@ -50,11 +51,6 @@ def with_decision(profile: dict[str, Any], d: str) -> dict[str, Any]:
     p = copy.deepcopy(profile)
     p["decision_ref"] = d
     return p
-
-
-def nearest_rank(xs: list[float], q: float) -> float:
-    s = sorted(xs)
-    return s[max(1, math.ceil(q * len(s))) - 1]
 
 
 class Plane:
@@ -146,24 +142,35 @@ def stats(records: list[dict[str, Any]], deadline_s: float) -> dict[str, Any]:
         xs = [r["t_assess_s"] for r in rs if r["t_assess_s"] is not None]
         out[str(size)] = {
             "N": rs[0]["N"], "observations": len(rs), "completed": len(xs),
-            "median_s": nearest_rank(xs, 0.5) if xs else None, "p95_s": nearest_rank(xs, 0.95) if xs else None,
-            "max_s": max(xs) if xs else None,
+            "slowest_s": max(xs) if xs else None,
             "exceedances": sum(1 for r in rs if r["t_assess_s"] is None or r["t_assess_s"] > deadline_s),
             "late": sum(1 for r in rs if r["completed"] and not r["deadline_met"]),
             "timeouts": sum(1 for r in rs if not r["completed"]), "mismatches": sum(1 for r in rs if not r["match"])}
     return out
 
 
+def headline(st: dict[str, Any], deadline_s: float) -> dict[str, Any]:
+    """The single result (D-015): T_max, the slowest completed update of the campaign, against the budget.
+    An update that never completed counts as over the budget and makes T_max unknown."""
+    done = [v for v in st.values() if v["slowest_s"] is not None]
+    worst = max(done, key=lambda v: v["slowest_s"]) if done else None
+    incomplete = sum(v["timeouts"] for v in st.values())
+    return {"worst_s": worst["slowest_s"] if worst and not incomplete else None,
+            "worst_N": worst["N"] if worst else None, "total": sum(v["observations"] for v in st.values()),
+            "over": sum(v["exceedances"] for v in st.values()), "incomplete": incomplete, "budget_s": deadline_s,
+            "within": bool(done) and not incomplete and worst["slowest_s"] <= deadline_s}
+
+
 def sentence(st: dict[str, Any], deadline_s: float) -> str:
-    """The result sentence (experiment.md; R-REP-5). Never 'real-time' or 'guaranteed'."""
-    over = sum(v["exceedances"] for v in st.values())
-    total = sum(v["observations"] for v in st.values())
-    first = next((v["N"] for v in st.values() if v["p95_s"] is None or v["p95_s"] > deadline_s), None)
-    if first is not None:
-        return f"The p95 exceeds the budget from N = {first:,} upward."
-    if over == 0:
-        return "At every size the p95 is within the budget and no observation exceeds it."
-    return f"At every size the p95 is within the budget; {over} of {total} observations exceed it."
+    """The result sentence (R-REP-5 as amended by D-015). Never 'real-time' or 'guaranteed'."""
+    h = headline(st, deadline_s)
+    if h["incomplete"]:
+        return (f"{h['over']} of {h['total']} timed updates exceeded the {deadline_s:g} s budget; "
+                f"{h['incomplete']} did not complete within the waiting limit.")
+    if h["within"]:
+        return (f"Every one of the {h['total']} timed updates reached the gateway within the {deadline_s:g} s budget; "
+                f"the slowest took {h['worst_s']:.2f} s.")
+    return f"{h['over']} of {h['total']} timed updates exceeded the {deadline_s:g} s budget; the slowest took {h['worst_s']:.2f} s."
 
 
 def write(out: Path, result: dict[str, Any], mark: str) -> dict[str, Path]:
@@ -173,6 +180,7 @@ def write(out: Path, result: dict[str, Any], mark: str) -> dict[str, Path]:
              "run_manifest": out / "run_manifest.json"}
     files["timing_records"].write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in result["records"]))
     files["scale_stats"].write_text(json.dumps({"mark": mark, "stats": result["stats"], "sentence": result["sentence"],
+                                                "headline": result["headline"],
                                                 "gateway_timeouts": result["gateway_timeouts"]}, indent=2, sort_keys=True) + "\n")
     files["run_manifest"].write_text(json.dumps({"mark": mark, **result["manifest"]}, indent=2, sort_keys=True) + "\n")
     return files
@@ -210,9 +218,10 @@ def run(fixtures: Path, bundle: Path, cfg: dict[str, Any], stamp: dict[str, Any]
             if (b + 1) % 10 == 0 or b == 0:
                 st = stats(records, float(cfg["deadline_s"]))
                 progress(f"block {b + 1:3}/{cfg['blocks']}  " + "  ".join(
-                    f"N={v['N']:,}: p95 {v['p95_s']:.3f}s ({v['exceedances']} over)" for v in st.values()))
+                    f"N={v['N']:,}: slowest {v['slowest_s']:.3f}s ({v['exceedances']} over)" for v in st.values()))
         gateway_timeouts = gw.timeouts()
     st = stats(records, float(cfg["deadline_s"]))
     return {"records": records, "stats": st, "manifest": manifest, "sentence": sentence(st, float(cfg["deadline_s"])),
+            "headline": headline(st, float(cfg["deadline_s"])),
             "gateway_timeouts": len(gateway_timeouts), "guard_calls": guard_calls[-1] if guard_calls else 0,
             "expected_cycles": int(cfg["blocks"]) * len(planes)}

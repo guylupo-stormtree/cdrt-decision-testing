@@ -6,7 +6,7 @@ generates the five manuscript blocks and figures/scale_latency.tex from those re
 the manuscript with them and compiles the copy. The manuscript itself is never written here: blocks the
 manuscript does not have yet (the A17 revision) are inserted into the copy only, and listed.
 
-Manuscript: $CDRT_MANUSCRIPT, or ../ComposableCDRT/Manuscript/main-12.tex next to this repository.
+Manuscript: $CDRT_MANUSCRIPT, or ../ComposableCDRT/Manuscript/main-13.tex next to this repository.
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ from .framework import Check, LabContext, LabResult, rel
 
 def manuscript() -> Path:
     env = os.environ.get("CDRT_MANUSCRIPT")
-    return Path(env) if env else paths.root().parent / "ComposableCDRT" / "Manuscript" / "main-12.tex"
+    return Path(env) if env else paths.root().parent / "ComposableCDRT" / "Manuscript" / "main-13.tex"
 
 
 def repoaudit_commit() -> str:
@@ -95,10 +95,13 @@ def run(ctx: LabContext) -> LabResult:
     fig_ok, fig_errors, _ = latex(pdir, "preview.tex")
 
     words = "\n".join(gen.values())
-    rows = report.scale_rows(d)
-    within = all(r["p95_s"] is not None and r["p95_s"] <= float(cfg["deadline_s"]) for r in rows)
+    from ..harness.scale import headline
+    within = headline(d["scale"]["stats"], float(cfg["deadline_s"]))["within"]
+    tx = report.texts(d, ctx.dev)
+    scale_words = " ".join(tx[k] for k in ("ScaleResultText", "ScaleAbstractText", "ScaleIntroText", "ConclusionResultText"))
     wording = "real-time" not in words.lower() and "guarantee" not in words.lower() and \
-        ("within the" in words) == within and ("exceeded it" in words) == any(r["exceedances"] for r in rows)
+        "p95" not in words and "percentile" not in words.lower() and \
+        (("exceeded" not in scale_words) if within else ("within" not in scale_words.replace("beyond", "")))
     traced = {k: v for k, v in trace.items()}
     sources_locked = all(r.get("lock_root") == doc["lock_root"] for r in d["functional"] + d["timing"])
     (ctx.attempt_dir / "trace.json").write_text(json.dumps(

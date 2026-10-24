@@ -18,12 +18,12 @@ uv venv --python 3.13 .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e '.[dev]'
 .venv/bin/cdrt lab run 6 --dev        # lock everything later labs depend on
 .venv/bin/cdrt verify-lock --dev
 .venv/bin/cdrt lab run 7 --dev        # functional protocol (RQ1): A_comp
-.venv/bin/cdrt lab run 8 --dev        # scale protocol (RQ2): 400 timed cycles, p95 per size
+.venv/bin/cdrt lab run 8 --dev        # scale protocol (RQ2): 400 timed cycles; the slowest update vs the 5 s budget
 .venv/bin/cdrt pilot scale --dev --blocks 20   # pilot timing before a lock (results/pilot/, never a result)
 .venv/bin/cdrt lab run 9 --dev        # report: generated blocks and figure, filled into a compiled copy of the manuscript
 ```
 
-Lab 9 reads the manuscript from `../ComposableCDRT/Manuscript/main-12.tex` (or `$CDRT_MANUSCRIPT`) and never writes to it: it fills a copy in its attempt folder, compiles it, and keeps the generated blocks and `figures/scale_latency.tex` separately. Blocks the manuscript does not have yet are inserted into the copy only and listed on the lab card.
+Lab 9 reads the manuscript from `../ComposableCDRT/Manuscript/main-13.tex` (or `$CDRT_MANUSCRIPT`) and never writes to it: it fills a copy in its attempt folder, compiles it, and keeps the generated blocks and `figures/scale_latency.tex` separately. Blocks the manuscript does not have yet are inserted into the copy only and listed on the lab card.
 
 Each lab re-verifies the previous lab's hand-off, runs fixed checks, prints a lab card (inputs, checks, outputs, what it hands on) and seals its own hand-off. A lab passes only when every check passes; a check whose code is not built yet is shown as such and keeps the lab from passing. Passing a lab means the run was complete and intact. The result it reports is whatever it is.
 
@@ -37,7 +37,7 @@ Each lab re-verifies the previous lab's hand-off, runs fixed checks, prints a la
 | 5 | Build fixtures: thresholds, profiles, derived variants, scale planes | no | built (dev) |
 | 6 | Lock: hash everything the runs depend on; tag | no | built (dev) |
 | 7 | Functional run (RQ1): cases, interleavings, boundary checks, isolation, replay, A_comp | no | built (dev) |
-| 8 | Scale run (RQ2): 400 timed cycles over four basis sizes, 5 s budget, p95 | no | built (dev) |
+| 8 | Scale run (RQ2): 400 timed cycles over four basis sizes; one number, the slowest update, against the 5 s budget | no | built (dev) |
 | 9 | Report: generated tables, figure and result text for the manuscript | no | built (dev) |
 
 Labs 0–2 are run by the authors and need RepoAudit and a model. Labs 3–9 run offline from the frozen bundle, with Python only.

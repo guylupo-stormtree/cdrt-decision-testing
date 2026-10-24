@@ -82,10 +82,18 @@ def test_functional_protocol_runs_completely_and_replays(lab5, cdrt_root, tmp_pa
     assert not by["I1"]["observed"]["old_admitted"] and by["I1"]["observed"]["posture_unchanged"]
 
 
-def test_nearest_rank_p95():
-    from cdrt.harness.scale import nearest_rank
-    xs = [float(i) for i in range(1, 101)]
-    assert nearest_rank(xs, 0.95) == 95.0 and nearest_rank(xs, 0.5) == 50.0 and nearest_rank([3.0], 0.95) == 3.0
+def test_headline_is_the_slowest_update_against_the_budget():
+    from cdrt.harness.scale import headline, sentence
+    row = lambda n, slow, over=0, timeouts=0: {"N": n, "observations": 100, "slowest_s": slow, "exceedances": over,  # noqa: E731
+                                               "timeouts": timeouts}
+    ok = {"100": row(129, 0.03), "100000": row(100018, 3.38)}
+    h = headline(ok, 5.0)
+    assert h["worst_s"] == 3.38 and h["worst_N"] == 100018 and h["within"] and h["total"] == 200
+    assert sentence(ok, 5.0) == "Every one of the 200 timed updates reached the gateway within the 5 s budget; the slowest took 3.38 s."
+    late = {"100": row(129, 0.03), "100000": row(100018, 7.1, over=3)}
+    assert not headline(late, 5.0)["within"] and sentence(late, 5.0).startswith("3 of 200 timed updates exceeded")
+    lost = {"100": row(129, 0.03), "100000": row(100018, 4.0, over=1, timeouts=1)}
+    assert headline(lost, 5.0)["worst_s"] is None and not headline(lost, 5.0)["within"]
 
 
 def test_scale_cycles_keep_meaning_and_are_all_recorded(lab5, cdrt_root):

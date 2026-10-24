@@ -104,8 +104,7 @@ def cmd_pilot_scale(a) -> int:
     scale.write(out, res, "PILOT" + (" DEVELOPMENT" if a.dev else ""))
     _p(f"PILOT (never a result) · {out}")
     for v in res["stats"].values():
-        _p(f"  N = {v['N']:>7,}  median {v['median_s']:.3f} s  p95 {v['p95_s']:.3f} s  max {v['max_s']:.3f} s  "
-           f"{v['exceedances']}/{v['observations']} over")
+        _p(f"  N = {v['N']:>7,}  slowest {v['slowest_s']:.3f} s  {v['exceedances']}/{v['observations']} over")
     _p(f"  {res['sentence']}")
     return 0
 
