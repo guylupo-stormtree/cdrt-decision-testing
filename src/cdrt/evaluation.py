@@ -10,20 +10,21 @@ from pwexp.hashing import sha256_bytes
 from .executor import execute
 from .records.assessments import assessments
 from .records.manifests import ManifestStore
-from .records.view import Snapshot, check_binding, get_decision
+from .records.view import DecisionView, Snapshot, retrieve
 from .resolver import Invocation
 from .tests_registered.common import parse_utc
 
 
-def inputs_for(inv: Invocation, s: Snapshot, manifests: ManifestStore) -> dict[str, Any]:
-    """Everything a registered test may declare as input, read through ProofWeave's Query API."""
-    d = get_decision(s, inv.decision_id)
+def inputs_for(inv: Invocation, s: Snapshot, manifests: ManifestStore, dv: DecisionView | None = None) -> dict[str, Any]:
+    """Everything a registered test may declare as input, read through ProofWeave's Query API. `dv` is the
+    cycle's shared retrieval of the decision (R-TST-5); without it the decision is retrieved here."""
+    dv = dv if dv is not None and dv.decision_id == inv.decision_id else retrieve(s, inv.decision_id)
+    d = dv.decision
     out: dict[str, Any] = {"record_status": d["status"], "policy": None, "policy_digest_ok": False,
                            "policy_manifest": None, "manifest": None, "assessments": []}
     if d["status"] == "unavailable":
         return out
-    basis = s.query.basis(inv.decision_id)["records"]
-    if not check_binding(s, d, basis):                    # R-REC-4, inside the timed path
+    if not dv.binding_ok:                                 # R-REC-4, inside the timed path (retrieve)
         out["record_status"] = "partial"
     pol = d.get("policy")
     text = s.query.policy_text(pol["id"]) if pol else "unavailable"
@@ -33,16 +34,16 @@ def inputs_for(inv: Invocation, s: Snapshot, manifests: ManifestStore) -> dict[s
         out["policy"] = json.loads(text)
         out["policy_manifest"] = manifests.resolve(out["policy"].get("manifest"))[0]
     out["manifest"] = manifests.resolve(inv.params.get("manifest_ref"))[0]
-    out["assessments"] = assessments(s, inv.decision_id)["records"]
+    out["assessments"] = assessments(s, inv.decision_id, dv)["records"]
     return out
 
 
-def evaluate(inv: Invocation, s: Snapshot, manifests: ManifestStore) -> dict[str, Any]:
+def evaluate(inv: Invocation, s: Snapshot, manifests: ManifestStore, dv: DecisionView | None = None) -> dict[str, Any]:
     base = {"binding": inv.binding, "test": inv.test, "allow_synthetic": s.allow_synthetic, "valid_until": None}
     if inv.entry is None:
         return {**base, "execution_status": "lookup-failed", "state": None, "measurements": {},
                 "reasons": [inv.lookup_error or "test not registered"]}
-    status, out = execute(inv.entry, inputs_for(inv, s, manifests), inv.params)
+    status, out = execute(inv.entry, inputs_for(inv, s, manifests, dv), inv.params)
     if status != "ok":
         return {**base, "execution_status": status, "state": None, "measurements": {},
                 "reasons": [f"execution {status}"] + ([out["error"]] if out and "error" in out else [])}

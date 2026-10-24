@@ -17,7 +17,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from .view import Snapshot, get_decision
+from .view import DecisionView, Snapshot, get_decision
 
 BASE, INDEPENDENT = "base-check", "independent-check"
 
@@ -51,16 +51,20 @@ def _findings(s: Snapshot, run: str) -> set[str]:
     return out
 
 
-def assessments(s: Snapshot, decision_id: str) -> dict[str, Any]:
-    d = get_decision(s, decision_id)
+def assessments(s: Snapshot, decision_id: str, dv: DecisionView | None = None) -> dict[str, Any]:
+    """`dv`: the cycle's shared retrieval of this decision (otherwise retrieved here)."""
+    d = dv.decision if dv else get_decision(s, decision_id)
     if d["status"] == "unavailable":
         return {"status": "unavailable", "records": []}
-    basis = s.query.basis(decision_id)["records"]
+    basis = list(dv.basis) if dv else s.query.basis(decision_id)["records"]
     by_hash = {r["record_hash"]: r for r in basis}
     runs = d["binding"]["payload"]["basis_runs"]
+    by_run: dict[str, list[dict[str, Any]]] = {}       # one pass over the basis (R-SCL-10: linear in N)
+    for r in basis:
+        by_run.setdefault(r["run"], []).append(r)
     out: list[dict[str, Any]] = []
     for run in runs:
-        recs = [r for r in basis if r["run"] == run]
+        recs = by_run.get(run, [])
         if any(r["event_type"] == "semgrep.scan" for r in recs) or run.startswith("semgrep/"):
             verdict = next((r for r in recs if r["event_type"] == "harness.run_verdict"), None)
             t = utc_time(verdict["time"], s.log_utc_offset) if verdict else None

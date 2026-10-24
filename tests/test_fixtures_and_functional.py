@@ -80,3 +80,22 @@ def test_functional_protocol_runs_completely_and_replays(lab5, cdrt_root, tmp_pa
     assert by["isolation"]["observed"]["guard_calls"] == 0
     assert by["B2"]["observed"]["integrity_finding_at_load"]
     assert not by["I1"]["observed"]["old_admitted"] and by["I1"]["observed"]["posture_unchanged"]
+
+
+def test_nearest_rank_p95():
+    from cdrt.harness.scale import nearest_rank
+    xs = [float(i) for i in range(1, 101)]
+    assert nearest_rank(xs, 0.95) == 95.0 and nearest_rank(xs, 0.5) == 50.0 and nearest_rank([3.0], 0.95) == 3.0
+
+
+def test_scale_cycles_keep_meaning_and_are_all_recorded(lab5, cdrt_root):
+    from cdrt.harness import scale
+    (cdrt_root / "uv.lock").symlink_to(REPO / "uv.lock")             # hashed into the run manifest
+    h = lab5.handoff(5)["handoff"]
+    cfg = yaml.safe_load((cdrt_root / "protocol" / "run_config.yaml").read_text())["scale"]
+    res = scale.run(cdrt_root / h["fixtures"], cdrt_root / h["bundle"], cfg, {"lock_root": "L"}, QUIET, blocks=2, warmups=1)
+    assert res["expected_cycles"] == len(res["records"]) == 4
+    assert all(r["match"] and r["completed"] and r["lock_root"] == "L" for r in res["records"])
+    assert all(r["shared_view"]["tests"] == ["conformance-check@1.0", "adequacy-check@1.0"] for r in res["records"])
+    assert res["guard_calls"] == 0 and res["stats"]["100"]["observations"] == 2
+    assert "real-time" not in res["sentence"]

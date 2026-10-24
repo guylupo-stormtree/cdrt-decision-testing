@@ -36,8 +36,7 @@ class Invocation:
         return self.binding["d"]
 
 
-def _policy(s: Snapshot, decision_id: str) -> dict[str, Any] | None:
-    d = get_decision(s, decision_id)
+def _policy(d: dict[str, Any]) -> dict[str, Any] | None:
     return (d.get("policy") or {}).get("payload", {}).get("content") if d["status"] != "unavailable" else None
 
 
@@ -53,7 +52,7 @@ def resolve(profile: dict[str, Any], s: Snapshot, registry: Registry, manifests:
         except LookupFailure as e:
             entry, err = None, str(e)
         if req["test"].startswith("conformance-check@"):
-            pol = _policy(s, decision_id) or {}
+            pol = _policy(dec) or {}
             _, h_M = manifests.resolve(pol.get("manifest"))
         else:
             _, h_M = manifests.resolve(params.get("manifest_ref"))

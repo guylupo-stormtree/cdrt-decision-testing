@@ -2,19 +2,23 @@
 
 reassess(): resolve the newly active profile; activate it in the consumer (affected leaves lose support
 first) and publish that card; evaluate only the affected leaves; admit each verdict; publish the new card.
-Unaffected leaves keep their verdicts and are not re-run.
+Unaffected leaves keep their verdicts and are not re-run (unless `rerun_unaffected`: the scale protocol
+times both tests, R-SCL-2). The decision and its basis are retrieved once per cycle and that one immutable
+view is shared by the cycle's tests; the result logs the sharing (R-TST-5).
 """
 from __future__ import annotations
 
 from typing import Any, Callable
 
-from . import api
+from .evaluation import evaluate
 from .posture import Consumer
+from .records import view
 
 
-def reassess(consumer: Consumer, profile: dict[str, Any], s: api.Snapshot, manifests,
+def reassess(consumer: Consumer, profile: dict[str, Any], s: view.Snapshot, manifests,
              publish: Callable[[dict[str, Any]], None] | None = None,
-             hold: Callable[[dict[str, Any]], bool] | None = None, registry=None) -> dict[str, Any]:
+             hold: Callable[[dict[str, Any]], bool] | None = None, registry=None,
+             rerun_unaffected: bool = False) -> dict[str, Any]:
     """`hold(verdict)` may keep a verdict back (delayed-result interleavings); it is then returned, not admitted.
     `registry` is the set of registered tests (default: every approved entry)."""
     from .registry import Registry
@@ -25,11 +29,11 @@ def reassess(consumer: Consumer, profile: dict[str, Any], s: api.Snapshot, manif
     affected = consumer.activate(profile, {i.leaf: i.binding for i in invs})
     if publish:
         publish(consumer.card(t))
+    run = [i for i in invs if rerun_unaffected or i.leaf in affected]
+    dv = view.retrieve(s, profile["decision_ref"]) if run else None
     held, verdicts = [], []
-    for inv in invs:
-        if inv.leaf not in affected:
-            continue
-        v = api.evaluate(inv, s, manifests)
+    for inv in run:
+        v = evaluate(inv, s, manifests, dv)
         verdicts.append(v)
         if hold and hold(v):
             held.append(v)
@@ -38,4 +42,5 @@ def reassess(consumer: Consumer, profile: dict[str, Any], s: api.Snapshot, manif
     card = consumer.card(t)
     if publish:
         publish(card)
-    return {"affected": affected, "verdicts": verdicts, "held": held, "card": card}
+    return {"affected": affected, "verdicts": verdicts, "held": held, "card": card,
+            "shared_view": {"decision": profile["decision_ref"], "tests": [i.test for i in run]} if dv else None}

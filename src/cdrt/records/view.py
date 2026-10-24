@@ -80,6 +80,24 @@ def get_decision(s: Snapshot, decision_id: str) -> dict[str, Any]:
     return s.query.decision(decision_id)
 
 
+@dataclass(frozen=True)
+class DecisionView:
+    """One retrieval of a decision and its basis through the Query API, with the timed-path binding check,
+    shared by the tests of one cycle (R-TST-5: one immutable view per cycle; the sharing is logged)."""
+    decision_id: str
+    decision: dict[str, Any] = field(repr=False)
+    basis: tuple[dict[str, Any], ...] = field(repr=False)
+    binding_ok: bool = False
+
+
+def retrieve(s: Snapshot, decision_id: str) -> DecisionView:
+    d = get_decision(s, decision_id)
+    if d["status"] == "unavailable":
+        return DecisionView(decision_id, d, ())
+    basis = s.query.basis(decision_id)["records"]
+    return DecisionView(decision_id, d, tuple(basis), check_binding(s, d, basis))
+
+
 def list_decisions(s: Snapshot) -> list[str]:
     return s.query.decisions()
 

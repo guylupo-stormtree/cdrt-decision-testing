@@ -153,7 +153,9 @@ class LabBook:
             raise LabError(why)
         lab = self.labs[n]
         st = self.state()
-        attempt = st.get(str(n), {}).get("attempt", 0) + 1
+        done = [int(p.name.removeprefix("attempt")) for p in (self.dir / f"lab{n}").glob("attempt*")
+                if p.name.removeprefix("attempt").isdigit()]     # attempts dropped from state stay on record
+        attempt = max([st.get(str(n), {}).get("attempt", 0), *done]) + 1
         adir = self.dir / f"lab{n}" / f"attempt{attempt}"
         adir.mkdir(parents=True, exist_ok=False)
         inputs = self.handoff(n - 1) if n != self.first() else None

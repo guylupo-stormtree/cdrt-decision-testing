@@ -5,6 +5,8 @@
   cdrt lab run N [--dev]           run lab N (refuses unless lab N-1 passed and its hand-off verifies)
   cdrt lab view N NAME [--dev]     path of a review page of lab N's last attempt (e.g. 4 pathways)
   cdrt verify-lock [--dev]         recompute every locked component and compare (R-LOCK-2)
+  cdrt pilot scale [--dev] [--blocks N] [--warmups N]
+                                   pilot timing before the lock, into results/pilot/ (R-SCL-9)
 
 --dev runs the offline labs (3 onwards) on the ProofWeave development fixtures; never a result.
 """
@@ -81,6 +83,33 @@ def cmd_verify_lock(a) -> int:
     return 1
 
 
+def cmd_pilot_scale(a) -> int:
+    """R-SCL-9: pilot timing before the lock, into results/pilot/; never a result."""
+    from datetime import datetime, timezone
+
+    import yaml
+
+    from . import lock
+    from .harness import scale
+    fx = lock.fixtures_dir(a.dev)
+    if not (fx / "parameters.json").exists():
+        _p(f"{FAIL} no fixtures in {fx}; run Lab 5 first")
+        return 1
+    when = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    cfg = yaml.safe_load((paths.root() / "protocol" / "run_config.yaml").read_text())["scale"]
+    stamp = {"lock_root": None, "campaign_id": f"pilot-{when}", "pilot": True,
+             "pwexp_commit": lock.pwexp_commit()["commit"]}
+    res = scale.run(fx, paths.bundle_dir(a.dev), cfg, stamp, lambda m: _p(f"  {m}"), blocks=a.blocks, warmups=a.warmups)
+    out = paths.root() / "results" / "pilot" / f"scale-{when}{'-dev' if a.dev else ''}"
+    scale.write(out, res, "PILOT" + (" DEVELOPMENT" if a.dev else ""))
+    _p(f"PILOT (never a result) · {out}")
+    for v in res["stats"].values():
+        _p(f"  N = {v['N']:>7,}  median {v['median_s']:.3f} s  p95 {v['p95_s']:.3f} s  max {v['max_s']:.3f} s  "
+           f"{v['exceedances']}/{v['observations']} over")
+    _p(f"  {res['sentence']}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="cdrt", description="Composable CDRT experiment, run lab by lab")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -96,6 +125,12 @@ def main(argv: list[str] | None = None) -> int:
     vl = sub.add_parser("verify-lock", help="recompute every locked component (R-LOCK-2)")
     vl.add_argument("--dev", action="store_true", help="the development lock")
     vl.set_defaults(fn=cmd_verify_lock)
+    pi = sub.add_parser("pilot", help="pilot timing before the lock (R-SCL-9; results/pilot/, never a result)")
+    ps = pi.add_subparsers(dest="what", required=True).add_parser("scale")
+    ps.add_argument("--dev", action="store_true", help="the development fixtures")
+    ps.add_argument("--blocks", type=int, default=None, help="blocks (default: run_config.yaml)")
+    ps.add_argument("--warmups", type=int, default=None, help="warm-ups per size (default: run_config.yaml)")
+    ps.set_defaults(fn=cmd_pilot_scale)
     a = ap.parse_args(argv)
     return a.fn(a)
 
