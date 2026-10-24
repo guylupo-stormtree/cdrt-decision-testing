@@ -2,7 +2,7 @@
 
 Control-decision risk testing over recorded decisions. A control (here RepoAudit, an LLM-agent repository auditor) makes a decision; ProofWeave records it with its intent, its basis and the policy in force; registered decision tests then judge whether the decision was licensed by its own policy (conformance) and whether it is enough for today's requirement (adequacy), and only verdicts bound to the active requirement reach the gateway's posture.
 
-**Status: under construction.** Labs 3–8 run in development mode; the CDRT runtime (registry, resolver, executor, the two decision tests, posture consumer, gateway, monitor), the independent oracle, the fixture build, the protocol lock, the functional harness and the scale harness are built. No result has been produced. Everything under `capture/dev/`, `capture/records-dev/`, `fixtures/out-dev/` and `results/labs-dev/` is development data built from ProofWeave's fixtures and is never a result.
+**Status: under construction.** Labs 3–9 run in development mode; the CDRT runtime (registry, resolver, executor, the two decision tests, posture consumer, gateway, monitor), the independent oracle, the fixture build, the protocol lock, the functional and scale harnesses and the report generator are built. No result has been produced. Everything under `capture/dev/`, `capture/records-dev/`, `fixtures/out-dev/` and `results/labs-dev/` is development data built from ProofWeave's fixtures and is never a result.
 
 ## Run it lab by lab
 
@@ -20,7 +20,10 @@ uv venv --python 3.13 .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e '.[dev]'
 .venv/bin/cdrt lab run 7 --dev        # functional protocol (RQ1): A_comp
 .venv/bin/cdrt lab run 8 --dev        # scale protocol (RQ2): 400 timed cycles, p95 per size
 .venv/bin/cdrt pilot scale --dev --blocks 20   # pilot timing before a lock (results/pilot/, never a result)
+.venv/bin/cdrt lab run 9 --dev        # report: generated blocks and figure, filled into a compiled copy of the manuscript
 ```
+
+Lab 9 reads the manuscript from `../ComposableCDRT/Manuscript/main-12.tex` (or `$CDRT_MANUSCRIPT`) and never writes to it: it fills a copy in its attempt folder, compiles it, and keeps the generated blocks and `figures/scale_latency.tex` separately. Blocks the manuscript does not have yet are inserted into the copy only and listed on the lab card.
 
 Each lab re-verifies the previous lab's hand-off, runs fixed checks, prints a lab card (inputs, checks, outputs, what it hands on) and seals its own hand-off. A lab passes only when every check passes; a check whose code is not built yet is shown as such and keeps the lab from passing. Passing a lab means the run was complete and intact. The result it reports is whatever it is.
 
@@ -35,7 +38,7 @@ Each lab re-verifies the previous lab's hand-off, runs fixed checks, prints a la
 | 6 | Lock: hash everything the runs depend on; tag | no | built (dev) |
 | 7 | Functional run (RQ1): cases, interleavings, boundary checks, isolation, replay, A_comp | no | built (dev) |
 | 8 | Scale run (RQ2): 400 timed cycles over four basis sizes, 5 s budget, p95 | no | built (dev) |
-| 9 | Report: generated tables, figure and result text for the manuscript | no | not built |
+| 9 | Report: generated tables, figure and result text for the manuscript | no | built (dev) |
 
 Labs 0–2 are run by the authors and need RepoAudit and a model. Labs 3–9 run offline from the frozen bundle, with Python only.
 
@@ -56,7 +59,7 @@ protocol/              run_config.yaml (every seed and count) and, for the repor
 src/cdrt/              record view and assessments, registry, resolver, executor, the two registered
                        decision tests, posture consumer, gateway (separate process), monitor, fixtures,
                        lock, control guard, harness (functional protocol, delayed-result scheduler,
-                       code fingerprints, scale protocol), labs
+                       code fingerprints, scale protocol), report generator, labs
 oracle/                expectations.yaml and oracle_check.py (standard library only, imports nothing of
                        cdrt or pwexp; reads the frozen bundle directly)
 results/labs[-dev]/    lab state, hash-chained lab log, per-attempt hand-offs and cards

@@ -1,7 +1,7 @@
 """The ten labs of the CDRT experiment (see README.md)."""
 from __future__ import annotations
 
-from . import lab3_corpus, lab4_review, lab5_fixtures, lab6_lock, lab7_functional, lab8_scale
+from . import lab3_corpus, lab4_review, lab5_fixtures, lab6_lock, lab7_functional, lab8_scale, lab9_report
 from .framework import Lab, LabBook
 
 LABS = [
@@ -21,7 +21,7 @@ LABS = [
         "replay; A_comp.", False, lab7_functional.run, "B4"),
     Lab(8, "Scale run (RQ2)", "400 timed cycles over four basis sizes against the 5 s budget; p95.", False, lab8_scale.run, "B5"),
     Lab(9, "Report", "Generated blocks and the scale figure for the manuscript; the RQ1 and RQ2 answers.",
-        False, None, "B6"),
+        False, lab9_report.run, "B6"),
 ]
 VIEWS = {4: ("decisions", "pathways")}
 
