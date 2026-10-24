@@ -20,6 +20,7 @@ bundle's declared log_utc_offset (CAPTURE.json); a Semgrep assessment takes its 
   python oracle/oracle_check.py conformance BUNDLE DECISION
   python oracle/oracle_check.py adequacy BUNDLE DECISION PARAMS.json
   python oracle/oracle_check.py select BUNDLE                 the selection rule R-CAP-5 (R-ORC-4)
+  python oracle/oracle_check.py batch BUNDLE REQUESTS.json    [{kind: conformance|adequacy, decision, params}]
 """
 from __future__ import annotations
 
@@ -308,6 +309,9 @@ def main(argv: list[str]) -> int:
         out = adequacy(b, argv[2], json.loads(Path(argv[3]).read_text()))
     elif argv[0] == "select":
         out = select(b)
+    elif argv[0] == "batch":
+        out = [conformance(b, q["decision"]) if q["kind"] == "conformance" else adequacy(b, q["decision"], q["params"])
+               for q in json.loads(Path(argv[2]).read_text())]
     else:
         print(__doc__)
         return 2

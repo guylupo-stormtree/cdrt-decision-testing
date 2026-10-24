@@ -1,0 +1,15 @@
+# CDRT run configuration (NF-5: every seed and count is here). Locked with the protocol (R-LOCK-1).
+version: 1
+fixtures:
+  age_after_decision_s: 600          # t_e = latest decided_at among the selected decisions + 600 s (R-FIX-2, D-012)
+  age_margin_s: 1200                 # Delta_q = (t_e - oldest relevant observation) + 1200 s
+  threshold_step: 20                 # thresholds are multiples of 1/20
+scale:
+  target_sizes: [100, 1000, 10000, 100000]   # N = basis_count, k_i = ceil(N_i / n_0) (R-FIX-3)
+  warmups: 5
+  blocks: 100
+  seed: 20261024
+  deadline_s: 5
+  max_wait_s: 60
+functional:
+  replay_runs: 2                     # AC8: the functional protocol is run this many times and compared

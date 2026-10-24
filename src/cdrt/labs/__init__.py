@@ -1,7 +1,7 @@
 """The ten labs of the CDRT experiment (see README.md)."""
 from __future__ import annotations
 
-from . import lab3_corpus, lab4_review
+from . import lab3_corpus, lab4_review, lab5_fixtures, lab6_lock, lab7_functional
 from .framework import Lab, LabBook
 
 LABS = [
@@ -15,10 +15,10 @@ LABS = [
     Lab(4, "Review ProofWeave and freeze", "Review decisions and pathways; select the main, strict and pipeline "
         "decisions; freeze the bundle.", False, lab4_review.run, "B2"),
     Lab(5, "Build fixtures", "Thresholds, profiles rev 1-3b, derived variants, scale planes; built twice to "
-        "identical bytes.", False, None, "B4"),
-    Lab(6, "Lock", "Hash the bundle, fixtures, oracle, profiles, runtime and configuration; tag.", False, None, "B4"),
+        "identical bytes.", False, lab5_fixtures.run, "B4"),
+    Lab(6, "Lock", "Hash the bundle, fixtures, oracle, profiles, runtime and configuration; tag.", False, lab6_lock.run, "B4"),
     Lab(7, "Functional run (RQ1)", "Main sequence, cases F1-F9, interleavings, boundary checks, isolation, "
-        "replay; A_comp.", False, None, "B4"),
+        "replay; A_comp.", False, lab7_functional.run, "B4"),
     Lab(8, "Scale run (RQ2)", "400 timed cycles over four basis sizes against the 5 s budget; p95.", False, None, "B5"),
     Lab(9, "Report", "Generated blocks and the scale figure for the manuscript; the RQ1 and RQ2 answers.",
         False, None, "B6"),

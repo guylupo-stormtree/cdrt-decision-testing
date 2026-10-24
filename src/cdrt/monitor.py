@@ -14,11 +14,14 @@ from .posture import Consumer
 
 def reassess(consumer: Consumer, profile: dict[str, Any], s: api.Snapshot, manifests,
              publish: Callable[[dict[str, Any]], None] | None = None,
-             hold: Callable[[dict[str, Any]], bool] | None = None) -> dict[str, Any]:
-    """`hold(verdict)` may keep a verdict back (delayed-result interleavings); it is then returned, not admitted."""
+             hold: Callable[[dict[str, Any]], bool] | None = None, registry=None) -> dict[str, Any]:
+    """`hold(verdict)` may keep a verdict back (delayed-result interleavings); it is then returned, not admitted.
+    `registry` is the set of registered tests (default: every approved entry)."""
+    from .registry import Registry
+    from .resolver import resolve
     t = next((r["parameters"].get("assessment_time") for r in profile["requirements"]
               if (r.get("parameters") or {}).get("assessment_time")), None)
-    invs = api.resolve(profile, s, manifests)
+    invs = resolve(profile, s, registry or Registry(), manifests)
     affected = consumer.activate(profile, {i.leaf: i.binding for i in invs})
     if publish:
         publish(consumer.card(t))

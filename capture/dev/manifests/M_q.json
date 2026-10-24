@@ -1,7 +1,7 @@
 {
   "id": "M_q",
   "development": true,
-  "about": "DEVELOPMENT current release manifest: M_h plus the further functions on the release path that can receive a None (argument or return).",
+  "about": "DEVELOPMENT current release manifest: M_h plus further functions on the release path. report.py::latest_login is included so that the development data exercises case F7 (it needs c_obs < 1): RepoAudit never carries a None into it, because it is itself a None source. Hand-written for development; never a result.",
   "functions": [
     "directory.py::display_name",
     "directory.py::load_profile",
@@ -10,6 +10,7 @@
     "report.py::login_summary",
     "report.py::escalation_chain",
     "directory.py::find_user",
-    "report.py::audit"
+    "report.py::audit",
+    "report.py::latest_login"
   ]
 }

@@ -12,3 +12,4 @@ results/pilot/
 # secrets: never commit (keys are memory-only)
 *.env
 .env*
+fixtures/out-dev/

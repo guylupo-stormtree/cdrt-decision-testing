@@ -4,6 +4,7 @@
   cdrt lab show N [--dev]          the lab's purpose and its last card
   cdrt lab run N [--dev]           run lab N (refuses unless lab N-1 passed and its hand-off verifies)
   cdrt lab view N NAME [--dev]     path of a review page of lab N's last attempt (e.g. 4 pathways)
+  cdrt verify-lock [--dev]         recompute every locked component and compare (R-LOCK-2)
 
 --dev runs the offline labs (3 onwards) on the ProofWeave development fixtures; never a result.
 """
@@ -70,6 +71,16 @@ def cmd_view(a) -> int:
     return 0
 
 
+def cmd_verify_lock(a) -> int:
+    from . import lock
+    ok, problems, doc = lock.verify(a.dev)
+    if ok:
+        _p(f"{OK} lock {doc['lock_root'][:12]} verifies (campaign {doc['campaign_id']})")
+        return 0
+    _p(f"{FAIL} lock does not verify: " + "; ".join(problems))
+    return 1
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="cdrt", description="Composable CDRT experiment, run lab by lab")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -82,6 +93,9 @@ def main(argv: list[str] | None = None) -> int:
             p.add_argument(x, type=int if x == "n" else str)
         p.add_argument("--dev", action="store_true", help="development mode (fixtures; never a result)")
         p.set_defaults(fn=fn)
+    vl = sub.add_parser("verify-lock", help="recompute every locked component (R-LOCK-2)")
+    vl.add_argument("--dev", action="store_true", help="the development lock")
+    vl.set_defaults(fn=cmd_verify_lock)
     a = ap.parse_args(argv)
     return a.fn(a)
 

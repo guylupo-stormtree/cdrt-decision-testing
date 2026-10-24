@@ -36,6 +36,7 @@ class Snapshot:
     query: QueryAPI = field(repr=False, compare=False)
     record_hashes: frozenset[str] = field(repr=False, compare=False)
     log_utc_offset: str | None = None   # how RepoAudit's zone-less log times are read (bundle CAPTURE.json)
+    missing_blobs: frozenset[str] = frozenset()   # native files absent from this copy: content unavailable
 
     @property
     def id(self) -> dict[str, Any]:
@@ -51,9 +52,14 @@ def load_snapshot(corpus: Path, target: Path, expected_corpus_sha256: str | None
         raise IntegrityFinding(f"corpus hash {sha[:12]} does not match the expected {expected_corpus_sha256[:12]}")
     ledger = Ledger(corpus)
     problems = ledger.verify()
+    records = list(ledger.records())
+    # An absent native file is unavailable content, not an altered record: it is passed on, never an integrity
+    # finding. Any other problem (changed, removed or reordered record) is.
+    missing = frozenset(r["source_ref"]["sha256"] for r in records
+                        if (r.get("source_ref") or {}).get("sha256") and not (corpus / "blobs" / r["source_ref"]["sha256"]).exists())
+    problems = [x for x in problems if "native blob" not in x]
     if problems:
         raise IntegrityFinding("ledger does not verify: " + "; ".join(problems[:3]))
-    records = list(ledger.records())
     if not allow_synthetic and any(r.get("synthetic") for r in records):
         raise IntegrityFinding("synthetic records in a corpus loaded with allow_synthetic=false (R-REC-6)")
     store = InMemoryGraphStore.load(corpus / "graph-checkpoint.json")
@@ -65,7 +71,8 @@ def load_snapshot(corpus: Path, target: Path, expected_corpus_sha256: str | None
         import json
         log_utc_offset = json.loads((corpus.parent / "CAPTURE.json").read_text()).get("log_utc_offset")
     return Snapshot(corpus, sha, ledger.head, allow_synthetic, store=store, query=QueryAPI(store, ledger),
-                    record_hashes=frozenset(r["record_hash"] for r in records), log_utc_offset=log_utc_offset)
+                    record_hashes=frozenset(r["record_hash"] for r in records), log_utc_offset=log_utc_offset,
+                    missing_blobs=missing)
 
 
 def get_decision(s: Snapshot, decision_id: str) -> dict[str, Any]:
@@ -85,4 +92,6 @@ def check_binding(s: Snapshot, decision: dict[str, Any], basis: list[dict[str, A
         return False
     if any(r["record_hash"] not in s.record_hashes for r in basis):
         return False
+    if any((r.get("source_ref") or {}).get("sha256") in s.missing_blobs for r in basis):
+        return False                      # a basis record whose native bytes are unavailable is not verifiable
     return sha256_json(sorted(r["record_hash"] for r in basis)) == b["payload"]["basis_root"]
