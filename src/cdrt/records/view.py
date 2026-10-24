@@ -35,6 +35,7 @@ class Snapshot:
     store: InMemoryGraphStore = field(repr=False, compare=False)
     query: QueryAPI = field(repr=False, compare=False)
     record_hashes: frozenset[str] = field(repr=False, compare=False)
+    log_utc_offset: str | None = None   # how RepoAudit's zone-less log times are read (bundle CAPTURE.json)
 
     @property
     def id(self) -> dict[str, Any]:
@@ -42,7 +43,7 @@ class Snapshot:
 
 
 def load_snapshot(corpus: Path, target: Path, expected_corpus_sha256: str | None = None,
-                  allow_synthetic: bool = False) -> Snapshot:
+                  allow_synthetic: bool = False, log_utc_offset: str | None = None) -> Snapshot:
     """Verify and load a sealed ProofWeave corpus (or a scale plane). Untimed."""
     corpus = Path(corpus)
     sha = manifest_hash(tree_manifest(corpus))
@@ -60,8 +61,11 @@ def load_snapshot(corpus: Path, target: Path, expected_corpus_sha256: str | None
     Weaver(rebuilt, TargetIndex.from_snapshot(Path(target))).apply(records)
     if rebuilt.graph_hash() != store.graph_hash():
         raise IntegrityFinding("graph rebuilt from the ledger differs from the checkpoint")
-    return Snapshot(corpus, sha, ledger.head, allow_synthetic, store, QueryAPI(store, ledger),
-                    frozenset(r["record_hash"] for r in records))
+    if log_utc_offset is None and (corpus.parent / "CAPTURE.json").is_file():
+        import json
+        log_utc_offset = json.loads((corpus.parent / "CAPTURE.json").read_text()).get("log_utc_offset")
+    return Snapshot(corpus, sha, ledger.head, allow_synthetic, store=store, query=QueryAPI(store, ledger),
+                    record_hashes=frozenset(r["record_hash"] for r in records), log_utc_offset=log_utc_offset)
 
 
 def get_decision(s: Snapshot, decision_id: str) -> dict[str, Any]:

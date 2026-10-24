@@ -14,6 +14,8 @@ import json
 import os
 import shutil
 import stat
+import subprocess
+import sys
 from pathlib import Path
 
 from pwexp.hashing import manifest_hash, tree_manifest
@@ -44,6 +46,37 @@ def _protocol_files(proto_file: Path) -> list[Path]:
     for block in ("policies", "manifests"):
         files += [proto_file.parent / v["file"] for v in (proto.get(block) or {}).values()]
     return files
+
+
+def select(bundle: Path, s: view.Snapshot) -> tuple[dict, dict | None, str]:
+    """R-CAP-5 by the runtime (resolver → executor → conformance-check) and by the oracle (separate process)."""
+    from .. import api
+    plan = json.loads((bundle / "stage1" / "plan.json").read_text())
+    store = api.manifest_store(bundle / "protocol")
+    out = {"main": None, "strict": None, "pipeline": None, "main_candidates": {}}
+    for d in [x["decision_id"] for x in plan["decisions"]]:
+        rec = view.get_decision(s, d)["decision"]["payload"]
+        green = rec["verdict"] == "green"
+        if d.startswith("G-main-"):
+            h = None
+            if green:
+                prof = {"profile": "selection", "revision": 1, "context_ref": "selection", "decision_ref": d,
+                        "requirements": [{"id": "decision-conformance", "revision": 1, "test": "conformance-check@1.0",
+                                          "posture_leaf": "release.effectiveness",
+                                          "parameters": {"policy_source": "recorded-decision-policy"}}]}
+                h = api.evaluate(api.resolve(prof, s, store)[0], s, store)["state"]
+            out["main_candidates"][d] = {"green": green, "H": h}
+            if green and h == "SUCCESS" and out["main"] is None:
+                out["main"] = d
+        elif d.startswith("G-strict-") and green and out["strict"] is None:
+            out["strict"] = d
+        elif d.startswith("G-pipe-") and green and all(rec["per_run"].values()) and out["pipeline"] is None:
+            out["pipeline"] = d
+    p = subprocess.run([sys.executable, str(paths.root() / "oracle" / "oracle_check.py"), "select", str(bundle)],
+                       capture_output=True, text=True)
+    if p.returncode != 0:
+        return out, None, f"oracle failed: {p.stderr.strip()[-300:]}"
+    return out, json.loads(p.stdout), ""
 
 
 def run(ctx: LabContext) -> LabResult:
@@ -84,14 +117,29 @@ def run(ctx: LabContext) -> LabResult:
     (bundle / "BUNDLE.json").write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n")
     _read_only(bundle)
     frozen = view.load_snapshot(bundle / "corpus", bundle / "target", h["corpus_sha256"])
+    runtime, oracle_sel, problem = select(bundle, frozen)
+    (ctx.attempt_dir / "selection.json").write_text(json.dumps({"runtime": runtime, "oracle": oracle_sel},
+                                                              indent=2, sort_keys=True) + "\n")
+    ctx.progress(f"selection: main {runtime['main']} · strict {runtime['strict']} · pipeline {runtime['pipeline']}")
+    agree = oracle_sel is not None and all(runtime[k] == oracle_sel.get(k) for k in ("main", "strict", "pipeline")) and \
+        {d: c["H"] for d, c in runtime["main_candidates"].items()} == \
+        {d: c["H"] for d, c in (oracle_sel or {}).get("main_candidates", {}).items()}
     checks = [
         Check("review pages written (decisions, pathways, decision graphs)", (pages / "pathways.html").exists()),
         Check("frozen corpus re-verifies with the same corpus hash", frozen.corpus_sha256 == h["corpus_sha256"]),
         Check("frozen bundle is read-only", not any(os.access(p, os.W_OK) for p in bundle.rglob("*") if p.is_file())),
-        Check("main, strict and pipeline decisions selected by the declared rule (oracle conformance)", None),
+        Check("main, strict and pipeline decisions selected by the declared rule",
+              all(runtime[k] for k in ("main", "strict", "pipeline")),
+              "" if all(runtime[k] for k in ("main", "strict", "pipeline")) else "capture failed: no qualifying " +
+              ", ".join(k for k in ("main", "strict", "pipeline") if not runtime[k]) + " decision (R-CAP-5)"),
+        Check("the independent oracle makes the same selection and the same conformance judgements", agree,
+              problem or ("" if agree else "runtime and oracle differ (see selection.json)")),
     ]
-    summary = {"bundle_sha256": doc["bundle_sha256"], "review": rel(pages / "pathways.html")}
+    f9 = {d: c["H"] for d, c in runtime["main_candidates"].items() if d != runtime["main"] and c["green"]}
+    summary = {"bundle_sha256": doc["bundle_sha256"], "review": rel(pages / "pathways.html"),
+               "selected": f"main {runtime['main']} · strict {runtime['strict']} · pipeline {runtime['pipeline']}",
+               "other GREEN G-main (F9)": ", ".join(f"{d} H={h}" for d, h in f9.items()) or "none"}
     return LabResult(checks, {"bundle": bundle, "views": pages}, summary,
                      handoff={"bundle": rel(bundle), "corpus_sha256": snap.corpus_sha256,
-                              "bundle_sha256": doc["bundle_sha256"]},
+                              "bundle_sha256": doc["bundle_sha256"], "selection": runtime, "f9": sorted(f9)},
                      next_hint=f"cdrt lab run 5{' --dev' if ctx.dev else ''}")

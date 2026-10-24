@@ -253,15 +253,13 @@ def adequacy(bundle: Bundle, did: str, params: dict) -> dict:
     acc = bundle.assessments(did)
     r = licence(acc, scope, _frac(params["minimum_coverage"]), params["validators"])
     te = _iso(params.get("assessment_time"))
-    times = [acc[v][u] for u in r["covered"] for v in acc if u in acc[v]]
-    if te is None or any(t is None for t in times):
-        age_state = None
+    times = [acc[v][u] for u in r["covered"] for v in params["validators"] if u in acc.get(v, {})]  # q's own validators
+    if te is None or any(t is None for t in times) or any(t > te for t in times):
+        age_state, r["max_age_seconds"] = None, None        # missing time, or a record after t_e: unresolved
     else:
         age = max(((te - t).total_seconds() for t in times), default=0.0)
         r["max_age_seconds"] = age
-        age_state = age >= 0 and age <= params["max_age_seconds"] and all(t <= te for t in times)
-        if any(t > te for t in times):
-            age_state = None                     # a record from the future: age unresolved
+        age_state = age <= params["max_age_seconds"]
     r["age_ok"] = age_state
     if not r["coverage_ok"] or not r["corroboration_ok"] or age_state is False:
         r["state"] = FAIL

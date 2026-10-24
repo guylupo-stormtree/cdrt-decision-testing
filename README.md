@@ -2,7 +2,7 @@
 
 Control-decision risk testing over recorded decisions. A control (here RepoAudit, an LLM-agent repository auditor) makes a decision; ProofWeave records it with its intent, its basis and the policy in force; registered decision tests then judge whether the decision was licensed by its own policy (conformance) and whether it is enough for today's requirement (adequacy), and only verdicts bound to the active requirement reach the gateway's posture.
 
-**Status: under construction.** Labs 3 and 4 run in development mode. No result has been produced. Everything under `capture/dev/` and `capture/records-dev/` is development data built from ProofWeave's fixtures and is never a result.
+**Status: under construction.** Labs 3 and 4 run in development mode; the CDRT runtime (registry, resolver, executor, the two decision tests, posture consumer, gateway, monitor) and the independent oracle are built. No result has been produced. Everything under `capture/dev/` and `capture/records-dev/` is development data built from ProofWeave's fixtures and is never a result.
 
 ## Run it lab by lab
 
@@ -24,7 +24,7 @@ Each lab re-verifies the previous lab's hand-off, runs fixed checks, prints a la
 | 1 | Pilot capture: declare τ_h from pilot runs, take the capture lock | yes | not built |
 | 2 | Capture: the locked schedule of decisions, each context sealed before its runs | yes | not built |
 | 3 | Build the corpus: ProofWeave Stage 2 with decision binding, re-verified by the record view | no | built (dev) |
-| 4 | Review ProofWeave and freeze: decisions, pathways, selection, frozen bundle | no | built (dev), selection pending |
+| 4 | Review ProofWeave and freeze: decisions, pathways, selection (runtime and oracle must agree), frozen bundle | no | built (dev) |
 | 5 | Build fixtures: thresholds, profiles, derived variants, scale planes | no | not built |
 | 6 | Lock: hash everything the runs depend on; tag | no | not built |
 | 7 | Functional run (RQ1): cases, interleavings, boundary checks, isolation, replay, A_comp | no | not built |
@@ -45,7 +45,18 @@ Labs 0–2 are run by the authors and need RepoAudit and a model. Labs 3–9 run
 capture/dev/           development capture protocol, policies, manifests (fixtures only)
 capture/records-dev/   development capture cycles (local, git-ignored)
 capture/bundle[-dev]/  frozen corpus, Stage 1 bundles, target snapshot, protocol files (read-only)
-src/cdrt/              record view, lab framework and labs, review pages, command line
+src/cdrt/              record view and assessments, registry, resolver, executor, the two registered
+                       decision tests, posture consumer, gateway (separate process), monitor, labs
+oracle/                expectations.yaml and oracle_check.py (standard library only, imports nothing of
+                       cdrt or pwexp; reads the frozen bundle directly)
 results/labs[-dev]/    lab state, hash-chained lab log, per-attempt hand-offs and cards
 tests/                 development tests (not experiment results)
 ```
+
+## How a decision is judged
+
+- **Assessment records.** For a decision, every record of its basis runs is read through ProofWeave's query interface and turned into assessment records. `base-check` is accepted for a function when the RepoAudit run carried a None into it from another function and reported no finding involving it. `independent-check` is accepted when the Semgrep run scanned its file and found nothing in it.
+- **Coverage** (Eq. 3) counts the scope functions with an accepted `base-check`; the other listed validators must corroborate every covered function (Eq. 4). Exact fractions; duplicates never raise the count.
+- **conformance-check@1.0** judges the decision under its own policy-at-event, resolved through the recorded binding. **adequacy-check@1.0** judges it under the current requirement, adding the age condition (Eq. 6).
+- **Admission** (Eq. 8) accepts a verdict only if its 14-field binding equals the one the active requirement revision expects and it has not expired. Activating a revision withdraws affected support before any new verdict can be admitted.
+

@@ -1,0 +1,31 @@
+# Approved decision tests (R-REG-1). Changing a test's code changes its digest; the entry must then be
+# reviewed and re-approved (and the protocol re-locked). `cdrt registry digest` prints the current digests.
+entries:
+  - id: conformance-check
+    version: "1.0"
+    module: cdrt.tests_registered.conformance_check
+    code: ["tests_registered/conformance_check/__init__.py", "tests_registered/common.py"]
+    code_digest: 48155fe1ef4bc0059590bd1dbd5e6577b6781a37f7a205f3ff907f670edf2cf9
+    approved: true
+    inputs: [policy, policy_digest_ok, policy_manifest, assessments, record_status]
+    parameters: {policy_source: recorded-decision-policy}
+    prerequisites: [decision-binding]
+    limits: {wall_seconds: 60, memory_mb: 4096}
+    meanings:
+      SUCCESS: the decision was licensed by its own policy-at-event, on its recorded basis
+      FAIL: the complete recorded basis shows the policy-at-event did not license the decision
+      INCONCLUSIVE: the policy-at-event or the basis cannot be resolved well enough to judge
+  - id: adequacy-check
+    version: "1.0"
+    module: cdrt.tests_registered.adequacy_check
+    code: ["tests_registered/adequacy_check/__init__.py", "tests_registered/common.py"]
+    code_digest: 7328766c1db56f8c0711b1f575f637af8e33787cdb6b1cb0f382762c0f423f29
+    approved: true
+    inputs: [manifest, assessments, record_status]
+    parameters: {manifest_ref: required, minimum_coverage: required, validators: required, max_age_seconds: required, assessment_time: required}
+    prerequisites: []
+    limits: {wall_seconds: 60, memory_mb: 4096}
+    meanings:
+      SUCCESS: the recorded basis satisfies the current requirement (coverage, corroboration, age)
+      FAIL: the recorded basis shows a shortfall against the current requirement
+      INCONCLUSIVE: a condition cannot be judged from the record (incomplete basis, unreadable times)

@@ -39,10 +39,10 @@ def test_lab3_hands_a_verified_corpus_to_lab4(lab3, cdrt_root):
     assert set(h["decisions"]) == {"G-main-01", "G-main-02", "G-main-03", "G-pipe-01", "G-strict-01"}
     assert lab3.verify_handoff(3)[0]
     res = lab3.run(4, progress=QUIET)
-    assert not res.passed                                          # selection needs the oracle (B3)
-    assert [c.ok for c in res.checks] == [True, True, True, None]
+    assert res.passed                                              # selection agrees with the oracle
+    assert all(c.ok for c in res.checks), res.summary.get("_card")
     assert (cdrt_root / "capture" / "bundle-dev" / "BUNDLE.json").exists()
-    assert lab3.status(4) == "failed" and lab3.status(5) == "locked"
+    assert lab3.status(4) == "passed" and lab3.status(5) == "ready"
 
 
 def test_changed_output_blocks_the_next_lab(lab3, cdrt_root):
@@ -59,7 +59,7 @@ def test_rerun_invalidates_later_labs_and_keeps_history(lab3):
     lab3.run(3, progress=QUIET)
     assert "4" not in lab3.state() and lab3.status(4) == "ready"   # old Lab 4 result dropped; must run again
     events = [r["event"] for r in lab3.log.records()]
-    assert events == ["lab_passed", "lab_failed", "lab_passed"] and not lab3.log.verify()
+    assert events == ["lab_passed", "lab_passed", "lab_passed"] and not lab3.log.verify()
 
 
 def test_record_view_integrity_findings(lab3, cdrt_root, tmp_path):
