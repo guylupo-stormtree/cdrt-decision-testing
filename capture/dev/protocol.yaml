@@ -8,6 +8,8 @@ target:
   bug_type: NPD
   snapshot_path: ../../vendor/proofweave-decision-assurance/targets/fixture-guarded-users
 green_mapping: DR-11
+capture:
+  log_utc_offset: "+00:00"           # RepoAudit writes local times without a zone; this host is UTC
 acquisition:
   temperature: 0.0
   call_depth: 3

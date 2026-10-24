@@ -74,6 +74,10 @@ def run(ctx: LabContext) -> LabResult:
         dst = bundle / "protocol" / f.relative_to(proto_file.parent)
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(f, dst)
+    import yaml
+    cap = (yaml.safe_load(proto_file.read_text()).get("capture") or {})
+    (bundle / "CAPTURE.json").write_text(json.dumps({"log_utc_offset": cap.get("log_utc_offset"),
+                                                    "cycle": h["cycle"], "development": ctx.dev}, indent=2) + "\n")
     files = tree_manifest(bundle)
     doc = {"corpus_sha256": snap.corpus_sha256, "ledger_head": list(snap.ledger_head), "cycle": h["cycle"],
            "files": files, "bundle_sha256": manifest_hash(files), "development": ctx.dev}
