@@ -1,0 +1,15 @@
+{
+  "id": "M_q",
+  "development": true,
+  "about": "DEVELOPMENT current release manifest: M_h plus the further functions on the release path that can receive a None (argument or return).",
+  "functions": [
+    "directory.py::display_name",
+    "directory.py::load_profile",
+    "directory.py::resolve_manager",
+    "directory.py::manager_email",
+    "report.py::login_summary",
+    "report.py::escalation_chain",
+    "directory.py::find_user",
+    "report.py::audit"
+  ]
+}

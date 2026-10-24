@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cdrt"
+version = "0.1.0"
+description = "Composable CDRT experiment: control-decision risk testing over ProofWeave decision records"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pwexp",          # ProofWeave, pinned by the vendor/proofweave-decision-assurance submodule at pw-v0.2.0
+    "pyyaml>=6",
+    "jsonschema>=4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "hypothesis>=6"]
+
+[project.scripts]
+cdrt = "cdrt.cli:main"
+
+[tool.uv.sources]
+pwexp = { path = "vendor/proofweave-decision-assurance", editable = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

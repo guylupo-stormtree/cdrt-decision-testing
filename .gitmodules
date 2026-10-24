@@ -1,0 +1,3 @@
+[submodule "vendor/proofweave-decision-assurance"]
+	path = vendor/proofweave-decision-assurance
+	url = https://github.com/guylupo-stormtree/proofweave-decision-assurance.git

@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv*/
+*.egg-info/
+.pytest_cache/
+# local capture records and development runs are never committed; the frozen bundle is
+capture/records/
+capture/records-dev/
+capture/bundle-dev/
+results/labs-dev/
+results/pilot/
+# secrets: never commit (keys are memory-only)
+*.env
+.env*
