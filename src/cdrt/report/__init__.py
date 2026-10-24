@@ -6,7 +6,7 @@ the timing records, statistics and run manifest of Lab 8, the fixture parameters
 value came from. RQ2 is reported as one number (D-015): T_max, the slowest update of the whole campaign, read
 against the budget. Wording follows R-REP-5 as amended: "within the budget" only when T_max is at most the
 budget, any exceedance is stated with its count, never "real-time". The abstract and introduction carry the
-same number through \ScaleAbstractText and \ScaleIntroText. Development data are marked as such in every
+same number through ScaleAbstractText and ScaleIntroText. Development data are marked as such in every
 generated sentence and caption.
 
 `fill()` replaces the `% BEGIN GENERATED:<name>` … `% END GENERATED:<name>` blocks of a manuscript text.
@@ -25,8 +25,9 @@ from typing import Any
 from pwexp.hashing import sha256_file
 
 GENERATOR = "cdrt.report 1"
-BLOCKS = ("results_macros", "fixture_macros", "functional_table", "scale_table", "scale_figure")
-ANCHORS = {"fixture_macros": "results_macros", "scale_figure": "scale_table"}   # inserted after these if absent
+BLOCKS = ("results_macros", "fixture_macros", "functional_table", "pathway_figure", "scale_table", "scale_figure")
+ANCHORS = {"fixture_macros": "results_macros", "pathway_figure": "functional_table",
+           "scale_figure": "scale_table"}   # inserted after these if absent
 ROWS = {"AC1": "Conformance/adequacy distinction", "AC2": "Second-test composition",
         "AC3": "Correct posture publication", "AC4": "Policy-at-event binding preserved",
         "AC5": "Missing or invalid record handling", "AC6": "Delayed or misrouted verdict rejection",
@@ -86,7 +87,26 @@ def gather(root: Path, h: dict[str, Any], lock_doc: dict[str, Any]) -> dict[str,
     pol = next(iter(sorted((root / h["bundle"] / "stage1" / "decisions" / h["selection"]["main"] / "policy").glob("*.json"))))
     d["policy_main"] = json.loads(pol.read_text())
     src["policy_main"] = pol
+    d["pathways"] = pathways(root / h["bundle"], d["bundle"]["corpus_sha256"])
     return d
+
+
+def pathways(bundle: Path, corpus_sha256: str) -> dict[str, Any]:
+    """Which functions of the auditor's scope M_h each green decision's RepoAudit run reached, i.e. carried a
+    None into (accepted base-check), read from the frozen corpus through the record view."""
+    from ..records import view
+    from ..records.assessments import BASE, assessments
+    s = view.load_snapshot(bundle / "corpus", bundle / "target", corpus_sha256)
+    scope = json.loads((bundle / "protocol" / "manifests" / "M_h.json").read_text())["functions"]
+    rows = []
+    order = ("G-main-", "G-strict-", "G-pipe-")       # main decisions together (same policy), then the others
+    plan = [x["decision_id"] for x in json.loads((bundle / "stage1" / "plan.json").read_text())["decisions"]]
+    for did in sorted(plan, key=lambda x: (next((i for i, p in enumerate(order) if x.startswith(p)), 3), x)):
+        if view.get_decision(s, did)["decision"]["payload"]["verdict"] != "green":
+            continue
+        got = {r["target"] for r in assessments(s, did)["records"] if r["validator"] == BASE}
+        rows.append({"decision": did, "reached": sorted(set(scope) & got)})
+    return {"scope": scope, "rows": rows}
 
 
 def completeness(d: dict[str, Any], expected_cycles: int, ids: list[str]) -> list[str]:
@@ -167,7 +187,8 @@ def texts(d: dict[str, Any], dev: bool) -> dict[str, str]:
                   f"{nmax} basis records, took {w}, {'within' if h['within'] else 'beyond'} the {budget:g}\\,s budget.")
     return {"ResultState": state, "FunctionalResultText": functional, "ScaleResultText": s,
             "ConclusionResultText": conclusion, "ScaleFigureSentence": tex(d["scale"]["sentence"]),  # caption carries the dev mark
-            "ScaleAbstractText": abstract, "ScaleIntroText": intro, "ScaleWorstCase": w}
+            "ScaleAbstractText": abstract, "ScaleIntroText": intro, "ScaleWorstCase": w,
+            "PathwaySentence": pathway_sentence(d["pathways"], dev)}
 
 
 # ------------------------------------------------------------------ blocks
@@ -193,6 +214,7 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> t
         trace[k] = ["functional_records", "acceptance"] if "Functional" in k or "Conclusion" in k or k == "ResultState" \
             else ["timing_records", "scale_stats", "run_manifest"]
     trace["ConclusionResultText"] = ["acceptance", "scale_stats"]
+    trace["PathwaySentence"] = ["bundle"]
     trace.update(CorpusHash=["bundle"], PWVersion=["lock"], RepoAuditCommit=["lock (pwexp checkout)"],
                  ModelId=["protocol"], TargetRepo=["protocol"])
     out = {"results_macros": "\n".join([header("results_macros", d, ["functional_records", "acceptance", "scale_stats",
@@ -226,6 +248,17 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> t
     out["functional_table"] = "\n".join(lines)
     trace["functional_table"] = ["acceptance"]
 
+    out["pathway_figure"] = "\n".join([
+        header("pathway_figure", d, ["bundle"], root), r"\begin{figure*}[pos=t]", r"\centering",
+        r"\input{figures/pathways.tex}",
+        r"\caption{Same green, different paths" + (" (development data, not a result)" if dev else "") +
+        r". Each row is one green decision captured from RepoAudit, with the same model, target and question; each "
+        r"column is a function in the auditor's scope $M_h$, ordered by how many runs reached it. A dark cell means "
+        r"the run carried a \texttt{None} into that function, which is what an accepted \texttt{base-check} requires. "
+        r"The verdicts are identical; the checking behind them is not. \PathwaySentence{}}",
+        r"\label{fig:pathways}", r"\end{figure*}"])
+    trace["pathway_figure"] = ["bundle"]
+
     budget = float(d["manifest"]["deadline_s"])
     lines = [header("scale_table", d, ["timing_records", "scale_stats", "run_manifest", "parameters"], root),
              r"\begin{table}[pos=tbp]", r"\centering\small",
@@ -253,6 +286,61 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> t
         r"\ScaleFigureSentence{}}", r"\label{fig:scale-latency}", r"\end{figure}"])
     trace["scale_figure"] = ["timing_records", "scale_stats"]
     return out, trace
+
+
+# ------------------------------------------------------------------ figure: same green, different paths
+GROUP = {"G-main": "main", "G-strict": "strict", "G-pipe": "pipeline"}
+
+
+def pathway_sentence(pw: dict[str, Any], dev: bool) -> str:
+    rows, n = pw["rows"], len(pw["scope"])
+    counts = [len(r["reached"]) for r in rows]
+    paths = len({tuple(r["reached"]) for r in rows})
+    mark = "Development data, not a result. " if dev else ""
+    if not rows:
+        return mark + "No green decision was captured."
+    reach = f"between {min(counts)} and {max(counts)}" if min(counts) != max(counts) else f"each {counts[0]}"
+    return (f"{mark}The {len(rows)} green decisions of one model on the same code reached {reach} of the {n} "
+            f"functions in the auditor's scope, by {paths} different path{'s' if paths != 1 else ''}.")
+
+
+def pathway_figure(d: dict[str, Any], selection: dict[str, str]) -> str:
+    """TikZ: one row per green decision, one cell per scope function (dark: RepoAudit carried a None into it),
+    columns ordered by how many runs reached the function; reached / |M_h| at the right of each row."""
+    pw = d["pathways"]
+    scope = sorted(pw["scope"], key=lambda u: (-sum(u in r["reached"] for r in pw["rows"]), u))
+    n, width, ch, gap = len(scope), 10.5, 0.42, 0.62
+    cw = width / max(n, 1)
+    chosen = {v: k for k, v in selection.items()}
+    out = [f"% generator: {GENERATOR} (figures/pathways.tex); lock_root: {d['lock']['lock_root']}; "
+           f"commit: {d['lock']['git_commit']}",
+           r"\begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily\scriptsize]"]
+    if n <= 24:
+        for j, u in enumerate(scope):
+            out.append(f"\\node[anchor=south west,rotate=40,inner sep=1pt] at ({(j + 0.3) * cw:.3f},0.12) "
+                       f"{{\\texttt{{{tex(u.split('::')[-1])}}}}};")
+    else:
+        out.append(f"\\node[anchor=south] at ({width / 2:.3f},0.12) "
+                   r"{functions of $M_h$, ordered by how many runs reached them};")
+    for i, r in enumerate(pw["rows"]):
+        y = -(i + 1) * gap
+        did = r["decision"]
+        group = GROUP.get(did.rsplit("-", 1)[0], did)
+        role = " (selected)" if did in chosen else ""
+        out.append(f"\\node[anchor=east,align=right] at (-0.15,{y + ch / 2:.3f}) "
+                   f"{{\\texttt{{{tex(did)}}}\\\\{group}{role} $\\cdot$ \\textbf{{green}}}};")
+        for j, u in enumerate(scope):
+            fill = "black!78" if u in r["reached"] else "black!8"
+            out.append(f"\\fill[{fill}] ({j * cw + 0.02:.3f},{y:.3f}) rectangle ++({cw - 0.04:.3f},{ch:.3f});")
+        out.append(f"\\node[anchor=west] at ({width + 0.15:.3f},{y + ch / 2:.3f}) {{{len(r['reached'])}/{n}}};")
+    yl = -(len(pw["rows"]) + 1) * gap - 0.1
+    out += [f"\\fill[black!78] (0,{yl:.3f}) rectangle ++(0.3,0.25);",
+            f"\\node[anchor=west] at (0.35,{yl + 0.12:.3f}) "
+            r"{RepoAudit carried a \texttt{None} into the function (accepted \texttt{base-check})};",
+            f"\\fill[black!8] (0,{yl - 0.4:.3f}) rectangle ++(0.3,0.25);",
+            f"\\node[anchor=west] at (0.35,{yl - 0.28:.3f}) {{not reached}};",
+            r"\end{tikzpicture}"]
+    return "\n".join(out) + "\n"
 
 
 # ------------------------------------------------------------------ figure (A12.1)

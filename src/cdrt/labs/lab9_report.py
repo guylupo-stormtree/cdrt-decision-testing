@@ -2,7 +2,8 @@
 
 Refuses unless the lock verifies, the campaign is complete (every functional step, case, interleaving and
 boundary check; every scheduled timed cycle) and every record carries the active lock root (R-REP-1). It then
-generates the five manuscript blocks and figures/scale_latency.tex from those records only, fills a copy of
+generates the six manuscript blocks, figures/scale_latency.tex and figures/pathways.tex from those records
+only, fills a copy of
 the manuscript with them and compiles the copy. The manuscript itself is never written here: blocks the
 manuscript does not have yet (the A17 revision) are inserted into the copy only, and listed.
 
@@ -37,12 +38,19 @@ def repoaudit_commit() -> str:
 
 
 def latex(d: Path, name: str) -> tuple[bool, list[str], int]:
-    """(ran, LaTeX error lines, undefined citations) for latexmk -pdf on d/name."""
-    if not shutil.which("latexmk"):
-        return False, ["latexmk not installed"], 0
-    subprocess.run(["latexmk", "-pdf", "-interaction=nonstopmode", "-halt-on-error", name], cwd=d,
-                   capture_output=True, text=True, timeout=600)
-    log = (d / Path(name).with_suffix(".log")).read_text(errors="replace") if (d / Path(name).with_suffix(".log")).exists() else ""
+    """(built, LaTeX error lines, undefined citations): pdflatex, BibTeX when the document has a bibliography,
+    then pdflatex twice. Errors are counted on the final pass."""
+    if not shutil.which("pdflatex"):
+        return False, ["pdflatex not installed"], 0
+    stem = Path(name).stem
+    run = lambda *cmd: subprocess.run(list(cmd), cwd=d, capture_output=True, timeout=600)  # noqa: E731  (bytes: TeX output need not be UTF-8)
+    run("pdflatex", "-interaction=nonstopmode", name)
+    aux = d / f"{stem}.aux"
+    if aux.exists() and "\\bibdata" in aux.read_text(errors="replace") and shutil.which("bibtex"):
+        run("bibtex", stem)
+    for _ in range(2):
+        run("pdflatex", "-interaction=nonstopmode", name)
+    log = (d / f"{stem}.log").read_text(errors="replace") if (d / f"{stem}.log").exists() else ""
     errors = [l for l in log.splitlines() if l.startswith("!")]
     cites = len(set(re.findall(r"Citation `([^']+)' on page \d+ undefined", log)))
     return (d / Path(name).with_suffix(".pdf")).exists(), errors, cites
@@ -67,6 +75,7 @@ def run(ctx: LabContext) -> LabResult:
         return LabResult([Check("manuscript found", False, f"{src} (set CDRT_MANUSCRIPT)")], {})
     gen, trace = report.blocks(d, ctx.dev, root, repoaudit_commit())
     fig_tex, fig_csv = report.figure(d, int(cfg["seed"]))
+    path_tex = report.pathway_figure(d, h["selection"])
 
     bdir = ctx.attempt_dir / "generated"
     (bdir / "figures").mkdir(parents=True)
@@ -74,12 +83,14 @@ def run(ctx: LabContext) -> LabResult:
         (bdir / f"{n}.tex").write_text(f"% BEGIN GENERATED:{n}\n{body}\n% END GENERATED:{n}\n")
     (bdir / "figures" / "scale_latency.tex").write_text(fig_tex)
     (bdir / "figures" / "scale_latency.csv").write_text(fig_csv)
+    (bdir / "figures" / "pathways.tex").write_text(path_tex)
 
     mdir = ctx.attempt_dir / "manuscript"
     (mdir / "figures").mkdir(parents=True)
     filled, replaced, inserted = report.fill(src.read_text(), gen)
     (mdir / src.name).write_text(filled)
-    shutil.copyfile(bdir / "figures" / "scale_latency.tex", mdir / "figures" / "scale_latency.tex")
+    for f in ("scale_latency.tex", "pathways.tex"):
+        shutil.copyfile(bdir / "figures" / f, mdir / "figures" / f)
     bib = src.with_name("references.bib")
     if bib.exists():
         shutil.copyfile(bib, mdir / bib.name)
@@ -88,11 +99,15 @@ def run(ctx: LabContext) -> LabResult:
 
     pdir = ctx.attempt_dir / "figure-preview"
     pdir.mkdir()
-    shutil.copyfile(bdir / "figures" / "scale_latency.tex", pdir / "scale_latency.tex")
+    for f in ("scale_latency.tex", "pathways.tex"):
+        shutil.copyfile(bdir / "figures" / f, pdir / f)
     (pdir / "preview.tex").write_text("\\documentclass[border=4pt]{standalone}\n\\usepackage{pgfplots}\n"
                                       "\\pgfplotsset{compat=1.18}\n\\newlength{\\cw}\\setlength{\\cw}{9cm}\n"
                                       "\\begin{document}\n{\\columnwidth=\\cw\\input{scale_latency.tex}}\n\\end{document}\n")
+    (pdir / "pathways-preview.tex").write_text("\\documentclass[border=4pt]{standalone}\n\\usepackage{tikz}\n"
+                                               "\\begin{document}\n\\input{pathways.tex}\n\\end{document}\n")
     fig_ok, fig_errors, _ = latex(pdir, "preview.tex")
+    path_ok, path_errors, _ = latex(pdir, "pathways-preview.tex")
 
     words = "\n".join(gen.values())
     from ..harness.scale import headline
@@ -119,6 +134,8 @@ def run(ctx: LabContext) -> LabResult:
               (f"{len(errors)} errors: {errors[0]}" if errors else "0 errors") +
               (f"; {cites} citations undefined (no references.bib next to the manuscript)" if cites and not bib.exists() else "")),
         Check("the scale figure compiles on its own", fig_ok and not fig_errors, "; ".join(fig_errors[:1])),
+        Check("the same-green-different-paths figure compiles on its own", path_ok and not path_errors,
+              "; ".join(path_errors[:1]) or tx["PathwaySentence"]),
     ]
     acc = d["acceptance"]
     summary = {"RQ1": f"A_comp = {str(acc['A_comp']).lower()}; " +
@@ -136,7 +153,8 @@ def run(ctx: LabContext) -> LabResult:
         if sum(v[k] for v in st.values()):
             summary[k] = sum(v[k] for v in st.values())
     return LabResult(checks, {"generated": bdir, "manuscript_copy": mdir / src.name, "trace": ctx.attempt_dir / "trace.json",
-                              "figure_preview": pdir / "preview.pdf"}, summary,
+                              "figure_preview": pdir / "preview.pdf", "pathways_preview": pdir / "pathways-preview.pdf"},
+                     summary,
                      handoff={"generated": rel(bdir), "manuscript_copy": rel(mdir / src.name), "A_comp": acc["A_comp"],
                               "sentence": d["scale"]["sentence"], "lock_root": doc["lock_root"]},
                      next_hint="the generated blocks are ready for the A17 manuscript revision" if not ctx.dev else
