@@ -120,7 +120,7 @@ def host_manifest(cfg: dict[str, Any], planes: list[Plane], pwexp_commit: str) -
     try:
         lscpu = subprocess.run(["lscpu"], capture_output=True, text=True).stdout
         info = dict(l.split(":", 1) for l in lscpu.splitlines() if ":" in l)
-        cpu = " ".join(info.get(k, "").strip() for k in ("Vendor ID", "Model name")).strip()
+        cpu = " ".join(v for v in (info.get(k, "").strip() for k in ("Vendor ID", "Model name")) if v not in ("", "-"))
     except OSError:
         cpu = ""
     try:

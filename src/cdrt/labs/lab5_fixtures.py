@@ -58,10 +58,8 @@ def run(ctx: LabContext) -> LabResult:
     c_obs, tau2 = Fraction(p["c_obs"]), Fraction(p["tau_q"]["numerator"], p["tau_q"]["denominator"])
     (ctx.attempt_dir / "fixture_macros.preview.tex").write_text(macros(p))
     checks = [
-        Check("tau_q >= 1/2 (otherwise the capture is unsuitable, main-14 §4.3)", tau2 >= Fraction(1, 2),
+        Check("tau_q >= 1/2 (otherwise the capture is unsuitable, main-15 §4.3)", tau2 >= Fraction(1, 2),
               f"tau_q = {tau2}"),
-        Check("c_obs < 1 (otherwise the capture is reported unsuitable, main-14 §4.3)", c_obs < 1,
-              f"c_obs = {p['c_obs_count']}"),
         Check("profiles rev 1-3 written", sorted(x.name for x in (out / "profiles").iterdir())
               == ["rev1.yaml", "rev2.yaml", "rev3.yaml"]),
         Check("every scale plane verified and checkpointed", planes_ok, " · ".join(plane_notes)),

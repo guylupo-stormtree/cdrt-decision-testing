@@ -54,3 +54,14 @@ def test_tex_escaping_and_shares():
     from fractions import Fraction
     assert report.tex("fixture_guarded@x 50% & #1") == r"fixture\_guarded@x 50\% \& \#1"
     assert report.share(Fraction(17, 20)) == r"85\%" and report.share(Fraction(2, 3)) == "2/3"
+
+
+def test_generated_folder_has_one_file_per_place_in_the_manuscript():
+    gen = {b: f"% body of {b}" for b in (*report.BLOCKS, "experiment_record")}
+    out = report.files(gen)
+    assert set(out) == {"cdrt-macros.tex", "cdrt-record.tex", "cdrt-functional-table.tex", "cdrt-pathway-figure.tex",
+                        "cdrt-scale-table.tex", "cdrt-scale-figure.tex"}
+    assert out["cdrt-macros.tex"].index("BEGIN GENERATED:results_macros") < out["cdrt-macros.tex"].index(
+        "BEGIN GENERATED:fixture_macros")
+    assert all(f"END GENERATED:{b}" in "".join(out.values()) for b in gen)
+    assert report.hashed("ab" * 32).count(r"\allowbreak") == 3

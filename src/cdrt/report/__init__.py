@@ -26,6 +26,7 @@ from pwexp.hashing import sha256_file
 
 GENERATOR = "cdrt.report 1"
 BLOCKS = ("results_macros", "fixture_macros", "functional_table", "pathway_figure", "scale_table", "scale_figure")
+# main-15 reads these from generated/*.tex (see FILES); older manuscripts hold them inline between markers
 ANCHORS = {"fixture_macros": "results_macros", "pathway_figure": "functional_table",
            "scale_figure": "scale_table"}   # inserted after these if absent
 from ..harness.functional import CONDITIONS  # noqa: E402  (the four main-14 acceptance conditions)
@@ -218,7 +219,7 @@ def header(name: str, d: dict[str, Any], inputs: list[str], root: Path) -> str:
                       + ("  (working tree dirty at lock)" if d["lock"].get("working_tree_dirty") else "")])
 
 
-def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> tuple[dict[str, str], dict[str, Any]]:
+def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag: str = "") -> tuple[dict[str, str], dict[str, Any]]:
     t = texts(d, dev)
     p, proto, rows = d["params"], d["protocol"], scale_rows(d)
     trace: dict[str, Any] = {}
@@ -278,7 +279,7 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> t
 
     out["pathway_figure"] = "\n".join([
         header("pathway_figure", d, ["bundle"], root), r"\begin{figure*}[pos=t]", r"\centering",
-        r"\input{figures/pathways.tex}",
+        r"\input{generated/figures/pathways.tex}",
         r"\caption{Same green, different paths" + (" (development data, not a result)" if dev else "") +
         r". Each row is one green decision captured from RepoAudit, with the same model, target and question; each "
         r"column is a function in the auditor's scope $M_h$, ordered by how many runs reached it. A dark cell means "
@@ -305,7 +306,7 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> t
 
     out["scale_figure"] = "\n".join([
         header("scale_figure", d, ["timing_records", "scale_stats"], root), r"\begin{figure}[pos=tbp]", r"\centering",
-        r"\input{figures/scale_latency.tex}",
+        r"\input{generated/figures/scale_latency.tex}",
         r"\caption{Requirement-change-to-posture latency at four decision-basis sizes (\FixSizes{} records), "
         f"{rows[0]['observations']} observations each on a single warm host"
         + (" (development data, not a result)" if dev else "") +
@@ -313,7 +314,69 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> t
         r"gateway budget, with the number of updates over it above each size. "
         r"\ScaleFigureSentence{}}", r"\label{fig:scale-latency}", r"\end{figure}"])
     trace["scale_figure"] = ["timing_records", "scale_stats"]
+
+    out["experiment_record"] = record_block(d, dev, root, repoaudit_commit, tag)
+    trace["experiment_record"] = ["bundle", "protocol", "parameters", "run_manifest", "lock"]
     return out, trace
+
+
+# ------------------------------------------------------------------ the experiment record subsection (main-15)
+FILES = {"cdrt-macros.tex": ("results_macros", "fixture_macros"), "cdrt-record.tex": ("experiment_record",),
+         "cdrt-functional-table.tex": ("functional_table",), "cdrt-pathway-figure.tex": ("pathway_figure",),
+         "cdrt-scale-table.tex": ("scale_table",), "cdrt-scale-figure.tex": ("scale_figure",)}
+
+
+def hashed(h: str, n: int = 16) -> str:
+    """A long hex digest in \\texttt with break points, so it never overflows a column."""
+    return r"\texttt{" + r"\allowbreak ".join(h[i:i + n] for i in range(0, len(h), n)) + "}"
+
+
+def record_block(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag: str) -> str:
+    """The generated "Experiment record" subsection: what was run, with every version and hash."""
+    proto, p, lk, man = d["protocol"], d["params"], d["lock"], d["manifest"]
+    acq, model = proto.get("acquisition") or {}, (proto.get("acquisition") or {}).get("models", [{}])[0]
+    pw = lk["components"]["pwexp"]
+    hw = man.get("hardware") or {}
+    rows = [
+        ("Target repository", f"\\texttt{{{tex(proto['target']['repository'])}}} at commit "
+                              f"\\texttt{{{tex(proto['target']['commit'])}}} ({tex(proto['target'].get('language', ''))}, "
+                              f"{tex(proto['target'].get('bug_type', ''))})"),
+        ("Control", f"RepoAudit at commit \\texttt{{{tex(repoaudit_commit[:12])}}}, model \\texttt{{{tex(model.get('model', ''))}}}, "
+                    f"temperature {acq.get('temperature')}, call depth {acq.get('call_depth')}"),
+        ("Independent validator", f"Semgrep {tex(str((proto.get('semgrep') or {}).get('version', '')))}; "
+                                  f"{int(acq.get('semgrep_runs') or 0)} standalone scan(s), in no decision's basis"),
+        ("Captured decisions", f"{num(p['captured'])} RepoAudit runs under P1, {num(len(p['green']))} green; main decision "
+                               f"\\texttt{{{tex(p['selection']['main'])}}}"),
+        ("Decision ledger", f"ProofWeave \\texttt{{{tex(pw.get('tag') or '')}}} (commit \\texttt{{{tex(pw['commit'][:12])}}})"),
+        ("Sealed corpus (SHA-256)", hashed(d["bundle"]["corpus_sha256"])),
+        ("Protocol lock", f"root {hashed(lk['lock_root'])}; campaign \\texttt{{{tex(lk['campaign_id'])}}}"
+                          + (f"; tag \\texttt{{{tex(tag)}}}" if tag else "")),
+        ("Experiment code", f"cdrt-decision-testing at commit \\texttt{{{tex(lk['git_commit'][:12])}}}"
+                            + (" (working tree modified at lock)" if lk.get("working_tree_dirty") else "")
+                            + f"; fixtures {hashed(lk['components']['fixtures'][:32])}"),
+        ("Timing host", tex(f"{hw.get('cpu') or hw.get('machine', '')}, {hw.get('cpus')} CPUs, {hw.get('memory', '')}; "
+                            f"{man.get('os', '')}; Python {man.get('python', '')}")),
+    ]
+    lines = [header("experiment_record", d, ["bundle", "protocol", "parameters", "run_manifest"], root),
+             r"\subsection{Experiment record}", r"\label{sec:experiment-record}", "",
+             ("Development data, not a result. " if dev else "") +
+             r"This subsection is generated from the locked campaign. Table~\ref{tab:experiment-record} identifies the "
+             r"target, the control and its configuration, the captured decisions, the decision ledger, the sealed corpus, "
+             r"the protocol lock, the experiment code and the timing host. Every result in Section~\ref{sec:results} is "
+             r"generated from records that carry this lock root.", "",
+             r"\begin{table}[pos=tbp]", r"\centering\small",
+             r"\caption{Experiment record" + (" (development data, not a result)" if dev else "") +
+             f", campaign \\texttt{{{tex(lk['campaign_id'])}}}.}}", r"\label{tab:experiment-record}",
+             r"\begin{tabularx}{\columnwidth}{@{}L{.3\columnwidth}Y@{}}", r"\toprule", r"Item & Value \\", r"\midrule",
+             *[f"{k} & {v} \\\\" for k, v in rows],
+             r"\bottomrule", r"\end{tabularx}", r"\end{table}"]
+    return "\n".join(lines)
+
+
+def files(gen: dict[str, str]) -> dict[str, str]:
+    """The generated/ folder main-15 reads with \\input: one file per place in the manuscript."""
+    return {name: "".join(f"% BEGIN GENERATED:{b}\n{gen[b]}\n% END GENERATED:{b}\n" for b in blocks_)
+            for name, blocks_ in FILES.items()}
 
 
 # ------------------------------------------------------------------ figure: same green, different paths

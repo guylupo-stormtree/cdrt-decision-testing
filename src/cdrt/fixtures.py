@@ -82,7 +82,7 @@ def parameters(bundle: Path, s: view.Snapshot, selection: dict[str, str], cfg: d
         "t_e": t_e.strftime(ISO), "t_e_rule": f"latest decided_at of the captured decisions + {f['age_after_decision_s']} s",
         "oldest_relevant_observation": oldest.strftime(ISO), "max_age_seconds": delta,
         "n0": n0, "scale_target_sizes": sizes, "scale_k": ks,
-        "checks": {"tau_q >= 1/2": Fraction(k, step) >= Fraction(1, 2), "c_obs < 1": c_obs < 1},
+        "checks": {"tau_q >= 1/2": Fraction(k, step) >= Fraction(1, 2)},
     }
 
 

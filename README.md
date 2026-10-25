@@ -25,7 +25,7 @@ uv venv --python 3.13 .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e '.[dev]'
 .venv/bin/cdrt lab run 9 --dev        # report: generated blocks and figure, filled into a compiled copy of the manuscript
 ```
 
-Lab 9 reads the manuscript from `../ComposableCDRT/Manuscript/main-13.tex` (or `$CDRT_MANUSCRIPT`) and never writes to it: it fills a copy in its attempt folder, compiles it, and keeps the generated blocks and `figures/scale_latency.tex` separately. Blocks the manuscript does not have yet are inserted into the copy only and listed on the lab card.
+Lab 9 reads the manuscript from `../ComposableCDRT/Manuscript/main-15.tex` (or `$CDRT_MANUSCRIPT`) and never writes to it. main-15 holds no result: it reads everything the experiment generates from a `generated/` folder with `\input` (result and fixture macros, the *Experiment record* subsection with every version and hash, the before/after table, the pathway figure, the scale table and figure). Lab 9 writes that folder to `results/labs[-dev]/lab9/attempt<k>/generated/`, compiles a copy of the manuscript with it, and checks that the manuscript reads every file. After the reported campaign, replace the manuscript's `generated/` folder (in Overleaf too) with it.
 
 Each lab re-verifies the previous lab's hand-off, runs fixed checks, prints a lab card (inputs, checks, outputs, what it hands on) and seals its own hand-off. A lab passes only when every check passes; a check whose code is not built yet is shown as such and keeps the lab from passing. Passing a lab means the run was complete and intact. The result it reports is whatever it is.
 

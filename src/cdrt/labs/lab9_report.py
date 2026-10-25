@@ -2,12 +2,12 @@
 
 Refuses unless the lock verifies, the campaign is complete (every functional step, case, interleaving and
 boundary check; every scheduled timed cycle) and every record carries the active lock root (R-REP-1). It then
-generates the six manuscript blocks, figures/scale_latency.tex and figures/pathways.tex from those records
-only, fills a copy of
+generates the manuscript's generated/ folder (main-15: macros, the experiment record subsection, Table 3,
+Table 4, the pathway and scale figures) from those records only, places it beside a copy of
 the manuscript with them and compiles the copy. The manuscript itself is never written here: blocks the
 manuscript does not have yet (the A17 revision) are inserted into the copy only, and listed.
 
-Manuscript: $CDRT_MANUSCRIPT, or ../ComposableCDRT/Manuscript/main-14.tex next to this repository.
+Manuscript: $CDRT_MANUSCRIPT, or ../ComposableCDRT/Manuscript/main-15.tex next to this repository.
 """
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ from .framework import Check, LabContext, LabResult, rel
 
 def manuscript() -> Path:
     env = os.environ.get("CDRT_MANUSCRIPT")
-    return Path(env) if env else paths.root().parent / "ComposableCDRT" / "Manuscript" / "main-14.tex"
+    return Path(env) if env else paths.root().parent / "ComposableCDRT" / "Manuscript" / "main-15.tex"
 
 
 def repoaudit_commit() -> str:
@@ -73,24 +73,42 @@ def run(ctx: LabContext) -> LabResult:
     src = manuscript()
     if not src.exists():
         return LabResult([Check("manuscript found", False, f"{src} (set CDRT_MANUSCRIPT)")], {})
-    gen, trace = report.blocks(d, ctx.dev, root, repoaudit_commit())
+    tag = lock.git("describe", "--tags", "--exact-match", doc["git_commit"]) if doc.get("git_commit") else ""
+    gen, trace = report.blocks(d, ctx.dev, root, repoaudit_commit(), tag)
     fig_tex, fig_csv = report.figure(d, int(cfg["seed"]))
     path_tex = report.pathway_figure(d, h["selection"])
 
+    # generated/: the folder main-15 reads with \input; after the campaign it replaces the manuscript's folder
     bdir = ctx.attempt_dir / "generated"
     (bdir / "figures").mkdir(parents=True)
-    for n, body in gen.items():
-        (bdir / f"{n}.tex").write_text(f"% BEGIN GENERATED:{n}\n{body}\n% END GENERATED:{n}\n")
+    for name, body in report.files(gen).items():
+        (bdir / name).write_text(body)
     (bdir / "figures" / "scale_latency.tex").write_text(fig_tex)
     (bdir / "figures" / "scale_latency.csv").write_text(fig_csv)
     (bdir / "figures" / "pathways.tex").write_text(path_tex)
+    (bdir / "README.md").write_text(
+        f"# Generated experiment content{' (DEVELOPMENT DATA, not a result)' if ctx.dev else ''}\n\n"
+        f"Written by `cdrt lab run 9` from the locked campaign `{doc['campaign_id']}` (lock root `{doc['lock_root']}`, "
+        f"code commit `{doc['git_commit'][:12]}`). Replace the manuscript's `generated/` folder with this one; the "
+        "manuscript itself does not change.\n")
 
     mdir = ctx.attempt_dir / "manuscript"
-    (mdir / "figures").mkdir(parents=True)
-    filled, replaced, inserted = report.fill(src.read_text(), gen)
-    (mdir / src.name).write_text(filled)
-    for f in ("scale_latency.tex", "pathways.tex"):
-        shutil.copyfile(bdir / "figures" / f, mdir / "figures" / f)
+    text = src.read_text()
+    wanted = [f"\\input{{generated/{n[:-4]}}}" for n in report.FILES]
+    input_mode = "\\input{generated/" in text
+    if input_mode:                                         # main-15 onwards: the manuscript copy reads generated/
+        missing_inputs = [w for w in wanted if w not in text]
+        mdir.mkdir()
+        (mdir / src.name).write_text(text)
+        shutil.copytree(bdir, mdir / "generated")
+        replaced, inserted = [n for n in report.FILES if f"\\input{{generated/{n[:-4]}}}" in text], []
+    else:                                                  # older manuscripts hold the blocks inline
+        missing_inputs = []
+        (mdir / "figures").mkdir(parents=True)
+        filled, replaced, inserted = report.fill(text, gen)
+        (mdir / src.name).write_text(filled.replace("generated/figures/", "figures/"))
+        for f in ("scale_latency.tex", "pathways.tex"):
+            shutil.copyfile(bdir / "figures" / f, mdir / "figures" / f)
     bib = src.with_name("references.bib")
     if bib.exists():
         shutil.copyfile(bib, mdir / bib.name)
@@ -130,6 +148,9 @@ def run(ctx: LabContext) -> LabResult:
         Check("every value traces to a record carrying the lock root", sources_locked and all(traced.values()),
               f"{len(traced)} values traced (trace.json)"),
         Check("wording rules (R-REP-5)", wording),
+        Check("the manuscript reads every generated file", not missing_inputs,
+              "missing: " + ", ".join(missing_inputs) if missing_inputs else
+              (f"{len(wanted)} \\input{{generated/...}} files" if input_mode else "inline blocks (pre-main-15 manuscript)")),
         Check("the filled manuscript copy compiles with 0 errors", built and not errors,
               (f"{len(errors)} errors: {errors[0]}" if errors else "0 errors") +
               (f"; {cites} citations undefined (no references.bib next to the manuscript)" if cites and not bib.exists() else "")),
@@ -142,8 +163,9 @@ def run(ctx: LabContext) -> LabResult:
                ", ".join(f"{k} {'✓' if v['passes'] else '✗ (' + ', '.join(v['failing']) + ')'}"
                          for k, v in acc["acceptance"].items()),
                "RQ2": d["scale"]["sentence"],
-               "blocks": f"replaced {', '.join(replaced)}" + (f"; inserted into the copy only: {', '.join(inserted)}"
-                                                             if inserted else ""),
+               "generated": (f"{rel(bdir)} ({len(report.FILES)} files + figures): replace the manuscript's generated/ "
+                             "folder with it" if input_mode else f"replaced {', '.join(replaced)}" +
+                             (f"; inserted into the copy only: {', '.join(inserted)}" if inserted else "")),
                "pdf": rel(mdir / src.with_suffix(".pdf").name)}
     unattainable = [r["id"] for r in d["functional"] if r.get("attainable") is False]
     if unattainable:
