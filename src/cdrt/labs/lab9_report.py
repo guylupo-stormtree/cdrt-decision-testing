@@ -75,8 +75,8 @@ def run(ctx: LabContext) -> LabResult:
         return LabResult([Check("manuscript found", False, f"{src} (set CDRT_MANUSCRIPT)")], {})
     tag = lock.git("describe", "--tags", "--exact-match", doc["git_commit"]) if doc.get("git_commit") else ""
     gen, trace = report.blocks(d, ctx.dev, root, repoaudit_commit(), tag)
-    fig_tex, fig_csv = report.figure(d, int(cfg["seed"]))
-    path_tex = report.pathway_figure(d, h["selection"])
+    fig_tex, fig_csv = report.figure(d, int(cfg["seed"]), dev=ctx.dev)
+    path_tex = report.pathway_figure(d, h["selection"], dev=ctx.dev)
 
     # generated/: the folder main-15 reads with \input; after the campaign it replaces the manuscript's folder
     bdir = ctx.attempt_dir / "generated"

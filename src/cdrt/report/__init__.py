@@ -395,7 +395,10 @@ def pathway_sentence(pw: dict[str, Any], dev: bool) -> str:
             f"functions in the auditor's scope, by {paths} different path{'s' if paths != 1 else ''}.")
 
 
-def pathway_figure(d: dict[str, Any], selection: dict[str, str]) -> str:
+DEV_MARK = r"Development data, not a result"
+
+
+def pathway_figure(d: dict[str, Any], selection: dict[str, str], dev: bool = False) -> str:
     """TikZ: one row per green decision, one cell per scope function (dark: RepoAudit carried a None into it),
     columns ordered by how many runs reached the function; reached / |M_h| at the right of each row."""
     pw = d["pathways"]
@@ -429,13 +432,16 @@ def pathway_figure(d: dict[str, Any], selection: dict[str, str]) -> str:
             f"\\node[anchor=west] at (0.35,{yl + 0.12:.3f}) "
             r"{RepoAudit carried a \texttt{None} into the function (accepted \texttt{base-check})};",
             f"\\fill[black!8] (0,{yl - 0.4:.3f}) rectangle ++(0.3,0.25);",
-            f"\\node[anchor=west] at (0.35,{yl - 0.28:.3f}) {{not reached}};",
-            r"\end{tikzpicture}"]
+            f"\\node[anchor=west] at (0.35,{yl - 0.28:.3f}) {{not reached}};"]
+    if dev:   # the mark travels with the figure, also when it is copied out of the paper
+        out.append(f"\\node[anchor=east,font=\\sffamily\\scriptsize\\itshape,text=black!55] at ({width + 0.6:.3f},{yl - 0.28:.3f}) "
+                   f"{{{DEV_MARK}}};")
+    out.append(r"\end{tikzpicture}")
     return "\n".join(out) + "\n"
 
 
 # ------------------------------------------------------------------ figure (A12.1)
-def figure(d: dict[str, Any], seed: int) -> tuple[str, str]:
+def figure(d: dict[str, Any], seed: int, dev: bool = False) -> tuple[str, str]:
     """(pgfplots .tex, .csv). All observations as a jittered strip, the slowest update per size joined by a
     line, the budget line and the exceedance count above each size. Jitter is seeded, so the file is reproducible."""
     rows = scale_rows(d)
@@ -470,6 +476,8 @@ def figure(d: dict[str, Any], seed: int) -> tuple[str, str]:
             r"\addlegendentry{gateway budget}",
             *[f"\\node[font=\\scriptsize, anchor=south] at (axis cs:{r['N']},{budget * 1.3:g}) "
               f"{{{r['exceedances']}/{r['observations']}}};" for r in rows],
+            *([r"\node[font=\scriptsize\itshape, text=black!55, anchor=south east] at (rel axis cs:0.98,0.02) {"
+               + DEV_MARK + "};"] if dev else []),
             r"\end{axis}", r"\end{tikzpicture}"]
     return "\n".join(tikz) + "\n", "\n".join(csv) + "\n"
 
