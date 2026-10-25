@@ -1,14 +1,9 @@
-"""Fixture build (Lab 5; R-FIX-1 … R-FIX-5). Deterministic and offline: everything derives from the frozen
-bundle and the declared rules, so two builds give identical bytes.
+"""Fixture build (Lab 5; R-FIX-1 … R-FIX-5, as narrowed by main-14). Deterministic and offline: everything
+derives from the frozen bundle and the declared rules, so two builds give identical bytes.
 
-  parameters.json   c_obs, tau_q(rev2), tau_q(rev3b), t_e, Delta_q, sizes, n_0 and the selected decisions
-  profiles/         rev1, rev2, rev3, rev3b (manuscript Listing 1 shape), decision_ref = main
+  parameters.json   c_obs, tau_q, t_e, Delta_q, sizes, n_0, the main decision and the captured GREEN decisions
+  profiles/         rev1 (conformance), rev2 (+ adequacy, base-check), rev3 (+ independent-check); decision_ref = main
   manifests/        the scope manifests, byte-identical copies from the bundle
-  derived/          disclosed transformations of copies of the corpus:
-                      F4  main's policy blob removed (policy-at-event unavailable; records intact)
-                      B1  rebuilt without main's binding record (records re-chained)
-                      B2  one byte of one main basis record altered (not re-chained: integrity finding)
-                      B3  rebuilt without main's basis run (records re-chained)
   planes/N<k>/      scale planes: k synthetic copies of main's RepoAudit run, all marked synthetic, and one
                     synthetic decision whose basis is all k copies (PW-BIND-9; authentic records never mix in)
 """
@@ -25,9 +20,8 @@ from typing import Any
 import yaml
 
 from pwexp.hashing import manifest_hash, sha256_bytes, sha256_file, tree_manifest
-from pwexp.proofweave.graph import InMemoryGraphStore, TargetIndex, Weaver
+from pwexp.proofweave.graph import TargetIndex
 from pwexp.proofweave.ingress import EvidencePlane
-from pwexp.proofweave.ledger import Ledger
 
 from .records import view
 from .records.assessments import BASE, assessments
@@ -59,6 +53,7 @@ def _coverage(s: view.Snapshot, did: str, scope: list[str]) -> Fraction:
 
 
 def parameters(bundle: Path, s: view.Snapshot, selection: dict[str, str], cfg: dict[str, Any]) -> dict[str, Any]:
+    """The declared rules of main-14 §4.3 over the main decision and every captured decision."""
     f = cfg["fixtures"]
     step = int(f["threshold_step"])
     mq = json.loads((bundle / "protocol" / "manifests" / "M_q.json").read_text())["functions"]
@@ -66,24 +61,28 @@ def parameters(bundle: Path, s: view.Snapshot, selection: dict[str, str], cfg: d
     main = selection["main"]
     c_obs = _coverage(s, main, mq)
     k = math.floor(step * c_obs)
-    decided = {d: parse_utc(view.get_decision(s, d)["decision"]["payload"]["decided_at"]) for d in selection.values()}
+    captured = view.list_decisions(s)
+    records = {d: view.get_decision(s, d)["decision"]["payload"] for d in captured}
+    decided = {d: parse_utc(r["decided_at"]) for d, r in records.items()}
+    green = [d for d in captured if records[d]["verdict"] == "green"]
     t_e = max(decided.values()) + timedelta(seconds=int(f["age_after_decision_s"]))
-    times = [parse_utc(r["time"]) for d in selection.values() for r in assessments(s, d)["records"] if r["time"]]
+    # relevant observations: every green captured decision is assessed (main and the observation), so the age
+    # margin is taken over all of them and age never decides a verdict
+    times = [parse_utc(r["time"]) for d in green for r in assessments(s, d)["records"] if r["time"]]
     oldest = min(times)
     delta = math.ceil((t_e - oldest).total_seconds()) + int(f["age_margin_s"])
     n0 = view.get_decision(s, main)["binding"]["payload"]["basis_count"]
     sizes = [int(n) for n in cfg["scale"]["target_sizes"]]
     ks = [max(1, math.ceil(n / n0)) for n in sizes]
     return {
-        "selection": selection, "M_h_size": len(set(mh)), "M_q_size": len(set(mq)),
+        "selection": selection, "captured": len(captured), "green": green,
+        "M_h_size": len(set(mh)), "M_q_size": len(set(mq)),
         "c_obs": f"{c_obs.numerator}/{c_obs.denominator}", "c_obs_count": f"{round(c_obs * len(set(mq)))}/{len(set(mq))}",
-        "tau_q_rev2": {"numerator": k, "denominator": step}, "tau_q_rev3b": {"numerator": k + 1, "denominator": step},
-        "t_e": t_e.strftime(ISO), "t_e_rule": "latest decided_at of the selected decisions + "
-                                             f"{f['age_after_decision_s']} s",
-        "t_e_literal_R_FIX_2": (decided[main] + timedelta(seconds=int(f["age_after_decision_s"]))).strftime(ISO),
+        "tau_q": {"numerator": k, "denominator": step},
+        "t_e": t_e.strftime(ISO), "t_e_rule": f"latest decided_at of the captured decisions + {f['age_after_decision_s']} s",
         "oldest_relevant_observation": oldest.strftime(ISO), "max_age_seconds": delta,
         "n0": n0, "scale_target_sizes": sizes, "scale_k": ks,
-        "checks": {"tau_q(rev2) >= 1/2": Fraction(k, step) >= Fraction(1, 2), "c_obs < 1": c_obs < 1},
+        "checks": {"tau_q >= 1/2": Fraction(k, step) >= Fraction(1, 2), "c_obs < 1": c_obs < 1},
     }
 
 
@@ -92,66 +91,22 @@ def _manifest_ref(bundle: Path, name: str) -> dict[str, str]:
 
 
 def profiles(bundle: Path, p: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """rev 1 conformance only; rev 2 adds adequacy with base-check; rev 3 adds independent-check, nothing else."""
     conf = {"id": "decision-conformance", "revision": 1, "test": "conformance-check@1.0",
             "posture_leaf": "release.effectiveness", "parameters": {"policy_source": "recorded-decision-policy"}}
 
-    def adq(rev: int, tau: dict, validators: list[str]) -> dict[str, Any]:
+    def adq(rev: int, validators: list[str]) -> dict[str, Any]:
         return {"id": "decision-adequacy", "revision": rev, "test": "adequacy-check@1.0", "posture_leaf": "release.adequacy",
-                "parameters": {"manifest_ref": _manifest_ref(bundle, "M_q"), "minimum_coverage": tau,
+                "parameters": {"manifest_ref": _manifest_ref(bundle, "M_q"), "minimum_coverage": p["tau_q"],
                                "validators": validators, "max_age_seconds": p["max_age_seconds"],
                                "assessment_time": p["t_e"]}}
     base = {"profile": "release-assurance", "claim": "audit-decision-supports-release", "context_ref": "release-context",
             "snapshot_ref": "corpus", "decision_ref": p["selection"]["main"], "composition": "all-mandatory"}
     return {
         "rev1": {**base, "revision": 1, "label": "rev 1", "requirements": [conf]},
-        "rev2": {**base, "revision": 2, "label": "rev 2", "requirements": [conf, adq(1, p["tau_q_rev2"], ["base-check"])]},
-        "rev3": {**base, "revision": 3, "label": "rev 3",
-                 "requirements": [conf, adq(2, p["tau_q_rev2"], ["base-check", "independent-check"])]},
-        "rev3b": {**base, "revision": 4, "label": "rev 3b", "requirements": [conf, adq(3, p["tau_q_rev3b"], ["base-check"])]},
+        "rev2": {**base, "revision": 2, "label": "rev 2", "requirements": [conf, adq(1, ["base-check"])]},
+        "rev3": {**base, "revision": 3, "label": "rev 3", "requirements": [conf, adq(2, ["base-check", "independent-check"])]},
     }
-
-
-# ------------------------------------------------------------------ derived copies
-def _records(corpus: Path) -> list[dict[str, Any]]:
-    return [{k: v for k, v in r.items() if k not in ("seq", "prev_hash", "record_hash")} for r in Ledger(corpus).records()]
-
-
-def rebuild(corpus: Path, out: Path, target: Path, keep) -> Path:
-    """A new, valid plane from the records `keep` accepts, re-chained, with its own graph checkpoint."""
-    out.mkdir(parents=True)
-    copy_tree(corpus / "blobs", out / "blobs")
-    led = Ledger(out, durability="none")
-    led.append_batch([r for r in _records(corpus) if keep(r)])
-    st = InMemoryGraphStore()
-    Weaver(st, TargetIndex.from_snapshot(target)).apply(led.records())
-    st.checkpoint(out / "graph-checkpoint.json")
-    return out
-
-
-def derived(bundle: Path, s: view.Snapshot, out: Path, main: str) -> dict[str, str]:
-    corpus, target = bundle / "corpus", bundle / "target"
-    d = view.get_decision(s, main)
-    pol_blob = d["policy"]["source_ref"]["sha256"]
-    run = d["binding"]["payload"]["basis_runs"][0]
-    made = {}
-    f4 = copy_tree(corpus, out / "F4" / "corpus")
-    (f4 / "blobs" / pol_blob).unlink()
-    made["F4"] = "main's policy-at-event blob removed; every record intact"
-    rebuild(corpus, out / "B1" / "corpus", target, lambda r: r["id"] != d["binding"]["id"])
-    made["B1"] = "rebuilt without main's binding record (all records re-chained)"
-    b2 = copy_tree(corpus, out / "B2" / "corpus")
-    lines = (b2 / "ledger.jsonl").read_text().splitlines()
-    i = next(n for n, l in enumerate(lines) if json.loads(l)["id"] == d["binding"]["payload"]["basis_record_ids"][0])
-    rec = json.loads(lines[i])
-    rec["payload_hash"] = ("1" if rec["payload_hash"][0] != "1" else "2") + rec["payload_hash"][1:]   # one byte
-    lines[i] = json.dumps(rec, sort_keys=True, ensure_ascii=False)
-    (b2 / "ledger.jsonl").write_text("\n".join(lines) + "\n")
-    made["B2"] = "one byte of one basis record of main altered, not re-chained"
-    rebuild(corpus, out / "B3" / "corpus", target, lambda r: r["run"] != run)
-    made["B3"] = f"rebuilt without main's basis run {run} (all records re-chained)"
-    for k in made:                       # each copy keeps the capture declaration (log time offset)
-        shutil.copyfile(bundle / "CAPTURE.json", out / k / "CAPTURE.json")
-    return made
 
 
 # ------------------------------------------------------------------ scale planes
@@ -221,8 +176,6 @@ def build(bundle: Path, selection: dict[str, str], out: Path, cfg: dict[str, Any
     (out / "profiles").mkdir()
     for name, prof in profiles(bundle, p).items():
         (out / "profiles" / f"{name}.yaml").write_text(yaml.safe_dump(prof, sort_keys=True))
-    progress("derived copies F4, B1, B2, B3")
-    p["derived"] = derived(bundle, s, out / "derived", selection["main"])
     planes = {}
     work = out / ".work"
     for n, k in zip(p["scale_target_sizes"], p["scale_k"]):

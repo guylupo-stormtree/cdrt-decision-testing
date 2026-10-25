@@ -52,13 +52,22 @@ def test_conformance_and_adequacy_agree(dev_bundle, tmp_path, validators, tau):
         assert card["complete"] and card["leaves"]["release.adequacy"]["state"] == a["state"]
 
 
-def test_strict_decision_fails_conformance_although_green(dev_bundle):
+def test_verdict_output_contract(dev_bundle):
+    """main-14 Table 2: state, execution status, requirement and revision, measurements, evidence references,
+    reasons and validity limit, on a real dev decision under a requirement that also asks for independent-check."""
     _, bundle = dev_bundle
     s = view.load_snapshot(bundle / "corpus", bundle / "target")
     store = api.manifest_store(bundle / "protocol")
-    prof = {"profile": "p", "revision": 1, "context_ref": "c", "decision_ref": "G-strict-01", "requirements": [
-        {"id": "decision-conformance", "revision": 1, "test": "conformance-check@1.0", "posture_leaf": "release.effectiveness",
-         "parameters": {"policy_source": "recorded-decision-policy"}}]}
+    mq = bundle / "protocol" / "manifests" / "M_q.json"
+    prof = {"profile": "p", "revision": 3, "context_ref": "c", "decision_ref": "G-main-01", "requirements": [
+        {"id": "decision-adequacy", "revision": 2, "test": "adequacy-check@1.0", "posture_leaf": "release.adequacy",
+         "parameters": {"manifest_ref": {"id": "M_q", "sha256": sha256_file(mq)},
+                        "minimum_coverage": {"numerator": 1, "denominator": 2},
+                        "validators": ["base-check", "independent-check"], "max_age_seconds": 10 ** 7,
+                        "assessment_time": "2026-10-14T00:00:00Z"}}]}
     v = api.evaluate(api.resolve(prof, s, store)[0], s, store)
-    assert view.get_decision(s, "G-strict-01")["decision"]["payload"]["verdict"] == "green"
+    assert {"state", "execution_status", "requirement", "measurements", "evidence_refs", "reasons", "valid_until"} <= set(v)
+    assert v["requirement"] == {"id": "decision-adequacy", "revision": 2} and v["execution_status"] == "ok"
+    basis = {r["id"] for r in s.query.basis("G-main-01")["records"]}
+    assert v["evidence_refs"] and set(v["evidence_refs"]) <= basis
     assert v["state"] == "FAIL" and v["measurements"]["missing_by_validator"]["independent-check"] > 0

@@ -1,10 +1,11 @@
-"""Admission (Eq. 8), withdrawal on activation, history, aggregation (R-POS-1 … R-POS-4; B5-B10)."""
+"""Admission (Eq. 8), withdrawal on activation, history (R-POS-1 … R-POS-3) and the TAIP posture stub."""
 from __future__ import annotations
 
 from hypothesis import given
 from hypothesis import strategies as st
 
-from cdrt.posture import Consumer, aggregate
+from cdrt import taip_stub
+from cdrt.posture import Consumer
 from cdrt.resolver import B_FIELDS
 
 
@@ -46,11 +47,13 @@ def test_activation_withdraws_only_affected_leaves_and_late_verdicts_are_history
     assert card["leaves"]["release.effectiveness"]["state"] == "SUCCESS"            # H kept
     assert card["leaves"]["release.adequacy"]["state"] is None                       # A withdrawn before any new verdict
     assert card["aggregate"] == "INCONCLUSIVE" and not card["complete"]
-    assert not c.admit(V(old), "t")[0]                                              # I2: late rev-2 verdict rejected
+    assert card["gateway_decision"] == "no-green"                                    # TAIP: no green while pending
+    assert not c.admit(V(old), "t")[0]                                              # late rev-2 verdict rejected
     assert c.admit(V(B(v_q=3), "FAIL"), "t")[0]
     assert not c.admit(V(old), "t")[0]                                              # I1: after the new one, still rejected
     card = c.card()
-    assert card["aggregate"] == "FAIL" and card["complete"]
+    assert card["aggregate"] == "FAIL" and card["complete"] and card["gateway_decision"] == "hold"
+    assert card["taip"]["branches"]["adequacy"]["state"] == "fail" and card["taip"]["branches"]["sustainability"]["state"] == "pass"
     assert sum(1 for x in card["history"] if x["reason"].startswith("rejected")) == 2
 
 
@@ -62,13 +65,28 @@ def test_misrouted_invalid_and_expired():
     assert c.admit(V(B(), valid_until="2026-10-13T13:00:00Z"), "2026-10-13T12:00:00Z")[0]
 
 
-def test_all_mandatory_aggregation():
-    L = lambda *s: {str(i): {"state": x} for i, x in enumerate(s)}  # noqa: E731
-    assert aggregate(L("SUCCESS", "FAIL", None)) == "FAIL"
-    assert aggregate(L("SUCCESS", "INCONCLUSIVE")) == "INCONCLUSIVE"
-    assert aggregate(L("SUCCESS", None)) == "INCONCLUSIVE"
-    assert aggregate(L("SUCCESS", "SUCCESS")) == "SUCCESS"
-    assert aggregate({}) == "INCONCLUSIVE"
+def test_taip_stub_rolls_up_success_and_fail_into_the_gateway_decision():
+    h, a = B(q="decision-conformance", d="release.effectiveness", v_q=1), B(v_q=2)
+    exp = {"release.effectiveness": h, "release.adequacy": a}
+    L = lambda hs, as_: {"release.effectiveness": {"state": hs}, "release.adequacy": {"state": as_}}  # noqa: E731
+    full = {"release.effectiveness": V(h), "release.adequacy": V(a)}
+    ok = taip_stub.posture({}, L("SUCCESS", "SUCCESS"), exp, full, None)
+    assert ok["root"] == "pass" and ok["gateway_decision"] == "proceed" and set(ok["branches"]) == {
+        "effectiveness", "adequacy", "sustainability"}
+    bad = taip_stub.posture({}, L("SUCCESS", "FAIL"), exp, full, None)
+    assert bad["root"] == "fail" and bad["gateway_decision"] == "hold"
+    pending = taip_stub.posture({}, {"release.effectiveness": {"state": "SUCCESS"}, "release.adequacy": {"state": None}},
+                                exp, {"release.effectiveness": V(h)}, None)
+    assert pending["root"] == "inconclusive" and pending["gateway_decision"] == "no-green"
+    stale = taip_stub.posture({}, L("SUCCESS", "SUCCESS"), exp, {**full, "release.adequacy": V(B(v_q=1))}, None)
+    assert stale["branches"]["sustainability"]["state"] == "fail" and stale["gateway_decision"] == "hold"
+    expired = taip_stub.posture({}, L("SUCCESS", "SUCCESS"), exp,
+                                {**full, "release.adequacy": V(a, valid_until="2026-10-13T11:00:00Z")}, "2026-10-13T12:00:00Z")
+    assert expired["root"] == "fail"
+    only_h = taip_stub.posture({}, {"release.effectiveness": {"state": "SUCCESS"}}, {"release.effectiveness": h},
+                               {"release.effectiveness": V(h)}, None)
+    assert "adequacy" not in only_h["branches"] and only_h["root"] == "pass"
+    assert taip_stub.posture({}, {}, {}, {}, None)["root"] == "inconclusive"
 
 
 def test_monitor_reruns_only_affected_leaves(dev_bundle):

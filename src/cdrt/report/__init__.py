@@ -28,10 +28,7 @@ GENERATOR = "cdrt.report 1"
 BLOCKS = ("results_macros", "fixture_macros", "functional_table", "pathway_figure", "scale_table", "scale_figure")
 ANCHORS = {"fixture_macros": "results_macros", "pathway_figure": "functional_table",
            "scale_figure": "scale_table"}   # inserted after these if absent
-ROWS = {"AC1": "Conformance/adequacy distinction", "AC2": "Second-test composition",
-        "AC3": "Correct posture publication", "AC4": "Policy-at-event binding preserved",
-        "AC5": "Missing or invalid record handling", "AC6": "Delayed or misrouted verdict rejection",
-        "AC7": "Control isolation and code stability", "AC8": "Semantic replay"}
+from ..harness.functional import CONDITIONS  # noqa: E402  (the four main-14 acceptance conditions)
 
 
 def tex(s: Any) -> str:
@@ -134,57 +131,77 @@ def scale_rows(d: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def texts(d: dict[str, Any], dev: bool) -> dict[str, str]:
-    acc = d["acceptance"]["acceptance"]
+    from ..harness.scale import headline
+    acc = d["acceptance"]
     by = {r["id"]: r for r in d["functional"]}
     rows = scale_rows(d)
     budget = float(d["manifest"]["deadline_s"])
     mark = "Development data, not a result. " if dev else ""
-    passing = [k for k, v in acc.items() if v["passes"]]
-    failing = {k: v["failing"] for k, v in acc.items() if not v["passes"]}
-    unattainable = [i for i, r in by.items() if r.get("kind") == "case" and r.get("attainable") is False]
-    missed = [i for i, r in sorted(by.items()) if r.get("kind") == "case" and r.get("match") is False]
     lock = f"lock \\texttt{{{d['lock']['lock_root'][:12]}}}"
-    if d["acceptance"]["A_comp"]:
-        f = f"$A_{{\\mathrm{{comp}}}}$ is true: all {len(acc)} acceptance checks pass."
-    else:
-        why = "; ".join(f"{k} ({ROWS[k].lower()}) fails on {listing([tex(x) for x in v])}" for k, v in failing.items())
-        f = f"$A_{{\\mathrm{{comp}}}}$ is false: {len(passing)} of {len(acc)} acceptance checks pass; {why}."
-    if missed:
-        f += f" Cases whose observed states differ from the expected ones: {listing(missed)}."
-    if unattainable:
-        f += f" Not attainable on this corpus and reported, not forced: {listing(unattainable)}."
-    f9 = (by.get("F9") or {}).get("observed") or {}
-    if f9:
-        decisions = sorted({k.split()[0] for k in f9})
-        f += (f" The other {len(decisions)} green \\texttt{{G-main}} decisions were assessed as an observation "
-              "of Green Verdict Ambiguity and are not part of $A_{\\mathrm{comp}}$.")
-    functional = f"{mark}The functional protocol ran in full on the sealed corpus under {lock}. {f}"
+    before, after = (by.get(k, {}).get("observed") or {} for k in ("before", "after"))
+    word = {"SUCCESS": r"\Pass{}", "FAIL": r"\Fail{}", "INCONCLUSIVE": r"\Unknown{}"}
+    w_ = lambda s: word.get(s, tex(s))  # noqa: E731
 
-    from ..harness.scale import headline
+    # RQ1: the before/after transition, the four conditions, the delayed result, replay, the observation
+    f = (f"Before the change, conformance returned {w_(before.get('H'))} and adequacy {w_(before.get('A'))}, and the "
+         f"gateway read {tex(before.get('gateway'))}. After \\texttt{{independent-check}} was required, conformance "
+         f"returned {w_(after.get('H'))} and adequacy {w_(after.get('A'))}, and the gateway read {tex(after.get('gateway'))}.")
+    conds = acc["acceptance"]
+    if acc["A_comp"]:
+        f += (f" All four acceptance conditions held in all {acc['runs']} runs, so $A_{{\\mathrm{{comp}}}}$ is true: "
+              "the verdicts matched the oracle, the second module needed only registration and a profile edit, the "
+              "gateway moved from proceed through no green to hold and rejected the delayed success, and no control "
+              "was re-executed.")
+    else:
+        failing = "; ".join(f"{k} ({CONDITIONS[k].lower()}) failed on {listing([tex(x) for x in v['failing']])}"
+                            for k, v in conds.items() if not v["passes"])
+        f += f" $A_{{\\mathrm{{comp}}}}$ is false: {failing}."
+    f += " Replay from the same locked inputs agreed." if acc["replay_agrees"] else \
+        " Replay from the same locked inputs did not agree; the mismatch is kept in the records."
+    obs = (by.get("observation") or {}).get("observed") or {}
+    if obs:
+        conformant = sum(v["rev1"]["H"] == "SUCCESS" for v in obs.values())
+        adequate = sum(v["rev2"]["A"] == "SUCCESS" for v in obs.values())
+        f += (f" Across all {len(obs)} captured green decisions, {conformant} were conformant under their policy and "
+              f"{adequate} met the revision-2 requirement; every judgement agreed with the oracle."
+              if all(v["oracle_agrees"] for v in obs.values()) else
+              f" Across all {len(obs)} captured green decisions, {conformant} were conformant and {adequate} met the "
+              "revision-2 requirement; some judgements differed from the oracle and are reported.")
+    functional = f"{mark}The functional protocol ran on the sealed corpus under {lock}. {f}"
+
+    # RQ2: one number, where it occurred, the change across sizes, exceedances and semantic checks
     h = headline(d["scale"]["stats"], budget)
     sizes = listing([num(r["N"]) for r in rows])
-    total, over, nmax = num(h["total"]), h["over"], num(rows[-1]["N"])
+    total, over = num(h["total"]), h["over"]
     w = f"{secs(h['worst_s'])}\\,s" if h["worst_s"] is not None else "an unknown time"
+    trend = (f"The slowest update grew from {secs(rows[0]['slowest_s'])}\\,s at {num(rows[0]['N'])} records to "
+             f"{secs(rows[-1]['slowest_s'])}\\,s at {num(rows[-1]['N'])} records."
+             if rows[0]["slowest_s"] is not None and rows[-1]["slowest_s"] is not None else "")
+    semantic = ("Every cycle returned the expected verdicts and the active requirement revision."
+                if not h["mismatches"] else
+                f"{h['mismatches']} cycles returned an incorrect or outdated posture and are not valid completions.")
     if h["within"]:
         s = (f"{mark}Across {total} timed updates at {sizes} decision-basis records, the slowest took {w}, at "
-             f"{num(h['worst_N'])} records. Every update reached the gateway within the {budget:g}\\,s budget for the "
-             "measured workload.")
-        abstract = f"{mark}The slowest of {total} timed updates took {w}, within that budget."
-        intro = (f"{mark}Every one of its {total} timed updates, at decision bases of up to {nmax} records, reached "
-                 f"the gateway in at most {w}, inside the {budget:g}-second budget.")
+             f"{num(h['worst_N'])} records. {trend} {semantic} Every update reached the gateway within the "
+             f"{budget:g}\\,s budget for the measured workload.")
+        timing = f"the slowest of {total} timed updates took {w}, within that budget"
     else:
         s = (f"{mark}Across {total} timed updates at {sizes} decision-basis records, the slowest took {w}, at "
-             f"{num(h['worst_N'])} records, and {over} of {total} updates exceeded the {budget:g}\\,s budget.")
-        abstract = f"{mark}The slowest of {total} timed updates took {w}; {over} exceeded that budget."
-        intro = (f"{mark}The slowest of its {total} timed updates, at decision bases of up to {nmax} records, took "
-                 f"{w}, and {over} of them exceeded the {budget:g}-second budget.")
-    extra = [f"{sum(r[k] for r in rows)} {k}" for k in ("mismatches", "late", "timeouts") if sum(r[k] for r in rows)]
+             f"{num(h['worst_N'])} records. {trend} {semantic} {over} of {total} updates exceeded the "
+             f"{budget:g}\\,s budget.")
+        timing = f"the slowest of {total} timed updates took {w}, and {over} exceeded that budget"
+    extra = [f"{sum(r[k] for r in rows)} {k}" for k in ("late", "timeouts") if sum(r[k] for r in rows)]
     if extra:
         s += " Recorded and kept: " + listing(extra) + "."
+    held = after.get("H") == "SUCCESS" and after.get("A") == "FAIL" and after.get("gateway") == "hold"
+    functional_short = ("Conformance stayed successful, adequacy failed and TAIP moved the gateway to hold"
+                        if held else "The functional transition did not match its expectation")
+    abstract = f"{mark}{functional_short}; {timing}."
+    intro = f"{mark}{functional_short[0].upper()}{functional_short[1:]}, and {timing}."
     state = "development data, not a result" if dev else f"measured (campaign {tex(d['lock']['campaign_id'])})"
-    conclusion = (f"{mark}On the measured workload, $A_{{\\mathrm{{comp}}}}$ is "
-                  f"{'true' if d['acceptance']['A_comp'] else 'false'}, and the slowest of {total} updates, at up to "
-                  f"{nmax} basis records, took {w}, {'within' if h['within'] else 'beyond'} the {budget:g}\\,s budget.")
+    conclusion = (f"{mark}On the measured workload, $A_{{\\mathrm{{comp}}}}$ is {'true' if acc['A_comp'] else 'false'}, "
+                  f"and the slowest of {total} updates, at up to {num(rows[-1]['N'])} basis records, took {w}, "
+                  f"{'within' if h['within'] else 'beyond'} the {budget:g}\\,s budget.")
     return {"ResultState": state, "FunctionalResultText": functional, "ScaleResultText": s,
             "ConclusionResultText": conclusion, "ScaleFigureSentence": tex(d["scale"]["sentence"]),  # caption carries the dev mark
             "ScaleAbstractText": abstract, "ScaleIntroText": intro, "ScaleWorstCase": w,
@@ -224,29 +241,40 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str) -> t
     pol = d["policy_main"]
     fix = {"FixMh": num(p["M_h_size"]), "FixMq": num(p["M_q_size"]),
            "FixTauH": share(Fraction(int(pol["threshold"]["numerator"]), int(pol["threshold"]["denominator"]))),
-           "FixTauQ": share(Fraction(p["tau_q_rev2"]["numerator"], p["tau_q_rev2"]["denominator"])),
-           "FixTauQb": share(Fraction(p["tau_q_rev3b"]["numerator"], p["tau_q_rev3b"]["denominator"])),
+           "FixTauQ": share(Fraction(p["tau_q"]["numerator"], p["tau_q"]["denominator"])),
            "FixAgeMax": f"{num(p['max_age_seconds'])}\\,s", "FixAssessTime": f"\\texttt{{{tex(p['t_e'])}}}",
            "FixSizes": listing([num(r["N"]) for r in rows]), "FixBasisMain": num(p["n0"]),
-           "FixCoverageMain": tex(p["c_obs_count"])}
+           "FixCoverageMain": tex(p["c_obs_count"]), "FixRunCount": num(p["captured"]),
+           "FixGreenCount": num(len(p["green"]))}
     trace.update({k: ["parameters"] for k in fix}, FixTauH=["policy_main"])
     out["fixture_macros"] = "\n".join([header("fixture_macros", d, ["parameters", "policy_main"], root),
                                        *[macro(k, v) for k, v in fix.items()]])
 
-    acc = d["acceptance"]["acceptance"]
+    # Table 4 (main-14): before and after the requirement change, expected and observed
+    by = {r["id"]: r for r in d["functional"]}
+    word = {"SUCCESS": r"\Pass{}", "FAIL": r"\Fail{}", "INCONCLUSIVE": r"\Unknown{}"}
+    cell = lambda o: f"{word.get(o.get('H'), tex(o.get('H')))} / {word.get(o.get('A'), tex(o.get('A')))} / " \
+                     f"{tex(str(o.get('gateway', '')).capitalize())}"  # noqa: E731
+    acc = d["acceptance"]
     lines = [header("functional_table", d, ["functional_records", "acceptance"], root),
-             r"\begin{table}[pos=tbp]", r"\centering\small",
-             r"\caption{Functional results" + (" (development data, not a result)" if dev else "") +
-             f", lock \\texttt{{{d['lock']['lock_root'][:12]}}}. A failing check names the cases behind it.}}",
-             r"\label{tab:functional-results}", r"\begin{tabularx}{\columnwidth}{@{}Yl@{}}", r"\toprule",
-             r"Acceptance check & Outcome \\", r"\midrule"]
-    for k, row in ROWS.items():
-        v = acc[k]
-        lines.append(f"{row} & {'Pass' if v['passes'] else 'Fail (' + ', '.join(tex(x) for x in v['failing']) + ')'} \\\\")
-    lines += [r"\midrule", f"Overall $A_{{\\mathrm{{comp}}}}$ & {'True' if d['acceptance']['A_comp'] else 'False'} \\\\",
-              r"\bottomrule", r"\end{tabularx}", r"\end{table}"]
+             r"\begin{table*}[pos=t]", r"\centering\small",
+             r"\caption{Before-and-after decision testing" + (" (development data, not a result)" if dev else "") +
+             f". Expected values were predeclared; observed values come from the locked functional run (lock "
+             f"\\texttt{{{d['lock']['lock_root'][:12]}}}). $A_{{\\mathrm{{comp}}}}$ is "
+             f"{'true' if acc['A_comp'] else 'false'}; replay {'agreed' if acc['replay_agrees'] else 'did not agree'}.}}",
+             r"\label{tab:functional-results}", r"\label{tab:functional-protocol}",
+             r"\begin{tabularx}{\textwidth}{@{}L{.31\textwidth}L{.13\textwidth}L{.13\textwidth}L{.13\textwidth}Y@{}}",
+             r"\toprule",
+             r"Requirement state & Expected conformance & Expected adequacy & Expected gateway & "
+             r"Observed conformance / adequacy / gateway \\", r"\midrule"]
+    for key, label in (("before", r"Before: \texttt{base-check}"), ("after", r"After: adds \texttt{independent-check}")):
+        r = by.get(key) or {}
+        e, o = r.get("expected") or {}, r.get("observed") or {}
+        lines.append(f"{label} & {word.get(e.get('H'), '')} & {word.get(e.get('A'), '')} & "
+                     f"{tex(str(e.get('gateway', '')).capitalize())} & {cell(o) if o else 'Not executed'} \\\\")
+    lines += [r"\bottomrule", r"\end{tabularx}", r"\end{table*}"]
     out["functional_table"] = "\n".join(lines)
-    trace["functional_table"] = ["acceptance"]
+    trace["functional_table"] = ["functional_records", "acceptance"]
 
     out["pathway_figure"] = "\n".join([
         header("pathway_figure", d, ["bundle"], root), r"\begin{figure*}[pos=t]", r"\centering",

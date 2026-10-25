@@ -1,6 +1,8 @@
 # Composable CDRT experiment
 
-Control-decision risk testing over recorded decisions. A control (here RepoAudit, an LLM-agent repository auditor) makes a decision; ProofWeave records it with its intent, its basis and the policy in force; registered decision tests then judge whether the decision was licensed by its own policy (conformance) and whether it is enough for today's requirement (adequacy), and only verdicts bound to the active requirement reach the gateway's posture.
+Control-decision risk testing over recorded decisions. A control (here RepoAudit, an LLM-agent repository auditor) makes a decision; ProofWeave records it with its intent, its basis and the policy in force; registered decision tests then judge whether the decision was licensed by its own policy (conformance) and whether it is enough for today's requirement (adequacy), and only verdicts bound to the active requirement reach posture, which a TAIP posture stub rolls up for the gateway.
+
+**Scope (manuscript main-14).** Every RepoAudit run is captured as a decision under one policy (P1), and a Semgrep scan of the same repository is retained beside them, in no decision's basis. The first green conformant decision is tested by the two modules before and after the requirement adds `independent-check`, with one delayed-result check; every green decision is also assessed and drawn in the pathway figure. The timing study repeats the requirement change on synthetic bases of about 10² to 10⁵ records.
 
 **Status: under construction.** Labs 3–9 run in development mode; the CDRT runtime (registry, resolver, executor, the two decision tests, posture consumer, gateway, monitor), the independent oracle, the fixture build, the protocol lock, the functional and scale harnesses and the report generator are built. No result has been produced. Everything under `capture/dev/`, `capture/records-dev/`, `fixtures/out-dev/` and `results/labs-dev/` is development data built from ProofWeave's fixtures and is never a result.
 
@@ -36,7 +38,7 @@ Each lab re-verifies the previous lab's hand-off, runs fixed checks, prints a la
 | 4 | Review ProofWeave and freeze: decisions, pathways, selection (runtime and oracle must agree), frozen bundle | no | built (dev) |
 | 5 | Build fixtures: thresholds, profiles, derived variants, scale planes | no | built (dev) |
 | 6 | Lock: hash everything the runs depend on; tag | no | built (dev) |
-| 7 | Functional run (RQ1): cases, interleavings, boundary checks, isolation, replay, A_comp | no | built (dev) |
+| 7 | Functional run (RQ1): before/after the requirement change, one delayed result, every green decision observed, isolation, replay, A_comp | no | built (dev) |
 | 8 | Scale run (RQ2): 400 timed cycles over four basis sizes; one number, the slowest update, against the 5 s budget | no | built (dev) |
 | 9 | Report: generated tables, figure and result text for the manuscript | no | built (dev) |
 
@@ -44,7 +46,7 @@ Labs 0–2 are run by the authors and need RepoAudit and a model. Labs 3–9 run
 
 ## Dependencies
 
-- **ProofWeave** (`pwexp`) is pinned as the git submodule `vendor/proofweave-decision-assurance` at tag `pw-v0.2.0` and installed from it. CDRT imports only `pwexp.proofweave`, `pwexp.hashing`, `pwexp.chain` and the Stage 1/2 entry points, and drives capture through the `pwexp` command line; a test enforces this.
+- **ProofWeave** (`pwexp`) is pinned as the git submodule `vendor/proofweave-decision-assurance` at tag `pw-v0.2.1` (decision binding, plus standalone Semgrep scans in decision protocols) and installed from it. CDRT imports only `pwexp.proofweave`, `pwexp.hashing`, `pwexp.chain` and the Stage 1/2 entry points, and drives capture through the `pwexp` command line; a test enforces this.
 - **RepoAudit** is pinned inside the ProofWeave checkout (commit `160f5bc`) and runs only in Labs 1–2.
 - API keys are typed at a masked prompt for each run, held in memory only, and never written anywhere.
 
@@ -73,6 +75,8 @@ tests/                 development tests (not experiment results)
 - **Coverage** (Eq. 3) counts the scope functions with an accepted `base-check`; the other listed validators must corroborate every covered function (Eq. 4). Exact fractions; duplicates never raise the count.
 - **conformance-check@1.0** judges the decision under its own policy-at-event, resolved through the recorded binding. **adequacy-check@1.0** judges it under the current requirement, adding the age condition (Eq. 6).
 - **Admission** (Eq. 8) accepts a verdict only if its 14-field binding equals the one the active requirement revision expects and it has not expired. Activating a revision withdraws affected support before any new verdict can be admitted.
+- **TAIP posture stub** (`cdrt/taip_stub.py`). A minimal stand-in for TAIP's aggregation, not the TAIP engine: the admitted SUCCESS / FAIL / INCONCLUSIVE verdicts become TAIP pass / fail / inconclusive on the effectiveness and adequacy branches, a sustainability branch re-checks that every admitted support is still bound to the active revision and unexpired, and the root (any fail → fail, any inconclusive → inconclusive, else pass) gives the gateway proceed, hold or no-green.
+- **A_comp** (main-14 §4.4) holds only if four conditions hold in every run: the verdicts match the oracle before and after the change; the second module needed only registration and a profile edit; the gateway went proceed → no green → hold and rejected the delayed success; no control was re-executed. Replay agreement is reported beside it.
 
 
 ## What is timed (RQ2)

@@ -19,7 +19,7 @@ bundle's declared log_utc_offset (CAPTURE.json); a Semgrep assessment takes its 
 
   python oracle/oracle_check.py conformance BUNDLE DECISION
   python oracle/oracle_check.py adequacy BUNDLE DECISION PARAMS.json
-  python oracle/oracle_check.py select BUNDLE                 the selection rule R-CAP-5 (R-ORC-4)
+  python oracle/oracle_check.py select BUNDLE                 the selection rule R-CAP-5 (R-ORC-4; main only)
   python oracle/oracle_check.py batch BUNDLE REQUESTS.json    [{kind: conformance|adequacy, decision, params}]
 """
 from __future__ import annotations
@@ -272,21 +272,17 @@ def adequacy(bundle: Bundle, did: str, params: dict) -> dict:
 
 
 def select(bundle: Bundle) -> dict:
-    """R-CAP-5: first GREEN G-main decision (run order) the oracle judges conformant; first GREEN G-strict;
-    first GREEN G-pipe whose runs are all GREEN."""
-    out = {"main": None, "strict": None, "pipeline": None, "main_candidates": {}}
+    """R-CAP-5 as narrowed by main-14: the main decision is the first GREEN G-main decision (run order) that the
+    oracle judges conformant under its policy. Every G-main decision is listed with its verdict and H."""
+    out = {"main": None, "main_candidates": {}}
     for did in bundle.decisions():
-        d = bundle.decision(did)
-        green = d["decision"]["verdict"] == "green"
-        if did.startswith("G-main-"):
-            h = conformance(bundle, did)["state"] if green else None
-            out["main_candidates"][did] = {"green": green, "H": h}
-            if green and h == SUCCESS and out["main"] is None:
-                out["main"] = did
-        elif did.startswith("G-strict-") and green and out["strict"] is None:
-            out["strict"] = did
-        elif did.startswith("G-pipe-") and green and all(d["decision"]["per_run"].values()) and out["pipeline"] is None:
-            out["pipeline"] = did
+        if not did.startswith("G-main-"):
+            continue
+        green = bundle.decision(did)["decision"]["verdict"] == "green"
+        h = conformance(bundle, did)["state"] if green else None
+        out["main_candidates"][did] = {"green": green, "H": h}
+        if green and h == SUCCESS and out["main"] is None:
+            out["main"] = did
     return out
 
 

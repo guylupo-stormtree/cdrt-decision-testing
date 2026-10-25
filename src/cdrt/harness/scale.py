@@ -67,6 +67,9 @@ class Plane:
         self.rev3_bindings = {i.leaf: i.binding for i in resolve(self.rev3, self.snap, registry, manifests)}
         dv = view.retrieve(self.snap, self.decision)
         self.rev2_verdicts = [evaluate(i, self.snap, manifests, dv) for i in invs]
+        # main-14 §4.5: at every size the baseline verdicts must both be SUCCESS
+        self.baseline = {v["binding"]["d"]: v["state"] for v in self.rev2_verdicts}
+        self.baseline_ok = sorted(self.baseline.values()) == [SUCCESS, SUCCESS]
         self.t2 = self.rev2["requirements"][1]["parameters"]["assessment_time"]
 
     def reset(self, gw: Gateway) -> Consumer:
@@ -132,6 +135,7 @@ def host_manifest(cfg: dict[str, Any], planes: list[Plane], pwexp_commit: str) -
             "clock": {"source": "time.monotonic_ns", "implementation": clock.implementation, "resolution": clock.resolution},
             "warmups": cfg["warmups"], "blocks": cfg["blocks"], "seed": cfg["seed"], "deadline_s": cfg["deadline_s"],
             "max_wait_s": cfg["max_wait_s"], "sizes": {str(p.size): p.n for p in planes},
+            "baseline": {str(p.size): p.baseline for p in planes},
             "load_average_before": list(os.getloadavg())}
 
 
@@ -155,10 +159,13 @@ def headline(st: dict[str, Any], deadline_s: float) -> dict[str, Any]:
     done = [v for v in st.values() if v["slowest_s"] is not None]
     worst = max(done, key=lambda v: v["slowest_s"]) if done else None
     incomplete = sum(v["timeouts"] for v in st.values())
+    wrong = sum(v.get("mismatches", 0) for v in st.values())
     return {"worst_s": worst["slowest_s"] if worst and not incomplete else None,
             "worst_N": worst["N"] if worst else None, "total": sum(v["observations"] for v in st.values()),
-            "over": sum(v["exceedances"] for v in st.values()), "incomplete": incomplete, "budget_s": deadline_s,
-            "within": bool(done) and not incomplete and worst["slowest_s"] <= deadline_s}
+            "over": sum(v["exceedances"] for v in st.values()), "incomplete": incomplete, "mismatches": wrong,
+            "budget_s": deadline_s,
+            # all correct completions within the budget (main-14 §4.5): a wrong or outdated posture never counts
+            "within": bool(done) and not incomplete and not wrong and worst["slowest_s"] <= deadline_s}
 
 
 def sentence(st: dict[str, Any], deadline_s: float) -> str:
@@ -167,6 +174,9 @@ def sentence(st: dict[str, Any], deadline_s: float) -> str:
     if h["incomplete"]:
         return (f"{h['over']} of {h['total']} timed updates exceeded the {deadline_s:g} s budget; "
                 f"{h['incomplete']} did not complete within the waiting limit.")
+    if h["mismatches"]:
+        return (f"{h['mismatches']} of {h['total']} timed updates returned an incorrect posture; "
+                f"the slowest took {h['worst_s']:.2f} s.")
     if h["within"]:
         return (f"Every one of the {h['total']} timed updates reached the gateway within the {deadline_s:g} s budget; "
                 f"the slowest took {h['worst_s']:.2f} s.")

@@ -1,54 +1,40 @@
-# CDRT oracle expectations (R-ORC-1). Committed before the decision tests are written.
+# CDRT oracle expectations (R-ORC-1). First committed before the decision tests were written (41ebdbf).
+# Narrowed on 2026-10-25 to the main-14 protocol (PROGRESS.md D-017): the strict, pipeline, missing-policy,
+# damaged-record and boundary cases were removed. The expected states of the retained steps are unchanged.
 # States are expectations BY CONSTRUCTION of the fixtures (requirements A1): a correct implementation must
 # produce them; any mismatch is reported as a failure. Symbols refer to fixtures/out/parameters.json:
-#   main, strict, pipeline   the selected decisions (R-CAP-5)
-#   c_obs = c(Sigma_main, M_q); tau_q(rev2) = floor(20 c_obs)/20; tau_q(rev3b) = (floor(20 c_obs)+1)/20
-#   t_e = decided_at(main) + 600 s; Delta_q = (t_e - oldest observation in Sigma_main) + 1200 s
-version: 1
+#   main     the selected decision: first GREEN G-main decision the oracle judges conformant under P1 (R-CAP-5)
+#   c_obs = c(Sigma_main, M_q); tau_q = floor(20 c_obs)/20
+#   t_e = latest decided_at of the captured decisions + 600 s; Delta_q = (t_e - oldest relevant observation) + 1200 s
+version: 2
 
 main_sequence:
-  - {step: 1, activate: rev1, expect: {H: SUCCESS, aggregate: SUCCESS}}
-  - {step: 2, register: adequacy-check@1.0, activate: rev2, expect: {H: SUCCESS, A: SUCCESS, aggregate: SUCCESS}}
-  - {step: 3, activate: rev3, expect: {H: unchanged, A_support_withdrawn_before_new_verdict: true, A: FAIL,
+  - {step: 1, register: conformance-check@1.0, activate: rev1, expect: {H: SUCCESS, posture: pass, gateway: proceed}}
+  - {step: 2, register: adequacy-check@1.0, activate: rev2, expect: {H: SUCCESS, A: SUCCESS, posture: pass, gateway: proceed}}
+  - {step: 3, activate: rev3, expect: {H: unchanged, A_support_withdrawn_before_new_verdict: true,
+                                       gateway_while_pending: no-green, A: FAIL,
                                        A_missing_validator: independent-check, A_missing_for: every covered target,
-                                       aggregate: FAIL, gateway: hold}}
+                                       posture: fail, gateway: hold}}
 
 cases:
-  F1: {source: authentic, decision: main, profile: rev2, H: SUCCESS, A: SUCCESS}
-  F2: {source: authentic, decision: main, profile: rev3, H: SUCCESS, A: FAIL, also: "H kept; A support withdrawn; independent-check missing"}
-  F3: {source: authentic, decision: strict, profile: rev3, H: FAIL, A: FAIL, also: "conformance fails although the decision is GREEN"}
-  F4: {source: derived, decision: "main, policy blob removed from the copy", profile: rev3, H: INCONCLUSIVE, A: FAIL,
-       also: "today's requirement is never substituted for the missing policy"}
-  F5: {source: authentic, decision: pipeline, profile: rev3, H: SUCCESS, A: SUCCESS,
-       attainable_only_if: "the Semgrep basis run scanned every file of M_q"}
-  F6: {source: authentic, decision: main, profile: "rev2 verdict delayed past rev3", H: unchanged, A: "old verdict rejected, kept in history"}
-  F7: {source: authentic, decision: main, profile: rev3b, H: SUCCESS, A: FAIL, also: "coverage reported exactly as c_obs; policy identity preserved"}
-  F8: {source: authentic, decision: strict, profile: rev2, H: FAIL, A: SUCCESS, also: "the verdicts are independent"}
-  F9: {source: authentic, decision: "every other GREEN G-main", profile: [rev1, rev2, rev3], H: as observed, A: as observed,
-       also: "observation of Green Verdict Ambiguity; not part of A_comp"}
+  before: {decision: main, profile: rev2, H: SUCCESS, A: SUCCESS, gateway: proceed}
+  after: {decision: main, profile: rev3, H: SUCCESS, A: FAIL, gateway: hold}
 
-interleavings:
-  I1: {expect: "old rev-2 verdict rejected after the rev-3 verdict is admitted; kept in history; posture unchanged"}
-  I2: {expect: "old rev-2 verdict rejected before any rev-3 verdict exists; A leaf unresolved; aggregate not SUCCESS"}
+delayed:
+  expect: "a rev-2 adequacy SUCCESS released after the rev-3 verdict is admitted is rejected, kept in history,
+           and leaves the posture and the gateway unchanged"
 
-boundary:
-  B1: {change: binding record removed from a ledger copy, expect: {decision_status: unavailable, H: INCONCLUSIVE}}
-  B2: {change: one byte of a basis record altered in a copy, expect: {integrity_finding_at_load: true, policy_violation: false}}
-  B3: {change: one basis run missing in a copy, expect: {decision_status: partial, states: "INCONCLUSIVE wherever absence would be needed"}}
-  B4: {change: "t_e before the oldest record, or a future timestamp", expect: {A_age: INCONCLUSIVE}}
-  B5: {change: verdict routed to the wrong destination leaf, expect: {admitted: false}}
-  B6: {change: requirement revision field of B changed, expect: {admitted: false}}
-  B7: {change: context field of B changed, expect: {admitted: false}}
-  B8: {change: snapshot field of B changed, expect: {admitted: false}}
-  B9: {change: test version field of B changed, expect: {admitted: false}}
-  B10: {change: destination field of B changed, expect: {admitted: false}}
+observation:
+  decisions: every captured G-main decision
+  profiles: [rev1, rev2, rev3]
+  expect: "as observed; each judgement must agree with this oracle. Reported with the pathway figure; not part of A_comp"
 
-acceptance:
-  AC1: {row: Conformance/adequacy distinction, passes_when: "F2, F3 and F8 match"}
-  AC2: {row: Second-test composition, passes_when: "step 2 needs only registration and a profile edit, and F1 matches"}
-  AC3: {row: Correct posture publication, passes_when: "leaf and root states match in every case"}
-  AC4: {row: Policy-at-event binding preserved, passes_when: "every verdict's h_H equals the captured binding, and F4 is INCONCLUSIVE"}
-  AC5: {row: Missing or invalid record handling, passes_when: "B1-B4 match"}
-  AC6: {row: Delayed or misrouted verdict rejection, passes_when: "I1, I2 and B5-B10 match"}
-  AC7: {row: Control isolation and code stability, passes_when: "guard call count 0; code fingerprints unchanged"}
-  AC8: {row: Semantic replay, passes_when: "same semantic inputs reproduce measurements, states and support references"}
+acceptance:   # main-14 §4.4: A_comp is true only if all four hold in both runs
+  C1: {row: Verdicts match the oracle, passes_when: "H and A match the oracle before (rev2) and after (rev3)"}
+  C2: {row: Second-module composition, passes_when: "step 2 needs only one registry entry and one profile requirement;
+                                                     code fingerprints unchanged"}
+  C3: {row: Gateway transition, passes_when: "proceed, then no green while A is pending, then hold; the delayed success
+                                              is rejected"}
+  C4: {row: No control re-execution, passes_when: "guard call count 0 (RepoAudit and Semgrep entry points); code
+                                                   fingerprints unchanged"}
+replay: "the protocol is run twice from the same locked inputs; measurements, verdicts and support references agree"

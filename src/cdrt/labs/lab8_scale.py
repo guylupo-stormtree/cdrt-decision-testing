@@ -36,6 +36,8 @@ def run(ctx: LabContext) -> LabResult:
         Check("the control guard counted no call (R-ISO-1)", res["guard_calls"] == 0 and
               all(r["guard_calls"] == 0 for r in recs), f"{res['guard_calls']} calls"),
         Check("run manifest written (R-SCL-8)", files["run_manifest"].exists()),
+        Check("baseline verdicts are both SUCCESS at every size (main-14 §4.5)",
+              all(sorted(b.values()) == ["SUCCESS", "SUCCESS"] for b in res["manifest"]["baseline"].values())),
     ]
     fmt = lambda x: "—" if x is None else f"{x:.3f} s"  # noqa: E731
     hl = res["headline"]

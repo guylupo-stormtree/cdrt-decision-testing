@@ -21,3 +21,11 @@ def test_gateway_serves_only_the_requested_revision_and_records_timeouts():
         code, body = g.read("p", revision=3, wait_s=1)
         assert code == 200 and body["gateway"] == "hold" and body["card"]["profile_revision"] == 3
         assert len(g.timeouts()) == 2
+
+
+def test_gateway_serves_the_taip_decision_on_the_card():
+    with Gateway() as g:
+        g.publish({**card(3, "FAIL"), "gateway_decision": "hold"})
+        assert g.read("p")[1]["gateway"] == "hold"
+        g.publish({**card(4, "SUCCESS"), "gateway_decision": "proceed"})
+        assert g.read("p", revision=4, wait_s=1)[1]["gateway"] == "proceed"

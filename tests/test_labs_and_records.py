@@ -36,7 +36,7 @@ def test_gating_and_dev_start(cdrt_root):
 
 def test_lab3_hands_a_verified_corpus_to_lab4(lab3, cdrt_root):
     h = lab3.handoff(3)["handoff"]
-    assert set(h["decisions"]) == {"G-main-01", "G-main-02", "G-main-03", "G-pipe-01", "G-strict-01"}
+    assert set(h["decisions"]) == {f"G-main-0{i}" for i in range(1, 6)}
     assert lab3.verify_handoff(3)[0]
     res = lab3.run(4, progress=QUIET)
     assert res.passed                                              # selection agrees with the oracle

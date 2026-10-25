@@ -29,7 +29,7 @@ def run(ctx: LabContext) -> LabResult:
     replays = int(cfg["functional"]["replay_runs"])
     work = ctx.attempt_dir / "work"
     work.mkdir()
-    env = functional.load_env(paths.root() / h["bundle"], paths.root() / h["fixtures"], work, stamp, h["f9"])
+    env = functional.load_env(paths.root() / h["bundle"], paths.root() / h["fixtures"], work, stamp, h["green"])
     trace: list[str] = []
 
     def progress(m: str) -> None:
@@ -50,7 +50,8 @@ def run(ctx: LabContext) -> LabResult:
     calls = (iso.get("observed") or {}).get("guard_calls")
     checks = [
         Check("protocol lock verifies (R-LOCK-2)", True, h["lock_root"][:12]),
-        Check("every step, case, interleaving and boundary check executed", not errors and not out["missing"],
+        Check("every step, the before/after judgements, the delayed result and the observation executed",
+              not errors and not out["missing"],
               "; ".join([f"{r['id']}: {r['error']}" for r in errors] + [f"{i} missing" for i in out["missing"]])[:300]),
         Check("every record carries the lock stamp (R-LOCK-4)",
               all(all(r.get(k) == v for k, v in stamp.items()) and "binding" in r for r in recs), f"{len(recs)} records"),
@@ -58,16 +59,19 @@ def run(ctx: LabContext) -> LabResult:
         Check(f"the protocol ran {replays} times for the replay comparison", len(out["digests"]) == replays),
     ]
     by = {r["id"]: r for r in recs}
-    cases = " ".join(f"{i}{'✓' if by[i]['match'] else '✗'}" for i in [f"F{n}" for n in range(1, 9)] if i in by)
-    summary = {"A_comp": acc["A_comp"],
-               "acceptance": " ".join(f"{k}{'✓' if v['passes'] else '✗'}" for k, v in acc["acceptance"].items()),
-               "cases": cases,
+    show = lambda i: f"H {by[i]['observed']['H']} · A {by[i]['observed']['A']} · gateway {by[i]['observed']['gateway']}"  # noqa: E731
+    obs = (by.get("observation") or {}).get("observed") or {}
+    summary = {"A_comp": acc["A_comp"], "replay agrees": acc["replay_agrees"],
+               "conditions": " ".join(f"{k}{'✓' if v['passes'] else '✗'}" for k, v in acc["acceptance"].items()),
+               "before (rev 2)": show("before") if "before" in by else "not run",
+               "after (rev 3)": show("after") if "after" in by else "not run",
                "failing": "; ".join(f"{k}: {', '.join(v['failing'])}" for k, v in acc["acceptance"].items() if v["failing"])
                or "none",
-               "F9": ", ".join(f"{k} H={v['H']} A={v['A']}" for k, v in (by.get("F9", {}).get("observed") or {}).items())
-               or "none", "records": rel(f_rec)}
+               "observation": f"{len(obs)} GREEN decisions; H rev1 " + ", ".join(
+                   f"{d} {v['rev1']['H']} ({v['coverage_M_h']})" for d, v in obs.items()) if obs else "none",
+               "records": rel(f_rec)}
     return LabResult(checks, {"functional_records": f_rec, "acceptance": f_acc, "trace": f_tr}, summary,
                      handoff={"A_comp": acc["A_comp"], "acceptance": {k: v["passes"] for k, v in acc["acceptance"].items()},
                               "functional_records": rel(f_rec), **stamp,
-                              **{k: h[k] for k in ("fixtures", "bundle", "selection", "f9", "parameters", "lock")}},
+                              **{k: h[k] for k in ("fixtures", "bundle", "selection", "green", "parameters", "lock")}},
                      next_hint=f"cdrt lab run 8{' --dev' if ctx.dev else ''}")

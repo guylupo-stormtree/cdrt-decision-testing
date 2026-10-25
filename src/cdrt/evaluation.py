@@ -39,7 +39,10 @@ def inputs_for(inv: Invocation, s: Snapshot, manifests: ManifestStore, dv: Decis
 
 
 def evaluate(inv: Invocation, s: Snapshot, manifests: ManifestStore, dv: DecisionView | None = None) -> dict[str, Any]:
-    base = {"binding": inv.binding, "test": inv.test, "allow_synthetic": s.allow_synthetic, "valid_until": None}
+    # the fixed output contract (main-14 Table 2): state, execution status, requirement and revision,
+    # measurements, evidence references, reasons, validity limit; the binding B travels with it
+    base = {"binding": inv.binding, "test": inv.test, "requirement": {"id": inv.binding["q"], "revision": inv.binding["v_q"]},
+            "allow_synthetic": s.allow_synthetic, "valid_until": None, "evidence_refs": []}
     if inv.entry is None:
         return {**base, "execution_status": "lookup-failed", "state": None, "measurements": {},
                 "reasons": [inv.lookup_error or "test not registered"]}
@@ -52,5 +55,6 @@ def evaluate(inv: Invocation, s: Snapshot, manifests: ManifestStore, dv: Decisio
     if te is not None and age is not None and "max_age_seconds" in inv.params:
         valid_until = (te + timedelta(seconds=float(inv.params["max_age_seconds"]) - float(age))).strftime(
             "%Y-%m-%dT%H:%M:%S.%fZ")
+    refs = sorted({i for ids in (out["measurements"].get("support") or {}).values() for i in ids})
     return {**base, "execution_status": "ok", "state": out["state"], "measurements": out["measurements"],
-            "reasons": out["reasons"], "valid_until": valid_until}
+            "reasons": out["reasons"], "valid_until": valid_until, "evidence_refs": refs}

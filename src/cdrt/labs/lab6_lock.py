@@ -54,5 +54,5 @@ def run(ctx: LabContext) -> LabResult:
     return LabResult(checks, {"lock": f}, summary,
                      handoff={"lock": rel(f), "lock_root": doc["lock_root"], "campaign_id": campaign,
                               "git_commit": doc["git_commit"], "pwexp_commit": doc["components"]["pwexp"]["commit"],
-                              **{k: ctx.inputs["handoff"][k] for k in ("fixtures", "bundle", "selection", "f9", "parameters")}},
+                              **{k: ctx.inputs["handoff"][k] for k in ("fixtures", "bundle", "selection", "green", "parameters")}},
                      next_hint=f"cdrt lab run 7{' --dev' if ctx.dev else ''}")

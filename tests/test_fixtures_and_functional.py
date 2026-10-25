@@ -29,12 +29,13 @@ def test_fixture_parameters_follow_the_declared_rules(lab5, cdrt_root):
     from fractions import Fraction
     p = json.loads((cdrt_root / "fixtures" / "out-dev" / "parameters.json").read_text())
     c = Fraction(p["c_obs"])
-    assert Fraction(p["tau_q_rev2"]["numerator"], 20) <= c < Fraction(p["tau_q_rev3b"]["numerator"], 20)
-    assert p["tau_q_rev3b"]["numerator"] == p["tau_q_rev2"]["numerator"] + 1
+    assert Fraction(p["tau_q"]["numerator"], 20) <= c < Fraction(p["tau_q"]["numerator"] + 1, 20)
+    assert p["captured"] == 5 and len(p["green"]) == 5 and p["selection"]["main"] in p["green"]
     assert [pl["basis_count"] for pl in p["planes"].values()] == p["actual_sizes"]
     assert all(n >= t for n, t in zip(p["actual_sizes"], p["scale_target_sizes"]))
-    for k in ("F4", "B1", "B2", "B3"):
-        assert (cdrt_root / "fixtures" / "out-dev" / "derived" / k / "CAPTURE.json").exists()
+    profiles = sorted(x.name for x in (cdrt_root / "fixtures" / "out-dev" / "profiles").iterdir())
+    assert profiles == ["rev1.yaml", "rev2.yaml", "rev3.yaml"]
+    assert not (cdrt_root / "fixtures" / "out-dev" / "derived").exists()
 
 
 def test_control_guard_counts_and_restores():
@@ -66,20 +67,21 @@ def test_functional_protocol_runs_completely_and_replays(lab5, cdrt_root, tmp_pa
     stamp = {"lock_root": "L", "campaign_id": "dev-test", "git_commit": "G", "pwexp_commit": "P"}
     work = tmp_path / "work"
     work.mkdir()
-    env = functional.load_env(cdrt_root / h["bundle"], cdrt_root / h["fixtures"], work, stamp, h["f9"])
+    env = functional.load_env(cdrt_root / h["bundle"], cdrt_root / h["fixtures"], work, stamp, h["green"])
     out = functional.run_protocol(env, 2, QUIET)
     recs, acc = out["records"], out["acceptance"]["acceptance"]
     assert not out["missing"] and all(r["executed"] for r in recs)
     assert all(r["lock_root"] == "L" and "binding" in r for r in recs)
     assert out["digests"][0] == out["digests"][1]
     by = {r["id"]: r for r in recs}
-    assert [by[s]["match"] for s in ("step1", "step2", "step3")] == [True, True, True]
-    # runtime and oracle agree in every case, whatever the dev data make of the expectations
-    for k in ("AC2", "AC3", "AC4", "AC5", "AC6", "AC7", "AC8"):
-        assert acc[k]["passes"], (k, acc[k]["failing"])
+    assert [by[s]["match"] for s in ("step1", "step2", "step3", "before", "after", "delayed")] == [True] * 6
+    assert by["before"]["observed"] == {"H": "SUCCESS", "A": "SUCCESS", "gateway": "proceed"}
+    assert by["after"]["observed"] == {"H": "SUCCESS", "A": "FAIL", "gateway": "hold"}
+    assert all(acc[k]["passes"] for k in ("C1", "C2", "C3", "C4")), acc
+    assert out["acceptance"]["A_comp"] and out["acceptance"]["replay_agrees"]
     assert by["isolation"]["observed"]["guard_calls"] == 0
-    assert by["B2"]["observed"]["integrity_finding_at_load"]
-    assert not by["I1"]["observed"]["old_admitted"] and by["I1"]["observed"]["posture_unchanged"]
+    assert not by["delayed"]["observed"]["old_admitted"] and by["delayed"]["observed"]["posture_unchanged"]
+    assert set(by["observation"]["observed"]) == set(h["green"]) and by["observation"]["match"]
 
 
 def test_headline_is_the_slowest_update_against_the_budget():

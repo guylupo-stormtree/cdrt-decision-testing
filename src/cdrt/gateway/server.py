@@ -7,7 +7,8 @@ GET  /posture?profile=P&revision=N&wait=S
                                    that, record a timeout. A card of an earlier revision is never served
                                    in its place, so a superseded green posture cannot be read.
 GET  /log                          the recorded timeouts
-Stub gateway policy: SUCCESS → proceed, FAIL → hold, anything else → no-green.
+The decision served is the one on the TAIP posture card (cdrt.taip_stub: pass → proceed, fail → hold,
+inconclusive → no-green); a card without one is read as SUCCESS → proceed, FAIL → hold, else no-green.
 """
 from __future__ import annotations
 
@@ -23,6 +24,8 @@ COND = threading.Condition()
 
 
 def stub_policy(card: dict | None) -> str:
+    if (card or {}).get("gateway_decision"):
+        return card["gateway_decision"]
     agg = (card or {}).get("aggregate")
     return "proceed" if agg == "SUCCESS" and card.get("complete") else "hold" if agg == "FAIL" else "no-green"
 

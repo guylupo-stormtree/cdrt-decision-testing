@@ -8,7 +8,7 @@ from pwexp.hashing import sha256_file, sha256_json
 
 PKG = Path(__file__).resolve().parents[1]
 MODULES = ("control_guard.py", "resolver/__init__.py", "executor/__init__.py", "records/view.py",
-           "records/assessments.py", "posture/__init__.py", "evaluation.py", "monitor.py")
+           "records/assessments.py", "posture/__init__.py", "taip_stub.py", "evaluation.py", "monitor.py")
 
 
 def fingerprint() -> str:
