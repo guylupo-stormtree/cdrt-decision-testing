@@ -1,0 +1,16 @@
+{
+  "id": "P1",
+  "manifest": {
+    "file": "../manifests/M_h.json",
+    "sha256": "f9e577a109a85862d9845df17324d2bbecfc013ad90f1386da192eac2db9d5f7"
+  },
+  "note": "PILOT ONLY: tau_h is set from the pilot before the capture lock",
+  "threshold": {
+    "denominator": 1,
+    "numerator": 0
+  },
+  "validators": [
+    "base-check"
+  ],
+  "version": 1
+}

@@ -1,0 +1,7 @@
+Lab 1 · Pilot capture ───────────────────────────────────────── NOT PASSED ✗
+Inputs   Lab 0 hand-off 6b67760bf59b (re-verified)
+Checks   ✓ pilot Stage 1 passed its checks (every run kept, below the timeout, no key in any output)
+         ✓ pilot Stage 2 bound every pilot decision
+         ✓ at least 4 of 5 pilot runs GREEN (A5.1): 5 GREEN
+         ✗ tau_h set by the declared rule and above zero (R-CAP-4): tau_h = 0
+         pilot decisions: {"G-main-01": {"green": true, "coverage_M_h": "0/9"}, "G-main-02": {"green": true, "coverage_M_h": "0/9"}, "G-main-03": {"green": true, "coverage_M_h": "0/9"}, "G-main-04": {"green": true, "coverage_M_h": "0/9"}, "G-main-05": {"green": true, "coverage_M_h": "0/9"}}

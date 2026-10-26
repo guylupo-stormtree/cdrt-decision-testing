@@ -1,0 +1,20 @@
+{
+  "id": "M_h",
+  "about": "Auditor scope: functions that receive a None as a callee's return value.",
+  "target": {
+    "repository": "https://github.com/dateutil/dateutil",
+    "commit": "10f317fde11ce5bc6540e83f896af10e67d52937"
+  },
+  "derivation": "cdrt capture.draft_manifests: own ast parse of the target, never RepoAudit output",
+  "functions": [
+    "src/dateutil/parser/_parser.py::_find_hms_idx",
+    "src/dateutil/parser/_parser.py::_parse",
+    "src/dateutil/parser/_parser.py::_parse_hms",
+    "src/dateutil/parser/_parser.py::_parse_numeric_token",
+    "src/dateutil/relativedelta.py::__add__",
+    "src/dateutil/tz/_tzfile.py::_is_ambiguous_or_imaginary",
+    "src/dateutil/tz/tz.py::__get_gettz",
+    "src/dateutil/tz/tz.py::_delta",
+    "src/dateutil/tz/tz.py::_find_compdt"
+  ]
+}

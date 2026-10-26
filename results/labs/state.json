@@ -1,0 +1,18 @@
+{
+  "0": {
+    "attempt": 4,
+    "finished": "2026-10-26T15:34:29Z",
+    "handoff": "results/labs/lab0/attempt4/handoff.json",
+    "handoff_sha256": "6b67760bf59b1f9271311fac6d74052f50109a498ef24c82b3db473f07bea313",
+    "started": "2026-10-26T15:34:27Z",
+    "status": "passed"
+  },
+  "1": {
+    "attempt": 2,
+    "finished": "2026-10-26T15:35:34Z",
+    "handoff": "results/labs/lab1/attempt2/handoff.json",
+    "handoff_sha256": "86b55b5636339bbeac2c98485e0006b3e5dcbde9a1afe6ef57f2b4c2833c0a3d",
+    "started": "2026-10-26T15:35:07Z",
+    "status": "failed"
+  }
+}

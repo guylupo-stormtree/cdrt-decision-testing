@@ -11,7 +11,7 @@ def root() -> Path:
 
 
 def pwexp_checkout() -> Path:
-    """The pinned ProofWeave checkout (git submodule at tag pw-v0.2.0)."""
+    """The pinned ProofWeave checkout (git submodule at tag pw-v0.2.3)."""
     return root() / "vendor" / "proofweave-decision-assurance"
 
 

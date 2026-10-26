@@ -46,6 +46,10 @@ def run(ctx: LabContext) -> LabResult:
         rows[d] = {"green": green, "coverage_M_h": f"{len(got)}/{len(mh)}"}
         if green:
             cov.append(c)
+    runs = [json.loads(p.read_text()) for p in sorted((records / "cycles" / cid / "stage1").glob("attempt*/repoaudit/*/run*/manifest.json"))]
+    calls = [r["provider_calls"] for r in runs]
+    checks.append(Check("every pilot run consulted the model (a run with no model calls examined nothing)",
+                        bool(calls) and min(calls) > 0, f"model calls per run: {', '.join(map(str, calls))}"))
     n = int(cfg["runs"]["pilot"])
     tau, need = capture.tau_h_rule(cov, n)
     greens = sum(v["green"] for v in rows.values())
@@ -61,7 +65,10 @@ def run(ctx: LabContext) -> LabResult:
     lockf = capture.capture_dir() / "protocol.lock.json"
     summary = {"pilot cycle": cid, "pilot decisions": ", ".join(f"{d} {'GREEN' if v['green'] else 'not green'} {v['coverage_M_h']}"
                                                                  for d, v in rows.items()),
-               "tau_h": f"{tau} ({float(tau):.0%})"}
+               "tau_h": f"{tau} ({float(tau):.0%})",
+               "model calls per run": f"{min(calls)} to {max(calls)}",
+               "minutes per run": f"{min(r['wall_clock_s'] for r in runs) / 60:.0f} to "
+                                  f"{max(r['wall_clock_s'] for r in runs) / 60:.0f}"}
     return LabResult(checks, {"protocol": final, "lock": lockf}, summary,
                      handoff={"pilot_cycle": cid, "tau_h": f"{tau.numerator}/{tau.denominator}", "protocol": rel(final),
                               "lock": rel(lockf)},

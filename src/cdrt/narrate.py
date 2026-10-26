@@ -131,7 +131,7 @@ def finish(n: int, dev: bool, passed: bool, handoff: dict[str, Any], why: str) -
         out = FINISH[n](handoff, dev)
     except Exception as e:  # noqa: BLE001  never let the story break the experiment
         out = [f"This step completed. (The plain-language summary could not be assembled: {type(e).__name__}.)"]
-    return out + ["This step passed all its checks."]
+    return [x for x in out if x] + ["This step passed all its checks."]
 
 
 def _f0(h, dev):
@@ -159,7 +159,9 @@ def _f1(h, dev):
     return [f"All {len(rows)} first runs are in: {greens} said GREEN, no bugs found.",
             f"But they did not check the same amount: of the auditor's area they covered {', '.join(cov)}.",
             f"From these runs the auditor's policy is now fixed: a run must cover at least {s.get('tau_h', 'the declared share')} "
-            "of its area. The experiment is locked to this policy before the real audit."]
+            "of its area. The experiment is locked to this policy before the real audit.",
+            (f"Each run asked the AI model {s['model calls per run']} questions and took {s['minutes per run']} minutes."
+             if s.get("model calls per run") else "")]
 
 
 def _f2(h, dev):

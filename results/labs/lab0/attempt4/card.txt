@@ -1,0 +1,17 @@
+Lab 0 · Set up and declare ──────────────────────────────────────── PASSED ✓
+Inputs   none (first lab)
+Checks   ✓ capture/capture.yaml complete and valid
+         ✓ RepoAudit pinned and unmodified; Semgrep installed: ✓ RepoAudit 160f5bcd378a · pinned True · unmodified True
+         ✓ target fetched at its commit: 10f317fde11c, 46 Python files
+         ✓ licence file present (check it allows redistributing a snapshot and logs): LICENSE: Copyright 2017- Paul Ganssle <paul@ganssle.io>
+         ✓ functions that can receive a None within the declared range (A5.1): M_h 9, M_q 12, declared 8-40
+         ✓ manifests reviewed and approved by a person: approved by Guy Lupo at 2026-10-26T15:34:15Z (M_h 9, M_q 12)
+Outputs  target: capture/target (cb6e21ec890e)
+         manifests: capture/manifests (6e0f02355c8c)
+         pilot_protocol: capture/pilot/protocol.yaml (d4591d687cf3)
+         target: https://github.com/dateutil/dateutil @ 10f317fde11c
+         licence: LICENSE: Copyright 2017- Paul Ganssle <paul@ganssle.io>
+         model: openai:gpt-4.1
+         runs: pilot 5, campaign 50, standalone Semgrep 1
+         snapshot_sha256: 7a404ea3b93a269babd430e59c94b5aaf34ae15065cfc6bc3c52bc6d2b447366
+Next     cdrt lab run 1-2   (asks for the API key once, checks it, then pilot and capture)
