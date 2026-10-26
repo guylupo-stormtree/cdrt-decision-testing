@@ -30,6 +30,10 @@ def decl(**over):
 
 def test_declaration_template_is_incomplete_and_a_filled_one_is_valid():
     tpl = yaml.safe_load((REPO / "capture" / "capture.yaml").read_text())
+    assert capture.problems(tpl) == []                          # the committed declaration is complete
+    tpl["target"].update(repository="TODO", commit="TODO")
+    tpl["model"].update(provider="TODO", model="TODO")
+    tpl["runs"]["campaign"] = "TODO"
     bad = " ".join(capture.problems(tpl))
     assert "target.repository" in bad and "model.provider" in bad and "runs.campaign" in bad
     assert capture.problems(decl()) == []
