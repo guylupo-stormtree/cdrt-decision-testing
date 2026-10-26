@@ -23,7 +23,7 @@ def run(ctx: LabContext) -> LabResult:
     checks.append(Check("RepoAudit pinned and unmodified; Semgrep installed", rc == 0, out.strip().splitlines()[-1] if out.strip() else ""))
     t = cfg["target"]
     try:
-        target = capture.fetch_target(t["repository"], t["commit"], ctx.progress)
+        target = capture.fetch_target(t["repository"], t["commit"], ctx.progress, t.get("omit") or [])
     except capture.CaptureError as e:
         return LabResult(checks + [Check("target fetched at its commit", False, str(e))], {})
     lic = capture.licence(target)

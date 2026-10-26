@@ -26,12 +26,17 @@ uv venv --python 3.13 .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e '.[dev]'
 
 ## Capture (authors only: Labs 0-2)
 
-1. Fill `capture/capture.yaml`: target repository URL and full commit, model provider and name, run counts.
+1. Fill `capture/capture.yaml`: target repository URL and full commit, the files left out of the audited snapshot
+   (`target.omit`), model provider and name, run counts. `cdrt capture reset --label TEXT` archives an earlier
+   capture's working files (before any campaign) so Lab 0 starts clean.
 2. `cdrt lab run 0`: environment, target fetched at its commit, scope manifests drafted from the code. Review
    (and edit if needed) `capture/manifests/drafts/`, then `cdrt manifests approve --by "Your Name"` and run Lab 0 again.
-3. `cdrt lab run 1-2`: asks for the API key once, checks it with one minimal call, then runs the pilot (sets
-   tau_h, locks the capture protocol) and the campaign. The key stays in memory and is never written anywhere.
-4. `cdrt lab run 3-9`: corpus, review and freeze, fixtures, lock, RQ1, RQ2, report.
+3. `cdrt lab run 1`: asks for the API key once, checks it with one minimal call, then runs the pilot (sets tau_h;
+   reports model calls and minutes per run). The key stays in memory and is never written anywhere.
+4. Optional, before the campaign: `cdrt capture campaign-runs N` sets the campaign size from the pilot's cost.
+5. `cdrt lab run 2`: asks for the key again, locks the campaign protocol (tau_h and the campaign size), then runs
+   the campaign. (`cdrt lab run 1-2` does both in one go, without the pause.)
+6. `cdrt lab run 3-9`: corpus, review and freeze, fixtures, lock, RQ1, RQ2, report.
 
 Every lab tells what it is about to do and, when it ends, what happened, in plain language for a non-technical
 audience; during the capture each audit run gets one plain line. Every number comes from the run's own records

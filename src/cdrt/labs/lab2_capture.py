@@ -1,6 +1,7 @@
 """Lab 2: capture (requirements R-CAP-1, R-CAP-3, R-CAP-8).
 
-Runs the locked campaign through pwexp Stage 1 in a campaign cycle: every scheduled G-main decision with its
+Writes P1 (tau_h from the pilot) and the campaign protocol with the campaign size declared now in capture.yaml,
+takes the capture lock, then runs the locked campaign through pwexp Stage 1 in a campaign cycle: every scheduled G-main decision with its
 context sealed before its RepoAudit run, plus the standalone Semgrep scan(s), every outcome kept. pwexp refuses
 a campaign cycle unless the capture lock is valid and the model equals the locked one. Lab 3 then builds the
 corpus. The API key is the one typed and checked at the start of `cdrt lab run 1-2`.
@@ -8,8 +9,9 @@ corpus. The API key is the one typed and checked at the start of `cdrt lab run 1
 from __future__ import annotations
 
 import json
+from fractions import Fraction
 
-from .. import capture, paths
+from .. import capture
 from .framework import Check, LabContext, LabResult
 
 
@@ -25,7 +27,14 @@ def run(ctx: LabContext) -> LabResult:
     if not checks[0].ok:
         return LabResult(checks, {})
     records = capture.capture_dir() / "records"
-    proto = paths.root() / ctx.inputs["handoff"]["protocol"]
+    tau = Fraction(ctx.inputs["handoff"]["tau_h"])
+    proto = capture.write_protocol(cfg, capture.capture_dir(), int(cfg["runs"]["campaign"]),
+                                   int(cfg["runs"]["semgrep_standalone"]), tau)
+    rc, out = capture.pwexp(records, proto, "protocol", "lock")
+    checks.append(Check(f"capture protocol locked with {cfg['runs']['campaign']} campaign runs and tau_h {tau} (R-CAP-2)",
+                        rc == 0, out.strip().splitlines()[-1] if out.strip() else ""))
+    if rc:
+        return LabResult(checks, {})
     model = f"{cfg['model']['provider']}:{cfg['model']['model']}"
     try:
         cid = capture.new_cycle(records, proto, "campaign")
@@ -44,5 +53,6 @@ def run(ctx: LabContext) -> LabResult:
     summary = {"campaign cycle": cid, "RepoAudit": f"{o.get('repoaudit_green')}/{o.get('repoaudit_runs')} GREEN",
                "decisions": json.dumps((o.get("decisions") or {}).get("by_group", {})),
                "Semgrep": f"{o.get('semgrep_green')}/{o.get('semgrep_runs')} GREEN"}
-    return LabResult(checks, {"stage1": records / "cycles" / cid / "stage1"}, summary,
+    return LabResult(checks, {"protocol": proto, "lock": capture.capture_dir() / "protocol.lock.json",
+                              "stage1": records / "cycles" / cid / "stage1"}, summary,
                      handoff={"cycle": cid}, next_hint="cdrt lab run 3-9   (offline from here: no key, no RepoAudit)")

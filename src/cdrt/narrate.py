@@ -86,6 +86,7 @@ def start(n: int, dev: bool) -> list[str]:
     return {
         0: [f"We are about to download {name}, a real, widely used open-source library"
             + (f": {downloads(t['pypi'])}" if t.get("pypi") and not dev else "") + ".",
+            (f"We audit one part of it: {t['scope']}. " if t.get("scope") else "") +
             "We will scan it with RepoAudit, an AI code auditor, for one kind of bug: a program using a value that "
             "may be empty (in Python, None) and crashing. First we mark, with our own independent analysis, the "
             "places in the code where such an empty value can be handed from one function to another. That is the "
@@ -94,7 +95,9 @@ def start(n: int, dev: bool) -> list[str]:
             f"{model}. Each run ends with a verdict: GREEN means no bug found.",
             "From these first runs we fix the auditor's own policy, the standard it was held to at the time, before "
             "the real audit starts. Once fixed, it cannot be changed."],
-        2: [f"Now the real audit: RepoAudit runs {runs.get('campaign', 'many')} times on exactly the same code, with "
+        2: ["First we lock the audit's rules: the policy from the first look and the number of runs. From now on "
+            "they cannot be changed.",
+            f"Now the real audit: RepoAudit runs {runs.get('campaign', 'many')} times on exactly the same code, with "
             "the same model and the same question. Before every run we seal what was asked and which policy applies. "
             "Every result is kept, good or bad.",
             "Watch the verdicts. What each GREEN actually checked stays hidden for now."],
@@ -159,7 +162,7 @@ def _f1(h, dev):
     return [f"All {len(rows)} first runs are in: {greens} said GREEN, no bugs found.",
             f"But they did not check the same amount: of the auditor's area they covered {', '.join(cov)}.",
             f"From these runs the auditor's policy is now fixed: a run must cover at least {s.get('tau_h', 'the declared share')} "
-            "of its area. The experiment is locked to this policy before the real audit.",
+            "of its area. This policy, and the number of runs, are locked in at the start of the real audit.",
             (f"Each run asked the AI model {s['model calls per run']} questions and took {s['minutes per run']} minutes."
              if s.get("model calls per run") else "")]
 

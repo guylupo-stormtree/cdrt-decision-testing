@@ -119,3 +119,41 @@ def test_key_prompt_checks_and_never_stores(root, monkeypatch, capsys):
     monkeypatch.setattr(capture, "model_check", lambda p, m, k: (False, "HTTP 401"))
     assert cli._key_for([1], dev=False) is None
     assert cli._range("1-2") == [1, 2] and cli._range("3") == [3]
+
+
+def test_scope_omit_approval_bound_to_snapshot_campaign_size_and_reset(root):
+    repo = root / "src-repo"
+    shutil.copytree(FIXTURE, repo)
+    (repo / "LICENSE").write_text("MIT License\n")
+    (repo / "extra").mkdir()
+    (repo / "extra" / "noisy.py").write_text("def f():\n    return None\n")
+    run = lambda *c: subprocess.run(list(c), cwd=repo, check=True, capture_output=True)  # noqa: E731
+    run("git", "init", "-q")
+    run("git", "-c", "user.email=t@t", "-c", "user.name=t", "add", ".")
+    run("git", "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "x")
+    sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True).stdout.strip()
+    cfg = decl(target={"repository": str(repo), "commit": sha, "expected_functions": [1, 50], "exclude": []})
+    t = capture.fetch_target(str(repo), sha, lambda m: None)
+    assert (t / "extra" / "noisy.py").exists()
+    capture.write_drafts(capture.draft_manifests(t, []), cfg)
+    capture.approve("Reviewer")
+    assert capture.approval_status()[0]
+    t = capture.fetch_target(str(repo), sha, lambda m: None, ["extra/*"])      # scope narrowed: RepoAudit never sees it
+    assert not (t / "extra").exists() and capture.licence(t)
+    ok, why = capture.approval_status()
+    assert not ok and "snapshot changed" in why                                 # the old approval no longer counts
+    # campaign size: set after the pilot, before any campaign cycle
+    (root / "capture" / "capture.yaml").write_text((REPO / "capture" / "capture.yaml").read_text())
+    assert capture.set_campaign_runs(15) == 50 and capture.declaration()["runs"]["campaign"] == 15
+    with pytest.raises(capture.CaptureError):
+        capture.set_campaign_runs(0)
+    # reset archives the working files; refused once a campaign has run
+    dst = capture.reset("scope narrowed")
+    assert (dst / "target").exists() and not capture.target_dir().exists() and (root / "capture" / "capture.yaml").exists()
+    c = root / "capture" / "records" / "cycles" / "campaign-0001"
+    c.mkdir(parents=True)
+    (c / "cycle.json").write_text(json.dumps({"mode": "campaign"}))
+    with pytest.raises(capture.CaptureError, match="campaign"):
+        capture.set_campaign_runs(20)
+    with pytest.raises(capture.CaptureError, match="campaign"):
+        capture.reset("again")

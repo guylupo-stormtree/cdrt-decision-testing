@@ -1,9 +1,10 @@
 """Lab 1: pilot capture (requirements R-CAP-2, R-CAP-4; A5.1).
 
 Runs the pilot G-main decisions through pwexp (Stages 1-2) into capture/records (pilot cycles, never results),
-reads each GREEN pilot decision's coverage of M_h through the record view, sets tau_h by the declared rule (the
-largest multiple of 1/20 at which at least 80% of the pilot runs would conform), writes P1 and the campaign
-protocol, and takes the capture lock. The API key is typed once at the start of `cdrt lab run 1-2`.
+reads each GREEN pilot decision's coverage of M_h through the record view, and sets tau_h by the declared rule
+(the largest multiple of 1/20 at which at least 80% of the pilot runs would conform). It reports model calls and
+minutes per run, so the campaign size (runs.campaign) can be set before Lab 2 writes P1 and the campaign protocol
+and takes the capture lock. The API key is typed once at the start of `cdrt lab run 1-2`.
 """
 from __future__ import annotations
 
@@ -58,18 +59,12 @@ def run(ctx: LabContext) -> LabResult:
                      f"tau_h = {tau}" if tau is not None else "too few GREEN pilot runs")]
     if not all(c.ok for c in checks):
         return LabResult(checks, {}, {"pilot decisions": json.dumps(rows)})
-    final = capture.write_protocol(cfg, capture.capture_dir(), int(cfg["runs"]["campaign"]),
-                                   int(cfg["runs"]["semgrep_standalone"]), tau)
-    rc, out = capture.pwexp(records, final, "protocol", "lock")
-    checks.append(Check("capture protocol locked (R-CAP-2)", rc == 0, out.strip().splitlines()[-1] if out.strip() else ""))
-    lockf = capture.capture_dir() / "protocol.lock.json"
     summary = {"pilot cycle": cid, "pilot decisions": ", ".join(f"{d} {'GREEN' if v['green'] else 'not green'} {v['coverage_M_h']}"
                                                                  for d, v in rows.items()),
                "tau_h": f"{tau} ({float(tau):.0%})",
                "model calls per run": f"{min(calls)} to {max(calls)}",
                "minutes per run": f"{min(r['wall_clock_s'] for r in runs) / 60:.0f} to "
                                   f"{max(r['wall_clock_s'] for r in runs) / 60:.0f}"}
-    return LabResult(checks, {"protocol": final, "lock": lockf}, summary,
-                     handoff={"pilot_cycle": cid, "tau_h": f"{tau.numerator}/{tau.denominator}", "protocol": rel(final),
-                              "lock": rel(lockf)},
-                     next_hint="Lab 2 (the campaign capture) follows in the same run")
+    return LabResult(checks, {"pilot": records / "cycles" / cid}, summary,
+                     handoff={"pilot_cycle": cid, "tau_h": f"{tau.numerator}/{tau.denominator}"},
+                     next_hint="check the cost per run; adjust with `cdrt capture campaign-runs N` if needed; then `cdrt lab run 2`")

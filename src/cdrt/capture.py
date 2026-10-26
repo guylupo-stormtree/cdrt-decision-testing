@@ -75,6 +75,9 @@ def problems(cfg: dict[str, Any]) -> list[str]:
         v = r.get(k)
         if not todo(v) and (not isinstance(v, int) or isinstance(v, bool) or v < (0 if k == "semgrep_standalone" else 1)):
             out.append(f"runs.{k} must be a positive integer")
+    om = t.get("omit", [])
+    if not isinstance(om, list) or not all(isinstance(x, str) and x for x in om):
+        out.append("target.omit must be a list of file patterns")
     if cfg.get("bug_type", "NPD") != "NPD":
         out.append("bug_type must be NPD (RepoAudit's null-pointer detector)")
     if not re.fullmatch(r"[+-]\d\d:\d\d", str(cfg.get("log_utc_offset", ""))):
@@ -92,11 +95,13 @@ def target_dir() -> Path:
     return capture_dir() / "target"
 
 
-def fetch_target(url: str, commit: str, progress: Callable[[str], None] = print) -> Path:
-    """The target at exactly `commit`, as a plain file tree (no .git), in capture/target/."""
+def fetch_target(url: str, commit: str, progress: Callable[[str], None] = print, omit: list[str] | None = None) -> Path:
+    """The target at exactly `commit`, as a plain file tree (no .git), in capture/target/, without the files
+    matching `omit` (the declared scope: RepoAudit and the manifests never see them)."""
     dst = target_dir()
     stamp = dst / ".cdrt-target.json"
-    if stamp.exists() and json.loads(stamp.read_text()).get("commit") == commit:
+    want = {"repository": url, "commit": commit, "omit": list(omit or [])}
+    if stamp.exists() and json.loads(stamp.read_text()) == want:
         return dst
     work = capture_dir() / ".target-clone"
     shutil.rmtree(work, ignore_errors=True)
@@ -111,7 +116,17 @@ def fetch_target(url: str, commit: str, progress: Callable[[str], None] = print)
     shutil.rmtree(dst, ignore_errors=True)
     shutil.copytree(work, dst, ignore=shutil.ignore_patterns(".git"))
     shutil.rmtree(work, ignore_errors=True)
-    stamp.write_text(json.dumps({"repository": url, "commit": commit}) + "\n")
+    gone = 0
+    for p in sorted(dst.rglob("*"), reverse=True):
+        r = p.relative_to(dst).as_posix()
+        if p.is_file() and any(fnmatch.fnmatch(r, g) for g in want["omit"]):
+            p.unlink()
+            gone += 1
+        elif p.is_dir() and not any(p.iterdir()):
+            p.rmdir()
+    if want["omit"]:
+        progress(f"scope: {gone} files left out as declared in target.omit")
+    stamp.write_text(json.dumps(want) + "\n")
     return dst
 
 
@@ -227,7 +242,8 @@ def approve(by: str) -> dict[str, Any]:
         (manifest_dir() / f"{n}.json").write_text(json.dumps(doc, indent=2) + "\n")
     rec = {"approved_by": by, "approved_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
            "files": {f"{n}.json": sha256_file(manifest_dir() / f"{n}.json") for n in docs},
-           "sizes": {n: len(d["functions"]) for n, d in docs.items()}}
+           "sizes": {n: len(d["functions"]) for n, d in docs.items()},
+           "snapshot_sha256": snapshot_sha256(target_dir())}
     (manifest_dir() / "REVIEW.json").write_text(json.dumps(rec, indent=2) + "\n")
     return rec
 
@@ -237,6 +253,8 @@ def approval_status() -> tuple[bool, str]:
     if not f.exists():
         return False, "not yet reviewed and approved"
     rec = json.loads(f.read_text())
+    if rec.get("snapshot_sha256") != snapshot_sha256(target_dir()):
+        return False, "the target snapshot changed after approval (or the approval predates the scope): review and approve again"
     for name, h in rec["files"].items():
         p = manifest_dir() / name
         if not p.exists() or sha256_file(p) != h:
@@ -341,3 +359,45 @@ def new_cycle(records_root: Path, proto: Path, mode: str) -> str:
     if rc != 0 or not m:
         raise CaptureError(f"pwexp cycle new failed: {out.strip()[-300:]}")
     return m.group(1)
+
+
+# ------------------------------------------------------------------ before a capture: reset, campaign size
+def campaign_started() -> bool:
+    return any(json.loads(p.read_text()).get("mode") == "campaign"
+               for p in (capture_dir() / "records" / "cycles").glob("*/cycle.json"))
+
+
+def reset(label: str) -> Path:
+    """Archive this capture's working files (target, manifests, protocols, lock, pilot records) so Lab 0 starts
+    clean; refused once a campaign has run. capture.yaml stays; the lab log keeps every earlier attempt."""
+    if campaign_started():
+        raise CaptureError("a campaign has already run: its records are never archived away")
+    dst = capture_dir() / "archive" / f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{re.sub(r'[^A-Za-z0-9_-]+', '-', label)}"
+    moved = []
+    for name in ("target", "manifests", "pilot", "records", "policies", "cdrt-protocol.yaml", "protocol.lock.json"):
+        p = capture_dir() / name
+        if p.exists():
+            dst.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(p), str(dst / name))
+            moved.append(name)
+    if not moved:
+        raise CaptureError("nothing to archive")
+    (dst / "ARCHIVED.json").write_text(json.dumps({"label": label, "moved": moved,
+                                                   "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}, indent=2) + "\n")
+    return dst
+
+
+def set_campaign_runs(n: int) -> int:
+    """Change runs.campaign in capture.yaml (after the pilot, before the campaign; Lab 2 locks it)."""
+    if n < 1:
+        raise CaptureError("the campaign needs at least one run")
+    if campaign_started():
+        raise CaptureError("the campaign has already run under its lock: its size can no longer change")
+    f = capture_dir() / "capture.yaml"
+    text = f.read_text()
+    old = int(declaration()["runs"]["campaign"])
+    new, k = re.subn(r"(?m)^(  campaign:\s*)\d+", lambda m: f"{m.group(1)}{n}", text, count=1)
+    if k != 1:
+        raise CaptureError("runs.campaign not found in capture.yaml")
+    f.write_text(new)
+    return old

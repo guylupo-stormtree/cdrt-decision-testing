@@ -5,6 +5,8 @@
   cdrt lab run N[-M] [--dev]       run lab N, or labs N to M in order (each refuses unless the previous one
                                    passed and its hand-off verifies). Labs 1-2 ask for the API key once at the
                                    start, check it with one minimal call, and keep it in memory only
+  cdrt capture campaign-runs N     after the pilot, before Lab 2: set the campaign size (Lab 2 locks it)
+  cdrt capture reset --label TEXT  archive the capture's working files so Lab 0 starts clean (before any campaign)
   cdrt manifests approve --by NAME approve the scope manifests Lab 0 drafted (after reviewing them)
   cdrt lab watch [--dev] [--once]  one live status line (run it in a second terminal while a lab runs)
   cdrt lab story [--dev]           the plain-language story of the whole experiment so far (STORY.md)
@@ -185,6 +187,21 @@ def cmd_story(a) -> int:
     return 0
 
 
+def cmd_capture(a) -> int:
+    from . import capture
+    try:
+        if a.what == "campaign-runs":
+            old = capture.set_campaign_runs(a.n)
+            _p(f"{OK} campaign runs {old} → {a.n} in capture/capture.yaml; Lab 2 locks this number before its first run")
+        else:
+            dst = capture.reset(a.label)
+            _p(f"{OK} archived to {dst.relative_to(paths.root())}; run `cdrt lab run 0` to start clean")
+        return 0
+    except capture.CaptureError as e:
+        _p(f"{FAIL} {e}")
+        return 1
+
+
 def cmd_verify_lock(a) -> int:
     from . import lock
     ok, problems, doc = lock.verify(a.dev)
@@ -241,6 +258,14 @@ def main(argv: list[str] | None = None) -> int:
     st = ls.add_parser("story", help="the plain-language story so far")
     st.add_argument("--dev", action="store_true")
     st.set_defaults(fn=cmd_story)
+    cp = sub.add_parser("capture", help="before the campaign: set its size, or start the capture again").add_subparsers(
+        dest="what", required=True)
+    cr = cp.add_parser("campaign-runs", help="set runs.campaign (after the pilot, before Lab 2)")
+    cr.add_argument("n", type=int)
+    cr.set_defaults(fn=cmd_capture)
+    rs = cp.add_parser("reset", help="archive target, manifests, protocols and pilot records (before any campaign)")
+    rs.add_argument("--label", required=True, help="why, e.g. 'scope narrowed to the parser'")
+    rs.set_defaults(fn=cmd_capture)
     mf = sub.add_parser("manifests", help="approve the reviewed scope manifests drafted by Lab 0")
     mf.add_argument("action", choices=["approve"])
     mf.add_argument("--by", required=True, help="the person approving them")
