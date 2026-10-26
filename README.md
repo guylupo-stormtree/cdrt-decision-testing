@@ -9,11 +9,13 @@ Control-decision risk testing over recorded decisions. A control (here RepoAudit
 ## Get everything (one repository)
 
 ```bash
-git clone --recurse-submodules https://github.com/guylupo-stormtree/cdrt-decision-testing.git
+git clone https://github.com/guylupo-stormtree/cdrt-decision-testing.git
+cd cdrt-decision-testing && ./fetch-dependencies.sh
 ```
 
-This also fetches ProofWeave (`vendor/proofweave-decision-assurance`, pinned tag) and, inside it, RepoAudit
-(pinned commit). The frozen corpus, fixtures, oracle, lock file and raw records are in this repository, so Labs 3-9
+The script fetches ProofWeave (`vendor/proofweave-decision-assurance`, pinned tag) and, inside it, RepoAudit
+(pinned commit), and nothing deeper: RepoAudit's own benchmark submodules (large C/C++/Go projects) are not
+needed. Avoid `git clone --recurse-submodules`, which would also try to fetch them. The frozen corpus, fixtures, oracle, lock file and raw records are in this repository, so Labs 3-9
 repeat offline with no RepoAudit, no language model and no API key:
 
 ```bash

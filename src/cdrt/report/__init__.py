@@ -223,8 +223,8 @@ def _https(url: str) -> str:
 
 
 def availability(d: dict[str, Any], repoaudit_commit: str, tag: str) -> str:
-    """One repository for the reviewer: it holds everything, and cloning it with its submodules also fetches
-    ProofWeave and RepoAudit at the pinned versions. URLs come from the repositories' own git configuration."""
+    """One repository for the reviewer: it holds everything, and its fetch-dependencies.sh fetches ProofWeave and
+    RepoAudit at the pinned versions (and not RepoAudit's own large benchmark submodules). URLs come from the repositories' own git configuration."""
     from .. import lock, paths
     cdrt = _https(lock.git("remote", "get-url", "origin") or "<CDRT repository URL>")
     pw = _https(lock.git("config", "-f", ".gitmodules", "--get", "submodule.vendor/proofweave-decision-assurance.url") or "")
@@ -232,7 +232,7 @@ def availability(d: dict[str, Any], repoaudit_commit: str, tag: str) -> str:
     pw_tag = d["lock"]["components"]["pwexp"].get("tag") or d["lock"]["components"]["pwexp"]["commit"][:12]
     ref = f"tag \\texttt{{{tex(tag)}}}" if tag else f"commit \\texttt{{{tex(d['lock']['git_commit'][:12])}}}"
     return (f"Everything needed to inspect and repeat the experiment is in one repository, \\url{{{cdrt}}} ({ref}). "
-            f"Cloning it with its submodules (\\texttt{{git clone --recurse-submodules}}) also fetches ProofWeave "
+            f"After \\texttt{{git clone}}, its script \\texttt{{fetch-dependencies.sh}} fetches the two pinned dependencies, ProofWeave "
             f"(\\url{{{pw}}}, tag \\texttt{{{tex(pw_tag)}}}) and RepoAudit (\\url{{{ra}}}, commit "
             f"\\texttt{{{tex(repoaudit_commit[:7])}}}). The repository holds the capture declaration and protocol, the sealed "
             f"corpus, the fixtures, the oracle, the lock file and every raw record. The assessment and timing phases can be "
