@@ -18,6 +18,7 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 import sys
 
 from . import paths
@@ -146,11 +147,15 @@ def watch_line(dev: bool) -> str:
             total = "?"
         done = [json.loads(p.read_text()) for p in cyc.glob("stage1/attempt*/decisions/*/decision.json")]
         greens = sum(d.get("verdict") == "green" for d in done)
-        out += f" · audit run {min(len(done) + 1, total) if isinstance(total, int) else len(done) + 1} of {total}" \
-               f" · finished {len(done)}, GREEN {greens}"
+        out += f" · run {min(len(done) + 1, total) if isinstance(total, int) else len(done) + 1} of {total}" \
+               f" · done {len(done)}, GREEN {greens}"
         logs = list((paths.pwexp_checkout() / "vendor" / "RepoAudit" / "log" / "dfbscan").rglob("dfbscan.log"))
         if logs:
-            out += f" · RepoAudit last active {_dur(now - max(p.stat().st_mtime for p in logs))} ago"
+            newest = max(logs, key=lambda p: p.stat().st_mtime)
+            if newest.stat().st_mtime >= att.stat().st_mtime:   # the run under way: its model calls so far
+                with newest.open("rb") as fh:
+                    out += f" · model calls {sum(l.count(b' is running') for l in fh):,}"
+            out += f" · last active {_dur(now - newest.stat().st_mtime)} ago"
     return out
 
 
@@ -166,7 +171,8 @@ def cmd_watch(a) -> int:
         return 0
     try:
         while True:
-            print("\r\033[K" + watch_line(a.dev)[:200], end="", flush=True)
+            width = shutil.get_terminal_size((100, 20)).columns - 1   # one line, never wrapped
+            print("\r\033[K" + watch_line(a.dev)[:width], end="", flush=True)
             time.sleep(5)
     except KeyboardInterrupt:
         _p()
