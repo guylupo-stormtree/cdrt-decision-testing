@@ -2,12 +2,15 @@
 
 One pass runs, on the frozen bundle and the fixtures, with the capture entry points disabled:
 
-  main sequence   register conformance-check, activate rev 1; register adequacy-check, activate rev 2 (before);
-                  activate rev 3, which adds independent-check (after). Cards go to the gateway process through
-                  the TAIP posture stub; while rev 3's adequacy verdict is pending the gateway must serve no green
+  main sequence   register conformance-check, activate rev 1; register coverage-composition, activate rev 2
+                  (before: adequacy answered by the evidence of every captured decision together); activate rev 3,
+                  which adds independent-check (after). Cards go to the gateway process through the TAIP posture
+                  stub; while rev 3's adequacy verdict is pending the gateway must serve no green
+  timeline        the composed coverage after each decision is admitted in capture order: the observed estate,
+                  the newly admitted decision's share of it (rho, narrow or not), the composed state and gateway
   delayed         a rev-2 adequacy SUCCESS is held and released after the rev-3 verdict is admitted
-  observation     every captured GREEN G-main decision under rev 1-3, each judgement compared with the oracle
-                  (more runs, more data; not part of A_comp)
+  observation     every captured GREEN G-main decision on its own: conformance, its individual adequacy
+                  (adequacy-check) and whether a gateway relying on it alone would proceed (not part of A_comp)
 
 Expected states come from oracle/expectations.yaml; every judgement is also compared with the independent
 oracle (oracle_check.py batch). Code fingerprints are taken before and after every registration and
@@ -41,7 +44,8 @@ from .scheduler import DelayQueue
 
 H, A = "release.effectiveness", "release.adequacy"
 CONF, ADEQ = "conformance-check@1.0", "adequacy-check@1.0"
-IDS = ["step1", "step2", "step3", "before", "after", "delayed", "observation", "isolation"]
+IDS = ["step1", "step2", "step3", "before", "after", "timeline", "delayed", "observation", "isolation"]
+COMP = "coverage-composition@1.0"
 CONDITIONS = {"C1": "Verdicts match the oracle before and after", "C2": "Second-module composition",
               "C3": "Gateway transition and delayed-result rejection", "C4": "No control re-execution"}
 
@@ -71,22 +75,41 @@ def load_env(bundle: Path, fixtures: Path, work: Path, stamp: dict[str, Any], gr
 
 # ------------------------------------------------------------------ oracle
 def adequacy_params(profile: dict[str, Any]) -> dict[str, Any] | None:
-    return next((r["parameters"] for r in profile["requirements"] if r["test"] == ADEQ), None)
+    return next((r["parameters"] for r in profile["requirements"] if r["test"] in (ADEQ, COMP)), None)
 
 
 def _oracle_params(p: dict[str, Any]) -> dict[str, Any]:
     ref = p["manifest_ref"]
-    return {"manifest": {"file": f"manifests/{ref['id']}.json", "sha256": ref["sha256"]},
-            **{k: p[k] for k in ("minimum_coverage", "validators", "max_age_seconds", "assessment_time")}}
+    keys = ("minimum_coverage", "validators", "max_age_seconds", "assessment_time", "relative_threshold", "context")
+    return {"manifest": {"file": f"manifests/{ref['id']}.json", "sha256": ref["sha256"]}, **{k: p[k] for k in keys if k in p}}
+
+
+def prefixes(env: Env) -> list[list[str]]:
+    """The decision set after each admission, in capture order."""
+    order = [d for d in env.params["capture_order"] if d in view.list_decisions(env.snap)]
+    return [order[: i + 1] for i in range(len(order))]
 
 
 def oracle_judgements(env: Env) -> dict[tuple, dict[str, Any]]:
-    """One oracle process for every (decision, requirement) the protocol judges."""
-    decisions = list(dict.fromkeys([env.params["selection"]["main"], *env.green]))
-    keys: list[tuple] = [("H", d) for d in decisions] + [("A", d, r) for d in decisions for r in ("rev2", "rev3")]
-    reqs = [{"kind": "conformance", "decision": k[1]} if k[0] == "H" else
-            {"kind": "adequacy", "decision": k[1], "params": _oracle_params(adequacy_params(env.profiles[k[2]]))}
-            for k in keys]
+    """One oracle process for every judgement the protocol makes."""
+    main = env.params["selection"]["main"]
+    decisions = list(dict.fromkeys([main, *env.green]))
+    every = view.list_decisions(env.snap)
+    keys: list[tuple] = [("H", d) for d in decisions] + [("A", main, r) for r in ("rev2", "rev3")] + \
+        [("A1", d) for d in decisions] + [("P", i) for i in range(len(prefixes(env)))]
+
+    def req(k: tuple) -> dict[str, Any]:
+        if k[0] == "H":
+            return {"kind": "conformance", "decision": k[1]}
+        if k[0] == "A":
+            return {"kind": "composition", "decisions": every, "current": main,
+                    "params": _oracle_params(adequacy_params(env.profiles[k[2]]))}
+        if k[0] == "A1":
+            return {"kind": "adequacy", "decision": k[1], "params": _oracle_params(adequacy_params(env.profiles["obs2"]))}
+        ds = prefixes(env)[k[1]]
+        return {"kind": "composition", "decisions": ds, "current": ds[-1],
+                "params": _oracle_params(adequacy_params(env.profiles["rev2"]))}
+    reqs = [req(k) for k in keys]
     f = env.work / "oracle-requests.json"
     f.write_text(json.dumps(reqs, indent=2, sort_keys=True))
     p = subprocess.run([sys.executable, str(paths.root() / "oracle" / "oracle_check.py"), "batch", str(env.bundle), str(f)],
@@ -116,6 +139,9 @@ def agrees(v: dict[str, Any], o: dict[str, Any] | None) -> list[str]:
         a, b = m.get("max_age_seconds"), o["max_age_seconds"]
         if (a is None) != (b is None) or (a is not None and abs(a - b) > 0.002):
             out.append(f"age {a} vs oracle {b}")
+    for k in ("covered", "uncovered", "observed_estate", "drift", "eligible", "excluded", "rho", "narrow", "current"):
+        if "observed_estate" in o and m.get(k) != o.get(k):  # a composed judgement: the sets must agree exactly
+            out.append(f"{k} {m.get(k)} vs oracle {o[k]}")
     return out
 
 
@@ -238,12 +264,12 @@ class Pass:
                     c1["leaves"][H]["state"] == SUCCESS and c1["taip"]["root"] == "pass" and g1 == "proceed",
                     {d: v["binding"] for d, v in o1["by_leaf"].items()}, card=leaves(c1))
 
-        o2 = self.cycle("step 2 (rev 2)", c, P["rev2"], self.registry("step2", [CONF, ADEQ]), publish=publish)
+        o2 = self.cycle("step 2 (rev 2)", c, P["rev2"], self.registry("step2", [CONF, COMP]), publish=publish)
         c2, g2 = c.card(self.t(P["rev2"])), gateway(P["rev2"]["revision"])
         self.lane("rev 2", c2)
         h_kept = c2["leaves"][H]["verdict_ref"] == c1["leaves"][H]["verdict_ref"] and H not in o2["affected"]
         e1, e2 = self.regs["step1"][1], self.regs["step2"][1]
-        only_registration = e2[: len(e1)] == e1 and [f"{e['id']}@{e['version']}" for e in e2[len(e1):]] == [ADEQ]
+        only_registration = e2[: len(e1)] == e1 and [f"{e['id']}@{e['version']}" for e in e2[len(e1):]] == [COMP]
         r1, r2 = P["rev1"], P["rev2"]
         only_profile_edit = r2["requirements"][: len(r1["requirements"])] == r1["requirements"] and \
             {k: v for k, v in r1.items() if k not in ("revision", "label", "requirements")} == \
@@ -305,35 +331,67 @@ class Pass:
                     old["state"] == SUCCESS and not ok and stored and unchanged and after["gateway_decision"] == "hold",
                     {"old": old["binding"], "new": o3["by_leaf"][A]["binding"]}, card=leaves(after))
 
-    # ---------------------------------------------------------------- observation over every green decision
+    # ---------------------------------------------------------------- timeline: composed coverage per admission
+    def timeline(self) -> None:
+        reg = self.regs["step2"][0]
+        rows, bind, diffs = [], {}, []
+        for i, ds in enumerate(prefixes(self.env)):
+            prof = with_decision(self.env.profiles["rev2"], ds[-1])
+            for r in prof["requirements"]:
+                if r["test"] == COMP:
+                    r["parameters"]["decision_set"] = list(ds)
+            c = Consumer()
+            out = self.cycle(f"timeline {i + 1} ({ds[-1]})", c, prof, reg)
+            card = c.card(self.t(prof))
+            v = out["by_leaf"][A]
+            m = v["measurements"]
+            d = [f"after {ds[-1]}: {x}" for x in agrees(v, self.oracle.get(("P", i)))]
+            diffs += d
+            rows.append({"admitted": ds[-1], "decisions": len(ds), "observed_estate": m.get("observed_estate_size"),
+                         "covered": f"{m.get('coverage_numerator')}/{m.get('coverage_denominator')}",
+                         "rho_admitted": (m.get("current") or {}).get("rho"), "narrow_admitted": (m.get("current") or {}).get("narrow"),
+                         "eligible_admitted": (m.get("current") or {}).get("eligible"), "drift": m.get("drift"),
+                         "composed": v["state"], "gateway": card["gateway_decision"], "oracle_agrees": not d})
+            bind[ds[-1]] = v["binding"]
+        self.record("timeline", "timeline", {"oracle": "exact agreement after every admission"}, rows,
+                    bool(rows) and not diffs, bind, diffs)
+
+    # ---------------------------------------------------------------- observation: every green decision on its own
     def observation(self) -> None:
+        reg = self.registry("observation", [CONF, ADEQ])
+        final = (self.cards.get("step2") or {})
+        comp = next((r for r in self.records if r["id"] == "before"), {})
+        m = ((comp.get("verdicts") or {}).get(A) or {}).get("measurements") or {}
         obs, bind = {}, {}
         for d in self.env.green:
-            row, diffs = {}, []
-            for rev in ("rev1", "rev2", "rev3"):
-                prof = with_decision(self.env.profiles[rev], d)
-                c = Consumer()
-                out = self.cycle(f"observation ({d}, {rev})", c, prof, self.regs["step2"][0])
-                card = c.card(self.t(prof))
-                diffs += agrees(out["by_leaf"][H], self.oracle.get(("H", d))) if rev == "rev1" else []
-                if A in out["by_leaf"]:
-                    diffs += [f"{rev} A: {x}" for x in agrees(out["by_leaf"][A], self.oracle.get(("A", d, rev)))]
-                row[rev] = {"H": card["leaves"][H]["state"], "A": (card["leaves"].get(A) or {}).get("state"),
-                            "taip": card["taip"]["root"], "gateway": card["gateway_decision"]}
-                bind[f"{d} {rev}"] = {x: v["binding"] for x, v in out["by_leaf"].items()}
-                if rev == "rev1":
-                    m = out["by_leaf"][H]["measurements"]
-                    row["coverage_M_h"] = f"{m.get('coverage_numerator')}/{m.get('coverage_denominator')}"
-            obs[d] = {**row, "oracle_agrees": not diffs, "notes": diffs}
+            diffs = []
+            c = Consumer()
+            out = self.cycle(f"observation ({d})", c, with_decision(self.env.profiles["obs2"], d), reg)
+            card = c.card(self.t(self.env.profiles["obs2"]))
+            diffs += agrees(out["by_leaf"][H], self.oracle.get(("H", d)))
+            diffs += [f"A: {x}" for x in agrees(out["by_leaf"][A], self.oracle.get(("A1", d)))]
+            a = out["by_leaf"][A]["measurements"]
+            narrow = d in (m.get("narrow") or [])
+            alone = "hold" if narrow and card["gateway_decision"] == "proceed" else card["gateway_decision"]
+            obs[d] = {"H": card["leaves"][H]["state"], "A_alone": card["leaves"][A]["state"],
+                      "coverage_alone": f"{a.get('coverage_numerator')}/{a.get('coverage_denominator')}",
+                      "rho": (m.get("rho") or {}).get(d), "narrow": narrow, "gateway_alone": alone,
+                      "eligible": d in (m.get("eligible") or []), "excluded": (m.get("excluded") or {}).get(d),
+                      "oracle_agrees": not diffs, "notes": diffs}
+            bind[d] = {x: v["binding"] for x, v in out["by_leaf"].items()}
         self.record("observation", "observation", self.env.expect["observation"]["expect"], obs,
                     all(v["oracle_agrees"] for v in obs.values()), bind,
-                    [] if obs else ["no GREEN G-main decision was captured"])
+                    [] if obs else ["no GREEN G-main decision was captured"],
+                    composed={"state": final.get("leaves", {}).get(A, {}).get("state"), "gateway": final.get("gateway_decision"),
+                              "covered": f"{m.get('coverage_numerator')}/{m.get('coverage_denominator')}",
+                              "observed_estate": m.get("observed_estate_size")})
 
     def run(self) -> list[dict[str, Any]]:
         import pwexp.stages.stage1_acquire as stage1
         from ..control_guard import ENTRY_POINTS
         armed = all(getattr(getattr(stage1, n), "__qualname__", "").startswith("Guard._stub") for n in ENTRY_POINTS)
-        for id, fn in (("main sequence", self.main_sequence), ("delayed", self.delayed), ("observation", self.observation)):
+        for id, fn in (("main sequence", self.main_sequence), ("timeline", self.timeline), ("delayed", self.delayed),
+                       ("observation", self.observation)):
             self.guarded(id, fn)
         fps = {fp for _, fp in self.fingerprints}
         calls = len(self.guard.calls)
@@ -363,7 +421,8 @@ def conditions(records: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     comp = (by.get("step2") or {}).get("composition") or {}
     iso = (by.get("isolation") or {}).get("observed") or {}
     items = {
-        "C1": [("before", ok("before") and by["before"]["oracle_agrees"]), ("after", ok("after") and by["after"]["oracle_agrees"])],
+        "C1": [("before", ok("before") and by["before"]["oracle_agrees"]), ("after", ok("after") and by["after"]["oracle_agrees"]),
+               ("composed coverage after every admission", ok("timeline"))],
         "C2": [("only registration", bool(comp.get("only_registration"))), ("only a profile edit", bool(comp.get("only_profile_edit"))),
                ("fingerprints unchanged", iso.get("distinct_fingerprints") == 1)],
         "C3": [("step 1 proceed", ok("step1")), ("step 2 proceed", ok("step2")), ("step 3 no green then hold", ok("step3")),

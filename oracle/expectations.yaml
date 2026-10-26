@@ -1,16 +1,19 @@
 # CDRT oracle expectations (R-ORC-1). First committed before the decision tests were written (41ebdbf).
 # Narrowed on 2026-10-25 to the main-14 protocol (PROGRESS.md D-017): the strict, pipeline, missing-policy,
 # damaged-record and boundary cases were removed. The expected states of the retained steps are unchanged.
-# States are expectations BY CONSTRUCTION of the fixtures (requirements A1): a correct implementation must
-# produce them; any mismatch is reported as a failure. Symbols refer to fixtures/out/parameters.json:
+# Revised on 2026-10-26 for main-16 (ComposableCDRT D-020): the adequacy leaf of the gateway profile is answered
+# by coverage-composition@1.0 over every captured decision; tau_q and tau_rel are declared before capture.
+# Steps 1 and 3 and the delayed result are expectations BY CONSTRUCTION. Step 2 ("before": the captured
+# decisions together reach tau_q) is the experiment's claim, NOT guaranteed by construction: if they fall short,
+# "before" does not match and is reported as such; nothing is tuned afterwards. Symbols (fixtures parameters.json):
 #   main     the selected decision: first GREEN G-main decision the oracle judges conformant under P1 (R-CAP-5)
-#   c_obs = c(Sigma_main, M_q); tau_q = floor(20 c_obs)/20
+#   tau_q, tau_rel   declared in protocol/run_config.yaml (80% each); c_obs = c(Sigma_main, M_q) is reported only
 #   t_e = latest decided_at of the captured decisions + 600 s; Delta_q = (t_e - oldest relevant observation) + 1200 s
-version: 2
+version: 3
 
 main_sequence:
   - {step: 1, register: conformance-check@1.0, activate: rev1, expect: {H: SUCCESS, posture: pass, gateway: proceed}}
-  - {step: 2, register: adequacy-check@1.0, activate: rev2, expect: {H: SUCCESS, A: SUCCESS, posture: pass, gateway: proceed}}
+  - {step: 2, register: coverage-composition@1.0, activate: rev2, expect: {H: SUCCESS, A: SUCCESS, posture: pass, gateway: proceed}}
   - {step: 3, activate: rev3, expect: {H: unchanged, A_support_withdrawn_before_new_verdict: true,
                                        gateway_while_pending: no-green, A: FAIL,
                                        A_missing_validator: independent-check, A_missing_for: every covered target,
@@ -20,17 +23,24 @@ cases:
   before: {decision: main, profile: rev2, H: SUCCESS, A: SUCCESS, gateway: proceed}
   after: {decision: main, profile: rev3, H: SUCCESS, A: FAIL, gateway: hold}
 
+timeline:
+  expect: "after each admission in capture order, the composed coverage, the observed estate, the admitted decision's
+           share of it (rho) and the gateway agree exactly with this oracle; the gateway proceeds only once the
+           composed coverage reaches tau_q"
+
 delayed:
   expect: "a rev-2 adequacy SUCCESS released after the rev-3 verdict is admitted is rejected, kept in history,
            and leaves the posture and the gateway unchanged"
 
 observation:
   decisions: every captured G-main decision
-  profiles: [rev1, rev2, rev3]
-  expect: "as observed; each judgement must agree with this oracle. Reported with the pathway figure; not part of A_comp"
+  profiles: [obs2]
+  expect: "each decision on its own: conformance, its individual adequacy and rho; as observed, each judgement must
+           agree with this oracle. Reported with the pathway figure and the coverage table; not part of A_comp"
 
 acceptance:   # main-14 §4.4: A_comp is true only if all four hold in both runs
-  C1: {row: Verdicts match the oracle, passes_when: "H and A match the oracle before (rev2) and after (rev3)"}
+  C1: {row: Verdicts match the oracle, passes_when: "H and A match the oracle before (rev2) and after (rev3), and the
+                                                    composed coverage sets agree exactly after every admission"}
   C2: {row: Second-module composition, passes_when: "step 2 needs only one registry entry and one profile requirement;
                                                      code fingerprints unchanged"}
   C3: {row: Gateway transition, passes_when: "proceed, then no green while A is pending, then hold; the delayed success

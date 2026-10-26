@@ -38,6 +38,22 @@ def inputs_for(inv: Invocation, s: Snapshot, manifests: ManifestStore, dv: Decis
     return out
 
 
+def decision_inputs(s: Snapshot, did: str, manifests: ManifestStore, dv: DecisionView | None = None) -> dict[str, Any]:
+    """One decision as a composing test sees it: its conformance inputs plus verdict, intent and origin."""
+    dv = dv if dv is not None and dv.decision_id == did else retrieve(s, did)
+    probe = Invocation({}, "", None, {}, did)
+    out = inputs_for(probe, s, manifests, dv)
+    payload = ((dv.decision.get("decision") or {}).get("payload") or {})
+    intent = ((dv.decision.get("intent") or {}).get("payload") or {})
+    return {**out, "decision_id": did, "verdict": payload.get("verdict"), "synthetic": bool((dv.decision.get("binding") or {}).get("synthetic")),
+            "intent": {k: intent.get(k) for k in ("repo", "commit", "bug_type")}}
+
+
+def composition_inputs(inv: Invocation, s: Snapshot, manifests: ManifestStore, dv: DecisionView | None = None) -> dict[str, Any]:
+    return {"decisions": [decision_inputs(s, d, manifests, dv) for d in inv.decision_ids],
+            "manifest": manifests.resolve(inv.params.get("manifest_ref"))[0], "current": inv.decision_id}
+
+
 def evaluate(inv: Invocation, s: Snapshot, manifests: ManifestStore, dv: DecisionView | None = None) -> dict[str, Any]:
     # the fixed output contract (main-14 Table 2): state, execution status, requirement and revision,
     # measurements, evidence references, reasons, validity limit; the binding B travels with it
@@ -46,7 +62,9 @@ def evaluate(inv: Invocation, s: Snapshot, manifests: ManifestStore, dv: Decisio
     if inv.entry is None:
         return {**base, "execution_status": "lookup-failed", "state": None, "measurements": {},
                 "reasons": [inv.lookup_error or "test not registered"]}
-    status, out = execute(inv.entry, inputs_for(inv, s, manifests, dv), inv.params)
+    inputs = composition_inputs(inv, s, manifests, dv) if inv.decision_ids else inputs_for(inv, s, manifests, dv)
+    status, out = execute(inv.entry, {**inputs, "allow_synthetic": s.allow_synthetic},
+                          {**inv.params, "allow_synthetic": s.allow_synthetic})
     if status != "ok":
         return {**base, "execution_status": status, "state": None, "measurements": {},
                 "reasons": [f"execution {status}"] + ([out["error"]] if out and "error" in out else [])}

@@ -29,7 +29,7 @@ def fake(tmp_path, monkeypatch):
 
 def test_registered_entries_are_approved_and_match():
     r = Registry()
-    assert {e["ref"] for e in r.describe()} == {"conformance-check@1.0", "adequacy-check@1.0"} and not r.rejected
+    assert {e["ref"] for e in r.describe()} == {"conformance-check@1.0", "adequacy-check@1.0", "coverage-composition@1.0"} and not r.rejected
     with pytest.raises(LookupFailure):
         r.lookup("conformance-check@2.0")
 

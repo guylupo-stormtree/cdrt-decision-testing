@@ -4,6 +4,9 @@ fixtures:
   age_after_decision_s: 600          # t_e = latest decided_at among the selected decisions + 600 s (R-FIX-2, D-012)
   age_margin_s: 1200                 # Delta_q = (t_e - oldest relevant observation) + 1200 s
   threshold_step: 20                 # thresholds are multiples of 1/20
+  tau_q: {numerator: 4, denominator: 5}       # declared before capture: composed coverage of M_q needed (80%)
+  tau_rel: {numerator: 4, denominator: 5}     # declared before capture: a decision reaching less than this share
+                                              # of the estate observed so far is GREEN but narrow (80%)
 scale:
   target_sizes: [100, 1000, 10000, 100000]   # N = basis_count, k_i = ceil(N_i / n_0) (R-FIX-3)
   warmups: 5

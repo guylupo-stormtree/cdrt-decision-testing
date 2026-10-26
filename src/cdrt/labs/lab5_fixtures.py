@@ -22,7 +22,9 @@ from .framework import Check, LabContext, LabResult, rel
 def macros(p: dict) -> str:
     """Preview of the fixture macros for the manuscript (Lab 9 generates the real block)."""
     t2 = p["tau_q"]
+    tr = p["tau_rel"]
     rows = {"CDRTcobs": p["c_obs_count"], "CDRTtauQ": f"{t2['numerator']}/{t2['denominator']}",
+            "CDRTtauRel": f"{tr['numerator']}/{tr['denominator']}",
             "CDRTrunCount": f"{p['captured']}", "CDRTassessmentTime": p["t_e"],
             "CDRTmaxAge": f"{p['max_age_seconds']}", "CDRTnZero": f"{p['n0']}",
             "CDRTscaleSizes": ", ".join(f"{n:,}" for n in p["actual_sizes"])}
@@ -50,23 +52,24 @@ def run(ctx: LabContext) -> LabResult:
     target = bundle / "target"
     for n, pl in p["planes"].items():
         s = view.load_snapshot(out / "planes" / f"N{n}", target, allow_synthetic=True)
-        rec = view.get_decision(s, pl["decision"])
-        ok = rec["status"] == "complete" and rec["binding"]["payload"]["basis_count"] == pl["basis_count"]
+        recs = [view.get_decision(s, d) for d in pl["decisions"].values()]
+        ok = all(r["status"] == "complete" for r in recs) and \
+            sum(r["binding"]["payload"]["basis_count"] for r in recs) == pl["basis_count"]
         planes_ok &= ok
         plane_notes.append(f"N={pl['basis_count']:,}{'' if ok else ' (not complete)'}")
 
     c_obs, tau2 = Fraction(p["c_obs"]), Fraction(p["tau_q"]["numerator"], p["tau_q"]["denominator"])
     (ctx.attempt_dir / "fixture_macros.preview.tex").write_text(macros(p))
     checks = [
-        Check("tau_q >= 1/2 (otherwise the capture is unsuitable, main-15 §4.3)", tau2 >= Fraction(1, 2),
-              f"tau_q = {tau2}"),
-        Check("profiles rev 1-3 written", sorted(x.name for x in (out / "profiles").iterdir())
-              == ["rev1.yaml", "rev2.yaml", "rev3.yaml"]),
+        Check("tau_q and tau_rel declared in run_config before capture (not derived from the data)",
+              p["checks"]["tau_q and tau_rel declared"], f"tau_q = {tau2}, tau_rel = {Fraction(p['tau_rel']['numerator'], p['tau_rel']['denominator'])}"),
+        Check("profiles rev 1-3 and the one-decision observation profile written",
+              sorted(x.name for x in (out / "profiles").iterdir()) == ["obs2.yaml", "rev1.yaml", "rev2.yaml", "rev3.yaml"]),
         Check("every scale plane verified and checkpointed", planes_ok, " · ".join(plane_notes)),
         Check("two builds give identical bytes (R-FIX-5)", not differ,
               f"{len(a)} files" if not differ else f"{len(differ)} files differ, e.g. {differ[0]}"),
     ]
-    summary = {"captured decisions": f"{p['captured']} ({len(p['green'])} GREEN)", "c_obs": p["c_obs_count"], "tau_q": f"{tau2}",
+    summary = {"captured decisions": f"{p['captured']} ({len(p['green'])} GREEN)", "c_obs (main alone)": p["c_obs_count"], "tau_q": f"{tau2}",
                "t_e": p["t_e"], "max_age_seconds (Delta_q)": p["max_age_seconds"],
                "scale sizes (actual N)": ", ".join(f"{n:,}" for n in p["actual_sizes"]),
                "fixtures_sha256": manifest_hash(a)}

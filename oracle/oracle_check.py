@@ -17,10 +17,16 @@ targets (Eq. 4). From those the oracle derives the
 expected conformance H and adequacy A states. Observation times: RepoAudit log times, interpreted with the
 bundle's declared log_utc_offset (CAPTURE.json); a Semgrep assessment takes its run's recorded start.
 
+Composition (main-16): over a declared set of decisions, the eligible ones (GREEN, the declared repository,
+commit and bug type, conformant under their own policy, observations readable, not after t_e and within the
+maximum age), the observed estate E (every function an eligible decision carried a None into), the composed
+coverage |E ∩ M_q| / |M_q|, corroboration over E, each decision's share |W_r| / |E| and the narrow ones.
+
   python oracle/oracle_check.py conformance BUNDLE DECISION
   python oracle/oracle_check.py adequacy BUNDLE DECISION PARAMS.json
   python oracle/oracle_check.py select BUNDLE                 the selection rule R-CAP-5 (R-ORC-4; main only)
-  python oracle/oracle_check.py batch BUNDLE REQUESTS.json    [{kind: conformance|adequacy, decision, params}]
+  python oracle/oracle_check.py batch BUNDLE REQUESTS.json    [{kind: conformance|adequacy, decision, params} |
+                                                               {kind: composition, decisions, current, params}]
 """
 from __future__ import annotations
 
@@ -271,6 +277,60 @@ def adequacy(bundle: Bundle, did: str, params: dict) -> dict:
     return r
 
 
+def composition(bundle: Bundle, decisions: list[str], current: str | None, params: dict) -> dict:
+    """Coverage composed over the eligible decisions of a set, recomputed from the raw files.
+    params: manifest {file, sha256}, minimum_coverage, relative_threshold, validators, max_age_seconds,
+    assessment_time, context {repo, commit, bug_type}."""
+    scope = bundle.manifest(params["manifest"])
+    if scope is None:
+        return {"state": INCONCLUSIVE, "reason": "manifest unresolvable"}
+    scope = sorted(set(scope))
+    validators, te = params["validators"], _iso(params.get("assessment_time"))
+    ctx = params.get("context") or {}
+    eligible, excluded, reached, accepted, ages = [], {}, {}, set(), []
+    for did in decisions:
+        d = bundle.decision(did)
+        acc = bundle.assessments(did)
+        times = [t for v in validators for t in acc.get(v, {}).values()]
+        why = None
+        if d["decision"]["verdict"] != "green":
+            why = "not GREEN"
+        elif any(ctx.get(k) is not None and d["context"]["intent"].get(k) != ctx[k] for k in ("repo", "commit", "bug_type")):
+            why = "different repository, commit or bug type"
+        else:
+            h = conformance(bundle, did)["state"]
+            if h != SUCCESS:
+                why = f"not conformant under its own policy-at-event ({h})"
+            elif te is None or any(t is None for t in times):
+                why = "unreadable observation time"
+            elif any(t > te for t in times):
+                why = "observation after the assessment time"
+            elif max(((te - t).total_seconds() for t in times), default=0.0) > params["max_age_seconds"]:
+                why = "observations older than the maximum age"
+        if why:
+            excluded[did] = why
+            continue
+        eligible.append(did)
+        ages.append(max(((te - t).total_seconds() for t in times), default=0.0))
+        reached[did] = set(acc.get("base-check", {}))
+        accepted |= {(u, v) for v in acc for u in acc[v]}
+    estate = set().union(*reached.values()) if reached else set()
+    covered = sorted(estate & set(scope))
+    missing = {u: [v for v in validators if (u, v) not in accepted] for u in covered}
+    missing = {u: m for u, m in missing.items() if m}
+    tau, tau_rel = _frac(params["minimum_coverage"]), _frac(params["relative_threshold"])
+    ok = Fraction(len(covered), len(scope)) >= tau if scope else False
+    rho = {d: f"{len(w)}/{len(estate)}" for d, w in reached.items()} if estate else {}
+    narrow = sorted(d for d, w in reached.items() if estate and Fraction(len(w), len(estate)) < tau_rel)
+    return {"state": SUCCESS if ok and not missing and eligible else FAIL,
+            "coverage": f"{len(covered)}/{len(scope)}", "covered": covered, "uncovered": sorted(set(scope) - estate),
+            "observed_estate": sorted(estate), "drift": sorted(estate - set(scope)), "eligible": eligible,
+            "excluded": excluded, "rho": rho, "narrow": narrow, "missing_validators": missing,
+            "current": {"decision": current, "eligible": current in reached, "rho": rho.get(current),
+                        "narrow": current in narrow},
+            "max_age_seconds": round(max(ages), 3) if ages else None}
+
+
 def select(bundle: Bundle) -> dict:
     """R-CAP-5 as narrowed by main-14: the main decision is the first GREEN G-main decision (run order) that the
     oracle judges conformant under its policy. Every G-main decision is listed with its verdict and H."""
@@ -306,8 +366,9 @@ def main(argv: list[str]) -> int:
     elif argv[0] == "select":
         out = select(b)
     elif argv[0] == "batch":
-        out = [conformance(b, q["decision"]) if q["kind"] == "conformance" else adequacy(b, q["decision"], q["params"])
-               for q in json.loads(Path(argv[2]).read_text())]
+        out = [conformance(b, q["decision"]) if q["kind"] == "conformance" else
+               composition(b, q["decisions"], q.get("current"), q["params"]) if q["kind"] == "composition" else
+               adequacy(b, q["decision"], q["params"]) for q in json.loads(Path(argv[2]).read_text())]
     else:
         print(__doc__)
         return 2

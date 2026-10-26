@@ -28,13 +28,16 @@ def lab5(dev_bundle, cdrt_root):
 def test_fixture_parameters_follow_the_declared_rules(lab5, cdrt_root):
     from fractions import Fraction
     p = json.loads((cdrt_root / "fixtures" / "out-dev" / "parameters.json").read_text())
-    c = Fraction(p["c_obs"])
-    assert Fraction(p["tau_q"]["numerator"], 20) <= c < Fraction(p["tau_q"]["numerator"] + 1, 20)
+    assert p["tau_q"] == {"numerator": 4, "denominator": 5} and p["tau_rel"] == {"numerator": 4, "denominator": 5}  # declared
+    assert 0 <= Fraction(p["c_obs"]) <= 1 and p["capture_order"] and set(p["capture_order"]) == set(p["green"])
     assert p["captured"] == 5 and len(p["green"]) == 5 and p["selection"]["main"] in p["green"]
     assert [pl["basis_count"] for pl in p["planes"].values()] == p["actual_sizes"]
     assert all(n >= t for n, t in zip(p["actual_sizes"], p["scale_target_sizes"]))
     profiles = sorted(x.name for x in (cdrt_root / "fixtures" / "out-dev" / "profiles").iterdir())
-    assert profiles == ["rev1.yaml", "rev2.yaml", "rev3.yaml"]
+    assert profiles == ["obs2.yaml", "rev1.yaml", "rev2.yaml", "rev3.yaml"]
+    rev2 = yaml.safe_load((cdrt_root / "fixtures" / "out-dev" / "profiles" / "rev2.yaml").read_text())
+    assert rev2["requirements"][1]["test"] == "coverage-composition@1.0"
+    assert rev2["requirements"][1]["parameters"]["decision_set"] == "all-captured"
     assert not (cdrt_root / "fixtures" / "out-dev" / "derived").exists()
 
 
@@ -74,7 +77,13 @@ def test_functional_protocol_runs_completely_and_replays(lab5, cdrt_root, tmp_pa
     assert all(r["lock_root"] == "L" and "binding" in r for r in recs)
     assert out["digests"][0] == out["digests"][1]
     by = {r["id"]: r for r in recs}
-    assert [by[s]["match"] for s in ("step1", "step2", "step3", "before", "after", "delayed")] == [True] * 6
+    assert [by[s]["match"] for s in ("step1", "step2", "step3", "before", "after", "timeline", "delayed")] == [True] * 7
+    tl = by["timeline"]["observed"]
+    assert [r["decisions"] for r in tl] == list(range(1, 6)) and all(r["oracle_agrees"] for r in tl)
+    assert tl[-1]["covered"] == "8/8" and tl[-1]["observed_estate"] == 8          # composed: every release function
+    obs = by["observation"]["observed"]
+    assert sum(1 for v in obs.values() if v["narrow"]) == 4                         # GREEN but narrow
+    assert all(v["gateway_alone"] == "hold" for v in obs.values() if v["narrow"])
     assert by["before"]["observed"] == {"H": "SUCCESS", "A": "SUCCESS", "gateway": "proceed"}
     assert by["after"]["observed"] == {"H": "SUCCESS", "A": "FAIL", "gateway": "hold"}
     assert all(acc[k]["passes"] for k in ("C1", "C2", "C3", "C4")), acc
@@ -106,6 +115,6 @@ def test_scale_cycles_keep_meaning_and_are_all_recorded(lab5, cdrt_root):
     res = scale.run(cdrt_root / h["fixtures"], cdrt_root / h["bundle"], cfg, {"lock_root": "L"}, QUIET, blocks=2, warmups=1)
     assert res["expected_cycles"] == len(res["records"]) == 4
     assert all(r["match"] and r["completed"] and r["lock_root"] == "L" for r in res["records"])
-    assert all(r["shared_view"]["tests"] == ["conformance-check@1.0", "adequacy-check@1.0"] for r in res["records"])
+    assert all(r["shared_view"]["tests"] == ["conformance-check@1.0", "coverage-composition@1.0"] for r in res["records"])
     assert res["guard_calls"] == 0 and res["stats"]["100"]["observations"] == 2
     assert "real-time" not in res["sentence"]

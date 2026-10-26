@@ -29,3 +29,18 @@ entries:
       SUCCESS: the recorded basis satisfies the current requirement (coverage, corroboration, age)
       FAIL: the recorded basis shows a shortfall against the current requirement
       INCONCLUSIVE: a condition cannot be judged from the record (incomplete basis, unreadable times)
+  - id: coverage-composition
+    version: "1.0"
+    module: cdrt.tests_registered.coverage_composition
+    code: ["tests_registered/coverage_composition/__init__.py", "tests_registered/conformance_check/__init__.py", "tests_registered/common.py"]
+    code_digest: f76d6336ae1647889c555f7989bb2b65ab2fc0b6c3c8832b1a3c0c07333e282f
+    approved: true
+    inputs: [decisions, manifest, current]
+    parameters: {decision_set: required, manifest_ref: required, minimum_coverage: required, relative_threshold: required, validators: required, max_age_seconds: required, assessment_time: required, context: required}
+    prerequisites: [decision-binding]
+    limits: {wall_seconds: 60, memory_mb: 4096}
+    meanings:
+      SUCCESS: the eligible decisions together cover the release manifest to the required share, with every required validator
+      FAIL: the complete records of the eligible decisions together fall short of the current coverage requirement
+      INCONCLUSIVE: a decision record in the set is incomplete, so a shortfall cannot be established
+

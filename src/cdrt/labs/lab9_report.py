@@ -7,7 +7,8 @@ Table 4, the pathway and scale figures) from those records only, places it besid
 the manuscript with them and compiles the copy. The manuscript itself is never written here: blocks the
 manuscript does not have yet (the A17 revision) are inserted into the copy only, and listed.
 
-Manuscript: $CDRT_MANUSCRIPT, or ../ComposableCDRT/Manuscript/main-15.tex next to this repository.
+Manuscript: $CDRT_MANUSCRIPT, or ../ComposableCDRT/Manuscript/main-16.tex next to this repository. The folder name is
+the one the manuscript reads: generated/ (the campaign) or generated-pending/ (the development mockup).
 """
 from __future__ import annotations
 
@@ -29,7 +30,7 @@ from .framework import Check, LabContext, LabResult, rel
 
 def manuscript() -> Path:
     env = os.environ.get("CDRT_MANUSCRIPT")
-    return Path(env) if env else paths.root().parent / "ComposableCDRT" / "Manuscript" / "main-15.tex"
+    return Path(env) if env else paths.root().parent / "ComposableCDRT" / "Manuscript" / "main-16.tex"
 
 
 def repoaudit_commit() -> str:
@@ -74,18 +75,22 @@ def run(ctx: LabContext) -> LabResult:
     if not src.exists():
         return LabResult([Check("manuscript found", False, f"{src} (set CDRT_MANUSCRIPT)")], {})
     tag = lock.git("describe", "--tags", "--exact-match", doc["git_commit"]) if doc.get("git_commit") else ""
-    gen, trace = report.blocks(d, ctx.dev, root, repoaudit_commit(), tag)
+    text = src.read_text()
+    folder = "generated-pending" if "\\input{generated-pending/" in text else "generated"
+    gen, trace = report.blocks(d, ctx.dev, root, repoaudit_commit(), tag, folder=folder)
     fig_tex, fig_csv = report.figure(d, int(cfg["seed"]), dev=ctx.dev)
     path_tex = report.pathway_figure(d, h["selection"], dev=ctx.dev)
+    cov_tex = report.coverage_figure(d, dev=ctx.dev)
 
-    # generated/: the folder main-15 reads with \input; after the campaign it replaces the manuscript's folder
-    bdir = ctx.attempt_dir / "generated"
+    # the folder the manuscript reads with \input; after the campaign it replaces the manuscript's folder
+    bdir = ctx.attempt_dir / folder
     (bdir / "figures").mkdir(parents=True)
     for name, body in report.files(gen).items():
         (bdir / name).write_text(body)
     (bdir / "figures" / "scale_latency.tex").write_text(fig_tex)
     (bdir / "figures" / "scale_latency.csv").write_text(fig_csv)
     (bdir / "figures" / "pathways.tex").write_text(path_tex)
+    (bdir / "figures" / "coverage.tex").write_text(cov_tex)
     (bdir / "README.md").write_text(
         f"# Generated experiment content{' (DEVELOPMENT DATA, not a result)' if ctx.dev else ''}\n\n"
         f"Written by `cdrt lab run 9` from the locked campaign `{doc['campaign_id']}` (lock root `{doc['lock_root']}`, "
@@ -93,21 +98,20 @@ def run(ctx: LabContext) -> LabResult:
         "manuscript itself does not change.\n")
 
     mdir = ctx.attempt_dir / "manuscript"
-    text = src.read_text()
-    wanted = [f"\\input{{generated/{n[:-4]}}}" for n in report.FILES]
-    input_mode = "\\input{generated/" in text
+    wanted = [f"\\input{{{folder}/{n[:-4]}}}" for n in report.FILES]
+    input_mode = f"\\input{{{folder}/" in text
     if input_mode:                                         # main-15 onwards: the manuscript copy reads generated/
         missing_inputs = [w for w in wanted if w not in text]
         mdir.mkdir()
         (mdir / src.name).write_text(text)
-        shutil.copytree(bdir, mdir / "generated")
-        replaced, inserted = [n for n in report.FILES if f"\\input{{generated/{n[:-4]}}}" in text], []
+        shutil.copytree(bdir, mdir / folder)
+        replaced, inserted = [n for n in report.FILES if f"\\input{{{folder}/{n[:-4]}}}" in text], []
     else:                                                  # older manuscripts hold the blocks inline
         missing_inputs = []
         (mdir / "figures").mkdir(parents=True)
         filled, replaced, inserted = report.fill(text, gen)
-        (mdir / src.name).write_text(filled.replace("generated/figures/", "figures/"))
-        for f in ("scale_latency.tex", "pathways.tex"):
+        (mdir / src.name).write_text(filled.replace(f"{folder}/figures/", "figures/"))
+        for f in ("scale_latency.tex", "pathways.tex", "coverage.tex"):
             shutil.copyfile(bdir / "figures" / f, mdir / "figures" / f)
     bib = src.with_name("references.bib")
     if bib.exists():
@@ -117,13 +121,17 @@ def run(ctx: LabContext) -> LabResult:
 
     pdir = ctx.attempt_dir / "figure-preview"
     pdir.mkdir()
-    for f in ("scale_latency.tex", "pathways.tex"):
+    for f in ("scale_latency.tex", "pathways.tex", "coverage.tex"):
         shutil.copyfile(bdir / "figures" / f, pdir / f)
     (pdir / "preview.tex").write_text("\\documentclass[border=4pt]{standalone}\n\\usepackage{pgfplots}\n"
                                       "\\pgfplotsset{compat=1.18}\n\\newlength{\\cw}\\setlength{\\cw}{9cm}\n"
                                       "\\begin{document}\n{\\columnwidth=\\cw\\input{scale_latency.tex}}\n\\end{document}\n")
     (pdir / "pathways-preview.tex").write_text("\\documentclass[border=4pt]{standalone}\n\\usepackage{tikz}\n"
                                                "\\begin{document}\n\\input{pathways.tex}\n\\end{document}\n")
+    (pdir / "coverage-preview.tex").write_text("\\documentclass[border=4pt]{standalone}\n\\usepackage{pgfplots}\n"
+                                               "\\pgfplotsset{compat=1.18}\n\\newlength{\\cw}\\setlength{\\cw}{9cm}\n"
+                                               "\\begin{document}\n{\\columnwidth=\\cw\\input{coverage.tex}}\n\\end{document}\n")
+    cov_ok, cov_errors, _ = latex(pdir, "coverage-preview.tex")
     fig_ok, fig_errors, _ = latex(pdir, "preview.tex")
     path_ok, path_errors, _ = latex(pdir, "pathways-preview.tex")
 
@@ -150,11 +158,13 @@ def run(ctx: LabContext) -> LabResult:
         Check("wording rules (R-REP-5)", wording),
         Check("the manuscript reads every generated file", not missing_inputs,
               "missing: " + ", ".join(missing_inputs) if missing_inputs else
-              (f"{len(wanted)} \\input{{generated/...}} files" if input_mode else "inline blocks (pre-main-15 manuscript)")),
+              (f"{len(wanted)} \\input{{{folder}/...}} files" if input_mode else "inline blocks (pre-main-15 manuscript)")),
         Check("the filled manuscript copy compiles with 0 errors", built and not errors,
               (f"{len(errors)} errors: {errors[0]}" if errors else "0 errors") +
               (f"; {cites} citations undefined (no references.bib next to the manuscript)" if cites and not bib.exists() else "")),
         Check("the scale figure compiles on its own", fig_ok and not fig_errors, "; ".join(fig_errors[:1])),
+        Check("the composed-coverage figure compiles on its own", cov_ok and not cov_errors,
+              "; ".join(cov_errors[:1]) or tx["CoverageSentence"]),
         Check("the same-green-different-paths figure compiles on its own", path_ok and not path_errors,
               "; ".join(path_errors[:1]) or tx["PathwaySentence"]),
     ]
@@ -176,7 +186,7 @@ def run(ctx: LabContext) -> LabResult:
             summary[k] = sum(v[k] for v in st.values())
     return LabResult(checks, {"generated": bdir, "manuscript_copy": mdir / src.name, "trace": ctx.attempt_dir / "trace.json",
                               "figure_preview": pdir / "preview.pdf", "pathways_preview": pdir / "pathways-preview.pdf"},
-                     summary,
+                     {**summary, "coverage": tx["CoverageSentence"]},
                      handoff={"generated": rel(bdir), "manuscript_copy": rel(mdir / src.name), "A_comp": acc["A_comp"],
                               "sentence": d["scale"]["sentence"], "lock_root": doc["lock_root"]},
                      next_hint="the generated blocks are ready for the A17 manuscript revision" if not ctx.dev else

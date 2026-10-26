@@ -67,8 +67,9 @@ def run(ctx: LabContext) -> LabResult:
                "after (rev 3)": show("after") if "after" in by else "not run",
                "failing": "; ".join(f"{k}: {', '.join(v['failing'])}" for k, v in acc["acceptance"].items() if v["failing"])
                or "none",
-               "observation": f"{len(obs)} GREEN decisions; H rev1 " + ", ".join(
-                   f"{d} {v['rev1']['H']} ({v['coverage_M_h']})" for d, v in obs.items()) if obs else "none",
+               "observation": f"{len(obs)} GREEN decisions; alone (H, release coverage, share, gateway): " + ", ".join(
+                   f"{d} {v['H']} {v['coverage_alone']} {v['rho']}{' narrow' if v['narrow'] else ''} {v['gateway_alone']}"
+                   for d, v in obs.items()) if obs else "none",
                "records": rel(f_rec)}
     return LabResult(checks, {"functional_records": f_rec, "acceptance": f_acc, "trace": f_tr}, summary,
                      handoff={"A_comp": acc["A_comp"], "acceptance": {k: v["passes"] for k, v in acc["acceptance"].items()},

@@ -26,13 +26,15 @@ def test_fill_replaces_existing_blocks_and_inserts_missing_ones_after_their_anch
     gen = {n: f"% generated {n}" for n in report.BLOCKS}
     text, replaced, inserted = report.fill(PAPER, gen)
     assert replaced == ["results_macros", "functional_table", "scale_table"]
-    assert inserted == ["fixture_macros", "pathway_figure", "scale_figure", "pgfplots (preamble)"]
-    assert "pending" not in text and text.count("% BEGIN GENERATED:") == 6
+    assert inserted == ["fixture_macros", "pathway_figure", "scale_figure", "coverage_table", "coverage_figure",
+                        "pgfplots (preamble)"]
+    assert "pending" not in text and text.count("% BEGIN GENERATED:") == 8
     assert text.index("END GENERATED:results_macros") < text.index("BEGIN GENERATED:fixture_macros")
     assert text.index("END GENERATED:scale_table") < text.index("BEGIN GENERATED:scale_figure")
     assert text.index(r"\usepackage{pgfplots}") < text.index(r"\begin{document}")
     again, replaced2, inserted2 = report.fill(text, gen)                 # idempotent once the blocks exist
-    assert again == text and inserted2 == [] and len(replaced2) == 6
+    assert again == text and inserted2 == [] and len(replaced2) == 8
+    assert text.index("END GENERATED:pathway_figure") < text.index("BEGIN GENERATED:coverage_table")
     assert text.index("END GENERATED:functional_table") < text.index("BEGIN GENERATED:pathway_figure")
 
 
@@ -60,6 +62,7 @@ def test_generated_folder_has_one_file_per_place_in_the_manuscript():
     gen = {b: f"% body of {b}" for b in (*report.BLOCKS, "experiment_record")}
     out = report.files(gen)
     assert set(out) == {"cdrt-macros.tex", "cdrt-record.tex", "cdrt-functional-table.tex", "cdrt-pathway-figure.tex",
+                        "cdrt-coverage-table.tex", "cdrt-coverage-figure.tex",
                         "cdrt-scale-table.tex", "cdrt-scale-figure.tex"}
     assert out["cdrt-macros.tex"].index("BEGIN GENERATED:results_macros") < out["cdrt-macros.tex"].index(
         "BEGIN GENERATED:fixture_macros")

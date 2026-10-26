@@ -60,7 +60,10 @@ class Plane:
                  registry: Registry, profiles: dict[str, dict[str, Any]]):
         self.size, self.decision = size, info["decision"]
         self.snap = view.load_snapshot(fixtures / "planes" / f"N{size}", bundle / "target", allow_synthetic=True)
-        self.n = view.get_decision(self.snap, self.decision)["binding"]["payload"]["basis_count"]   # builds the index
+        view.get_decision(self.snap, self.decision)                       # builds the decision index (untimed)
+        # N is every basis record in the plane: the composed test reads the basis of every decision in it
+        self.n = sum(view.get_decision(self.snap, d)["binding"]["payload"]["basis_count"]
+                     for d in (info.get("decisions") or {self.decision: self.decision}).values())
         self.rev2, self.rev3 = (with_decision(profiles[r], self.decision) for r in ("rev2", "rev3"))
         invs = resolve(self.rev2, self.snap, registry, manifests)
         self.rev2_bindings = {i.leaf: i.binding for i in invs}

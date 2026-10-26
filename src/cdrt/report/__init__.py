@@ -25,10 +25,11 @@ from typing import Any
 from pwexp.hashing import sha256_file
 
 GENERATOR = "cdrt.report 1"
-BLOCKS = ("results_macros", "fixture_macros", "functional_table", "pathway_figure", "scale_table", "scale_figure")
+BLOCKS = ("results_macros", "fixture_macros", "functional_table", "pathway_figure", "scale_table", "scale_figure",
+          "coverage_table", "coverage_figure")
 # main-15 reads these from generated/*.tex (see FILES); older manuscripts hold them inline between markers
 ANCHORS = {"fixture_macros": "results_macros", "pathway_figure": "functional_table",
-           "scale_figure": "scale_table"}   # inserted after these if absent
+           "scale_figure": "scale_table", "coverage_table": "pathway_figure", "coverage_figure": "coverage_table"}   # inserted after these if absent
 from ..harness.functional import CONDITIONS  # noqa: E402  (the four main-14 acceptance conditions)
 
 
@@ -159,15 +160,13 @@ def texts(d: dict[str, Any], dev: bool) -> dict[str, str]:
         f += f" $A_{{\\mathrm{{comp}}}}$ is false: {failing}."
     f += " Replay from the same locked inputs agreed." if acc["replay_agrees"] else \
         " Replay from the same locked inputs did not agree; the mismatch is kept in the records."
+    cov = composition(d)
+    f = cov["sentence"] + " " + f
     obs = (by.get("observation") or {}).get("observed") or {}
     if obs:
-        conformant = sum(v["rev1"]["H"] == "SUCCESS" for v in obs.values())
-        adequate = sum(v["rev2"]["A"] == "SUCCESS" for v in obs.values())
-        f += (f" Across all {len(obs)} captured green decisions, {conformant} were conformant under their policy and "
-              f"{adequate} met the revision-2 requirement; every judgement agreed with the oracle."
+        f += (" Every judgement of the individual decisions agreed with the oracle."
               if all(v["oracle_agrees"] for v in obs.values()) else
-              f" Across all {len(obs)} captured green decisions, {conformant} were conformant and {adequate} met the "
-              "revision-2 requirement; some judgements differed from the oracle and are reported.")
+              " Some judgements of the individual decisions differed from the oracle and are reported.")
     functional = f"{mark}The functional protocol ran on the sealed corpus under {lock}. {f}"
 
     # RQ2: one number, where it occurred, the change across sizes, exceedances and semantic checks
@@ -195,7 +194,12 @@ def texts(d: dict[str, Any], dev: bool) -> dict[str, str]:
     if extra:
         s += " Recorded and kept: " + listing(extra) + "."
     held = after.get("H") == "SUCCESS" and after.get("A") == "FAIL" and after.get("gateway") == "hold"
-    functional_short = ("Conformance stayed successful, adequacy failed and TAIP moved the gateway to hold"
+    lead = (f"{cov['narrow']} of {cov['green']} green RepoAudit decisions were each too narrow on their own, but "
+            f"together they covered {cov['covered']} of the {cov['scope']} release functions and the gateway could proceed; "
+            if cov["composed_ok"] and cov["narrow"] else
+            f"the green RepoAudit decisions together covered {cov['covered']} of the {cov['scope']} release functions; ")
+    functional_short = (lead[0].upper() + lead[1:] + "when independent validation became required, conformance stayed "
+                        "successful, adequacy failed and TAIP moved the gateway to hold"
                         if held else "The functional transition did not match its expectation")
     abstract = f"{mark}{functional_short}; {timing}."
     intro = f"{mark}{functional_short[0].upper()}{functional_short[1:]}, and {timing}."
@@ -206,7 +210,7 @@ def texts(d: dict[str, Any], dev: bool) -> dict[str, str]:
     return {"ResultState": state, "FunctionalResultText": functional, "ScaleResultText": s,
             "ConclusionResultText": conclusion, "ScaleFigureSentence": tex(d["scale"]["sentence"]),  # caption carries the dev mark
             "ScaleAbstractText": abstract, "ScaleIntroText": intro, "ScaleWorstCase": w,
-            "PathwaySentence": pathway_sentence(d["pathways"], dev)}
+            "PathwaySentence": pathway_sentence(d["pathways"], dev), "CoverageSentence": mark + cov["sentence"]}
 
 
 # ------------------------------------------------------------------ blocks
@@ -219,7 +223,34 @@ def header(name: str, d: dict[str, Any], inputs: list[str], root: Path) -> str:
                       + ("  (working tree dirty at lock)" if d["lock"].get("working_tree_dirty") else "")])
 
 
-def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag: str = "") -> tuple[dict[str, str], dict[str, Any]]:
+def composition(d: dict[str, Any]) -> dict[str, Any]:
+    """The composed-coverage result in numbers and one plain sentence, from the functional records."""
+    by = {r["id"]: r for r in d["functional"]}
+    m = (((by.get("before") or {}).get("verdicts") or {}).get("release.adequacy") or {}).get("measurements") or {}
+    obs = (by.get("observation") or {}).get("observed") or {}
+    main = d["params"]["selection"]["main"]
+    tau = Fraction(d["params"]["tau_q"]["numerator"], d["params"]["tau_q"]["denominator"])
+    tau_rel = Fraction(d["params"]["tau_rel"]["numerator"], d["params"]["tau_rel"]["denominator"])
+    covered, scope = m.get("coverage_numerator", 0), m.get("coverage_denominator", 0)
+    ok = bool(scope) and Fraction(covered, scope) >= tau
+    narrow = sum(1 for v in obs.values() if v.get("narrow"))
+    alone_ok = sum(1 for v in obs.values() if v.get("A_alone") == "SUCCESS")
+    main_alone = (obs.get(main) or {}).get("coverage_alone", "")
+    s = (f"On its own, the main decision covered {main_alone} of the release functions"
+         f"{' (below' if (obs.get(main) or {}).get('A_alone') != 'SUCCESS' else ' (meeting'} the {share(tau)} requirement); "
+         f"{alone_ok} of the {len(obs)} green decisions met the requirement alone, and {narrow} were green but narrow, "
+         f"each reaching less than {share(tau_rel)} of the {m.get('observed_estate_size', 0)} functions observed across "
+         f"all eligible decisions. Together the {len(m.get('eligible') or [])} eligible decisions covered {covered} of "
+         f"{scope} release functions, {'meeting' if ok else 'below'} the requirement"
+         + (f"; {len(m.get('excluded') or {})} decision(s) were excluded" if m.get("excluded") else "")
+         + (f"; {len(m.get('drift') or [])} observed function(s) were missing from the release manifest" if m.get("drift") else "")
+         + ".")
+    return {"sentence": s, "covered": covered, "scope": scope, "composed_ok": ok, "narrow": narrow,
+            "green": len(obs), "alone_ok": alone_ok, "estate": m.get("observed_estate_size", 0)}
+
+
+def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag: str = "",
+           folder: str = "generated") -> tuple[dict[str, str], dict[str, Any]]:
     t = texts(d, dev)
     p, proto, rows = d["params"], d["protocol"], scale_rows(d)
     trace: dict[str, Any] = {}
@@ -246,8 +277,12 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag:
            "FixAgeMax": f"{num(p['max_age_seconds'])}\\,s", "FixAssessTime": f"\\texttt{{{tex(p['t_e'])}}}",
            "FixSizes": listing([num(r["N"]) for r in rows]), "FixBasisMain": num(p["n0"]),
            "FixCoverageMain": tex(p["c_obs_count"]), "FixRunCount": num(p["captured"]),
-           "FixGreenCount": num(len(p["green"]))}
-    trace.update({k: ["parameters"] for k in fix}, FixTauH=["policy_main"])
+           "FixGreenCount": num(len(p["green"])),
+           "FixTauRel": share(Fraction(p["tau_rel"]["numerator"], p["tau_rel"]["denominator"])),
+           "FixEstateObserved": num(composition(d)["estate"]),
+           "FixComposedCoverage": f"{composition(d)['covered']}/{composition(d)['scope']}"}
+    trace.update({k: ["parameters"] for k in fix}, FixTauH=["policy_main"],
+                 FixEstateObserved=["functional_records"], FixComposedCoverage=["functional_records"])
     out["fixture_macros"] = "\n".join([header("fixture_macros", d, ["parameters", "policy_main"], root),
                                        *[macro(k, v) for k, v in fix.items()]])
 
@@ -279,7 +314,7 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag:
 
     out["pathway_figure"] = "\n".join([
         header("pathway_figure", d, ["bundle"], root), r"\begin{figure*}[pos=t]", r"\centering",
-        r"\input{generated/figures/pathways.tex}",
+        f"\\input{{{folder}/figures/pathways.tex}}",
         r"\caption{Same green, different paths" + (" (development data, not a result)" if dev else "") +
         r". Each row is one green decision captured from RepoAudit, with the same model, target and question; each "
         r"column is a function in the auditor's scope $M_h$, ordered by how many runs reached it. A dark cell means "
@@ -293,7 +328,7 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag:
              r"\begin{table}[pos=tbp]", r"\centering\small",
              r"\caption{Requirement-change-to-posture latency per decision-basis size" +
              (" (development data, not a result)" if dev else "") +
-             f": {rows[0]['observations']} timed updates each. $N$ basis records, $k$ copies of the main run; the slowest "
+             f": {rows[0]['observations']} timed updates each. $N$ basis records in all, $k$ copies of each green decision's run; the slowest "
              f"update in seconds and the updates over the {budget:g}\\,s budget. The slowest overall is $T_{{\\max}}$.}}",
              r"\label{tab:scale-results}",
              r"\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}rrrr@{}}", r"\toprule",
@@ -306,7 +341,7 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag:
 
     out["scale_figure"] = "\n".join([
         header("scale_figure", d, ["timing_records", "scale_stats"], root), r"\begin{figure}[pos=tbp]", r"\centering",
-        r"\input{generated/figures/scale_latency.tex}",
+        f"\\input{{{folder}/figures/scale_latency.tex}}",
         r"\caption{Requirement-change-to-posture latency at four decision-basis sizes (\FixSizes{} records), "
         f"{rows[0]['observations']} observations each on a single warm host"
         + (" (development data, not a result)" if dev else "") +
@@ -315,6 +350,8 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag:
         r"\ScaleFigureSentence{}}", r"\label{fig:scale-latency}", r"\end{figure}"])
     trace["scale_figure"] = ["timing_records", "scale_stats"]
 
+    out["coverage_table"], out["coverage_figure"] = coverage_blocks(d, dev, root, folder)
+    trace["coverage_table"] = trace["coverage_figure"] = ["functional_records", "scale_stats", "parameters"]
     out["experiment_record"] = record_block(d, dev, root, repoaudit_commit, tag)
     trace["experiment_record"] = ["bundle", "protocol", "parameters", "run_manifest", "lock"]
     return out, trace
@@ -323,7 +360,93 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag:
 # ------------------------------------------------------------------ the experiment record subsection (main-15)
 FILES = {"cdrt-macros.tex": ("results_macros", "fixture_macros"), "cdrt-record.tex": ("experiment_record",),
          "cdrt-functional-table.tex": ("functional_table",), "cdrt-pathway-figure.tex": ("pathway_figure",),
+         "cdrt-coverage-table.tex": ("coverage_table",), "cdrt-coverage-figure.tex": ("coverage_figure",),
          "cdrt-scale-table.tex": ("scale_table",), "cdrt-scale-figure.tex": ("scale_figure",)}
+
+
+def coverage_blocks(d: dict[str, Any], dev: bool, root: Path, folder: str) -> tuple[str, str]:
+    """Table: every green decision on its own, then composed, in capture order. Figure: composed coverage per
+    admission against the requirement, with the gateway reading and each decision's own reach."""
+    from ..harness.scale import headline
+    by = {r["id"]: r for r in d["functional"]}
+    obs = (by.get("observation") or {}).get("observed") or {}
+    tl = (by.get("timeline") or {}).get("observed") or []
+    p = d["params"]
+    tau = Fraction(p["tau_q"]["numerator"], p["tau_q"]["denominator"])
+    word = {"SUCCESS": r"\Pass{}", "FAIL": r"\Fail{}", "INCONCLUSIVE": r"\Unknown{}"}
+    gw = lambda g: tex(str(g or "").capitalize())  # noqa: E731
+    h = headline(d["scale"]["stats"], float(d["manifest"]["deadline_s"]))
+    dmark = " (development data, not a result)" if dev else ""
+    lines = [header("coverage_table", d, ["functional_records", "scale_stats", "parameters"], root),
+             r"\begin{table*}[pos=t]", r"\centering\small",
+             r"\caption{Green decisions on their own and composed" + dmark + r". Rows follow capture order. "
+             r"\emph{Alone}: the decision's own coverage of the release manifest $M_q$ and the gateway reading if it relied "
+             r"on this decision only; \emph{share}: its part of the estate observed across all eligible decisions, "
+             r"with decisions below \FixTauRel{} marked narrow; \emph{composed}: coverage of $M_q$ by all decisions "
+             r"admitted so far. Requirement: \FixTauQ{} of \FixMq{} functions.}",
+             r"\label{tab:coverage}",
+             r"\begin{tabularx}{\textwidth}{@{}lccccccY@{}}", r"\toprule",
+             r"Decision & Green & Conformant & Alone & Share & Gateway alone & Composed & Gateway composed \\", r"\midrule"]
+    for row in tl:
+        dd = row["admitted"]
+        o = obs.get(dd) or {}
+        share_ = (o.get("rho") or "--") + (" (narrow)" if o.get("narrow") else "")
+        lines.append(f"\\texttt{{{tex(dd)}}} & yes & {word.get(o.get('H'), '--')} & {tex(o.get('coverage_alone', '--'))} & "
+                     f"{tex(share_)} & {gw(o.get('gateway_alone'))} & {tex(row['covered'])} & {gw(row['gateway'])} \\\\")
+    last = tl[-1] if tl else {}
+    lines += [r"\midrule",
+              f"All eligible & & & & & & {tex(last.get('covered', '--'))} & {gw(last.get('gateway'))}; slowest composed "
+              f"update {secs(h['worst_s'])}\\,s \\\\" if h["worst_s"] is not None else
+              f"All eligible & & & & & & {tex(last.get('covered', '--'))} & {gw(last.get('gateway'))} \\\\",
+              r"\bottomrule", r"\end{tabularx}", r"\end{table*}"]
+    table = "\n".join(lines)
+    fig = "\n".join([header("coverage_figure", d, ["functional_records", "parameters"], root),
+                      r"\begin{figure}[pos=tbp]", r"\centering", f"\\input{{{folder}/figures/coverage.tex}}",
+                      r"\caption{Composed coverage as green decisions are admitted in capture order" + dmark + r". Bars: "
+                      r"release functions each decision covered on its own; solid line: release functions covered by all "
+                      r"decisions admitted so far; dashed line: the size of the observed estate; dotted line: the "
+                      r"requirement (\FixTauQ{} of \FixMq{}). The gateway reading after each admission is printed above. "
+                      r"\CoverageSentence{}}", r"\label{fig:coverage}", r"\end{figure}"])
+    return table, fig
+
+
+def coverage_figure(d: dict[str, Any], dev: bool = False) -> str:
+    """pgfplots: per admission, the decision's own release coverage (bars), the composed coverage and the observed
+    estate (lines), the requirement line and the gateway reading."""
+    by = {r["id"]: r for r in d["functional"]}
+    obs = (by.get("observation") or {}).get("observed") or {}
+    tl = (by.get("timeline") or {}).get("observed") or []
+    p = d["params"]
+    n_q = p["M_q_size"]
+    need = float(Fraction(p["tau_q"]["numerator"], p["tau_q"]["denominator"]) * n_q)
+    xs = list(range(1, len(tl) + 1))
+    alone = [int(str((obs.get(r["admitted"]) or {}).get("coverage_alone", "0/1")).split("/")[0]) for r in tl]
+    comp = [int(r["covered"].split("/")[0]) for r in tl]
+    est = [int(r["observed_estate"] or 0) for r in tl]
+    ymax = max([n_q] + est) + 2
+    out = [f"% generator: {GENERATOR} (figures/coverage.tex); lock_root: {d['lock']['lock_root']}; commit: {d['lock']['git_commit']}",
+           r"\begin{tikzpicture}",
+           r"\begin{axis}[width=\columnwidth, height=0.62\columnwidth, ymin=0, ymax=" + str(ymax) + ",",
+           f"  xmin=0.4, xmax={len(tl) + 0.6:g}, xtick={{{','.join(map(str, xs))}}},",
+           "  xticklabels={" + ",".join("{\\texttt{" + tex(r["admitted"]) + "}}" for r in tl) + "},",
+           r"  xticklabel style={font=\scriptsize, rotate=30, anchor=north east}, ylabel={Functions},",
+           r"  tick label style={font=\scriptsize}, label style={font=\small},",
+           r"  legend style={font=\scriptsize, at={(0.5,-0.36)}, anchor=north, draw=none, fill=none, legend columns=2,",
+           r"    /tikz/every even column/.append style={column sep=6pt}}, legend cell align=left]",
+           r"\addplot[ybar, bar width=7pt, fill=black!15, draw=black!40, area legend] coordinates {" + " ".join(f"({x},{a})" for x, a in zip(xs, alone)) + "};",
+           r"\addlegendentry{covered alone}",
+           r"\addplot[thick, mark=*, mark size=1.5pt, black] coordinates {" + " ".join(f"({x},{c})" for x, c in zip(xs, comp)) + "};",
+           r"\addlegendentry{composed}",
+           r"\addplot[dashed, black!60, mark=none] coordinates {" + " ".join(f"({x},{e})" for x, e in zip(xs, est)) + "};",
+           r"\addlegendentry{observed estate}",
+           f"\\addplot[dotted, thick, black!70, domain=0.4:{len(tl) + 0.6:g}] {{{need:g}}};",
+           r"\addlegendentry{requirement}",
+           *[f"\\node[font=\\tiny, anchor=south] at (axis cs:{x},{max(c, a) + 0.3:g}) {{{tex(str(r['gateway']))}}};"
+             for x, c, a, r in zip(xs, comp, alone, tl)]]
+    if dev:
+        out.append(r"\node[font=\scriptsize\itshape, text=black!55, anchor=south east] at (rel axis cs:0.98,0.02) {" + DEV_MARK + "};")
+    out += [r"\end{axis}", r"\end{tikzpicture}"]
+    return "\n".join(out) + "\n"
 
 
 def hashed(h: str, n: int = 16) -> str:
@@ -427,7 +550,15 @@ def pathway_figure(d: dict[str, Any], selection: dict[str, str], dev: bool = Fal
             fill = "black!78" if u in r["reached"] else "black!8"
             out.append(f"\\fill[{fill}] ({j * cw + 0.02:.3f},{y:.3f}) rectangle ++({cw - 0.04:.3f},{ch:.3f});")
         out.append(f"\\node[anchor=west] at ({width + 0.15:.3f},{y + ch / 2:.3f}) {{{len(r['reached'])}/{n}}};")
-    yl = -(len(pw["rows"]) + 1) * gap - 0.1
+    union = set().union(*(set(r["reached"]) for r in pw["rows"])) if pw["rows"] else set()
+    y = -(len(pw["rows"]) + 1) * gap - 0.15
+    out.append(f"\\draw[black!40] (0,{y + ch + 0.08:.3f}) -- ({width:.3f},{y + ch + 0.08:.3f});")
+    out.append(f"\\node[anchor=east,align=right] at (-0.15,{y + ch / 2:.3f}) {{all green together}};")
+    for j, u in enumerate(scope):
+        fill = "black!78" if u in union else "black!8"
+        out.append(f"\\fill[{fill}] ({j * cw + 0.02:.3f},{y:.3f}) rectangle ++({cw - 0.04:.3f},{ch:.3f});")
+    out.append(f"\\node[anchor=west] at ({width + 0.15:.3f},{y + ch / 2:.3f}) {{{len(union)}/{n}}};")
+    yl = -(len(pw["rows"]) + 2) * gap - 0.25
     out += [f"\\fill[black!78] (0,{yl:.3f}) rectangle ++(0.3,0.25);",
             f"\\node[anchor=west] at (0.35,{yl + 0.12:.3f}) "
             r"{RepoAudit carried a \texttt{None} into the function (accepted \texttt{base-check})};",
