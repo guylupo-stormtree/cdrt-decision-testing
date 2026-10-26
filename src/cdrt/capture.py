@@ -146,7 +146,13 @@ def _may_be_none(e: ast.AST | None) -> bool:
 
 
 def _returns_none(fn: ast.AST) -> bool:
-    return any(isinstance(n, ast.Return) and _may_be_none(n.value) for n in ast.walk(fn))
+    """A return that can be None: `return None` (or a branch of it), or `return x` where x is assigned None in
+    the same function (the common `rv = None ... return rv` pattern)."""
+    none_names = {t.id for n in ast.walk(fn) if isinstance(n, (ast.Assign, ast.AnnAssign)) and _may_be_none(n.value)
+                  for t in (n.targets if isinstance(n, ast.Assign) else [n.target]) if isinstance(t, ast.Name)}
+    return any(isinstance(n, ast.Return) and (_may_be_none(n.value) or
+                                              (isinstance(n.value, ast.Name) and n.value.id in none_names))
+               for n in ast.walk(fn))
 
 
 def draft_manifests(target: Path, exclude: list[str]) -> dict[str, Any]:

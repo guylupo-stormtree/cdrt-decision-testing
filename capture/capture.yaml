@@ -2,17 +2,17 @@
 # Lab 0 generates the ProofWeave capture protocol from this file and the approved manifests, and Lab 1 locks it.
 # API keys never go here: they are typed at the start of `cdrt lab run 1-2`, checked, and kept in memory only.
 target:
-  repository: TODO-https-url-of-the-public-python-repository
-  commit: TODO-full-commit-sha
-  expected_functions: [100, 150]   # functions that can receive a None (A5.1); outside the range Lab 0 stops
+  repository: https://github.com/dateutil/dateutil   # python-dateutil, Apache-2.0 + BSD-3
+  commit: 10f317fde11ce5bc6540e83f896af10e67d52937    # release 3.0.0
+  expected_functions: [8, 40]       # functions that can receive a None (A5.1 as amended, D-023); outside the range Lab 0 stops
   exclude: ["tests/*", "test/*", "*/tests/*", "test_*.py", "*_test.py", "docs/*", "examples/*"]
 bug_type: NPD                       # RepoAudit's null-pointer detector; sources are None values (its default)
 model:
-  provider: TODO                    # openai | anthropic
-  model: TODO                       # one model and one configuration for the whole campaign
+  provider: openai                  # openai | anthropic
+  model: gpt-4.1                    # one model and one configuration for the whole campaign
 runs:
   pilot: 5                          # pilot G-main runs: set tau_h before the capture lock (never results)
-  campaign: TODO                    # captured G-main runs (budget); every outcome is kept
+  campaign: 50                      # captured G-main runs; every outcome is kept
   semgrep_standalone: 1             # standalone Semgrep scans, in no decision's basis
 seed: 20261026
 log_utc_offset: "+00:00"            # the capture host's UTC offset (RepoAudit logs local time without a zone)
