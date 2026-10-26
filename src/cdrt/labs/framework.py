@@ -161,8 +161,18 @@ class LabBook:
         adir.mkdir(parents=True, exist_ok=False)
         inputs = self.handoff(n - 1) if n != self.first() else None
         started = _now()
+        from .. import narrate
+        narrate.tell(n, "start", narrate.start(n, self.dev), self.dev, adir, progress)
+
+        plain_line = narrate.Commentator()
+
+        def say(line: str) -> None:                       # the technical line, plus a plain one per audit run
+            progress(line)
+            plain = plain_line(line)
+            if plain:
+                progress(plain)
         try:
-            res = lab.run(LabContext(n, self.dev, adir, inputs, progress, secrets or {}))
+            res = lab.run(LabContext(n, self.dev, adir, inputs, say, secrets or {}))
         except Exception as e:  # a crash is a failed attempt, recorded like any other
             res = LabResult([Check("lab ran to completion", False, f"{type(e).__name__}: {e}")], {})
         outputs = {k: {"path": rel(p), "sha256": digest(p)} for k, p in res.outputs.items() if Path(p).exists()}
@@ -182,6 +192,9 @@ class LabBook:
         self.log.append({"event": f"lab_{status}", "lab": n, "attempt": attempt, "dev": self.dev,
                          "checks": {c.name: c.ok for c in res.checks}, "handoff_sha256": handoff["handoff_sha256"],
                          "time": handoff["time"]})
+        failed = [c for c in res.checks if c.ok is not True]
+        why = (failed[0].name + (f" ({failed[0].detail})" if failed[0].detail else "")) if failed else ""
+        narrate.tell(n, "end", narrate.finish(n, self.dev, res.passed, handoff, why), self.dev, adir, progress)
         res.summary.setdefault("_card", card)
         return res
 

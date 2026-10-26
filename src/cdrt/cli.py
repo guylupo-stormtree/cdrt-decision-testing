@@ -6,6 +6,8 @@
                                    passed and its hand-off verifies). Labs 1-2 ask for the API key once at the
                                    start, check it with one minimal call, and keep it in memory only
   cdrt manifests approve --by NAME approve the scope manifests Lab 0 drafted (after reviewing them)
+  cdrt lab watch [--dev] [--once]  one live status line (run it in a second terminal while a lab runs)
+  cdrt lab story [--dev]           the plain-language story of the whole experiment so far (STORY.md)
   cdrt lab view N NAME [--dev]     path of a review page of lab N's last attempt (e.g. 4 pathways)
   cdrt verify-lock [--dev]         recompute every locked component and compare (R-LOCK-2)
   cdrt pilot scale [--dev] [--blocks N] [--warmups N]
@@ -122,6 +124,61 @@ def cmd_view(a) -> int:
     return 0
 
 
+def watch_line(dev: bool) -> str:
+    """Which lab is running, how far the audit is, GREEN so far, and when RepoAudit was last active."""
+    import json
+    import time
+    from . import capture
+    now = time.time()
+    running = [d for d in paths.labs_dir(dev).glob("lab*/attempt*") if not (d / "handoff.json").exists()]
+    if not running:
+        return "No lab is running."
+    att = max(running, key=lambda d: d.stat().st_mtime)
+    n = int(att.parent.name[3:])
+    out = f"Lab {n} running for {_dur(now - att.stat().st_mtime)}"
+    cycles = sorted((paths.records_root(dev) / "cycles").glob("*/cycle.json"), key=lambda p: p.stat().st_mtime)
+    if n in (1, 2) and cycles and cycles[-1].stat().st_mtime >= att.stat().st_mtime:
+        cyc = cycles[-1].parent
+        mode = json.loads(cycles[-1].read_text()).get("mode", "")
+        try:
+            total = capture.declaration()["runs"]["pilot" if mode == "pilot" else "campaign"]
+        except Exception:  # noqa: BLE001
+            total = "?"
+        done = [json.loads(p.read_text()) for p in cyc.glob("stage1/attempt*/decisions/*/decision.json")]
+        greens = sum(d.get("verdict") == "green" for d in done)
+        out += f" · audit run {min(len(done) + 1, total) if isinstance(total, int) else len(done) + 1} of {total}" \
+               f" · finished {len(done)}, GREEN {greens}"
+        logs = list((paths.pwexp_checkout() / "vendor" / "RepoAudit" / "log" / "dfbscan").rglob("dfbscan.log"))
+        if logs:
+            out += f" · RepoAudit last active {_dur(now - max(p.stat().st_mtime for p in logs))} ago"
+    return out
+
+
+def _dur(s: float) -> str:
+    s = int(max(s, 0))
+    return f"{s // 3600} h {s % 3600 // 60} min" if s >= 3600 else f"{s // 60} min {s % 60} s" if s >= 60 else f"{s} s"
+
+
+def cmd_watch(a) -> int:
+    import time
+    if a.once:
+        _p(watch_line(a.dev))
+        return 0
+    try:
+        while True:
+            print("\r\033[K" + watch_line(a.dev)[:200], end="", flush=True)
+            time.sleep(5)
+    except KeyboardInterrupt:
+        _p()
+        return 0
+
+
+def cmd_story(a) -> int:
+    f = paths.labs_dir(a.dev) / "STORY.md"
+    _p(f.read_text() if f.exists() else "No story yet: no lab has run.")
+    return 0
+
+
 def cmd_verify_lock(a) -> int:
     from . import lock
     ok, problems, doc = lock.verify(a.dev)
@@ -171,6 +228,13 @@ def main(argv: list[str] | None = None) -> int:
                            help="a lab number, or a range such as 1-2 or 3-9" if name == "run" and x == "n" else None)
         p.add_argument("--dev", action="store_true", help="development mode (fixtures; never a result)")
         p.set_defaults(fn=fn)
+    w = ls.add_parser("watch", help="one live status line; run it in a second terminal")
+    w.add_argument("--dev", action="store_true")
+    w.add_argument("--once", action="store_true", help="print the line once and stop")
+    w.set_defaults(fn=cmd_watch)
+    st = ls.add_parser("story", help="the plain-language story so far")
+    st.add_argument("--dev", action="store_true")
+    st.set_defaults(fn=cmd_story)
     mf = sub.add_parser("manifests", help="approve the reviewed scope manifests drafted by Lab 0")
     mf.add_argument("action", choices=["approve"])
     mf.add_argument("--by", required=True, help="the person approving them")

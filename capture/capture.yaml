@@ -4,6 +4,7 @@
 target:
   repository: https://github.com/dateutil/dateutil   # python-dateutil, Apache-2.0 + BSD-3
   commit: 10f317fde11ce5bc6540e83f896af10e67d52937    # release 3.0.0
+  pypi: python-dateutil             # its PyPI name: Lab 0's narration reads its public download count
   expected_functions: [8, 40]       # functions that can receive a None (A5.1 as amended, D-023); outside the range Lab 0 stops
   exclude: ["tests/*", "test/*", "*/tests/*", "test_*.py", "*_test.py", "docs/*", "examples/*"]
 bug_type: NPD                       # RepoAudit's null-pointer detector; sources are None values (its default)

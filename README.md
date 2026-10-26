@@ -33,6 +33,13 @@ uv venv --python 3.13 .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e '.[dev]'
    tau_h, locks the capture protocol) and the campaign. The key stays in memory and is never written anywhere.
 4. `cdrt lab run 3-9`: corpus, review and freeze, fixtures, lock, RQ1, RQ2, report.
 
+Every lab tells what it is about to do and, when it ends, what happened, in plain language for a non-technical
+audience; during the capture each audit run gets one plain line. Every number comes from the run's own records
+or a named public source (the target's PyPI download count, from pypistats.org, with the date). The story is saved
+as `story.md` in each lab attempt and collected in `results/labs/STORY.md` (`cdrt lab story`). In a second
+terminal, `cdrt lab watch` shows one live line: the running lab, the audit run under way, GREEN so far, and when
+RepoAudit was last active. Long runs are best started inside `tmux`, so a dropped SSH connection does not stop them.
+
 ## Run it lab by lab
 
 ```bash
