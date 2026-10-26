@@ -30,8 +30,8 @@ def test_gating_and_dev_start(cdrt_root):
     with pytest.raises(LabError):
         b.run(1, progress=QUIET)
     assert book(dev=False).status(0) == "ready"
-    with pytest.raises(LabError, match="not built yet"):
-        book(dev=False).run(0, progress=QUIET)
+    res = book(dev=False).run(0, progress=QUIET)               # no capture/capture.yaml here: Lab 0 fails, recorded
+    assert not res.passed and book(dev=False).status(1) == "locked"
 
 
 def test_lab3_hands_a_verified_corpus_to_lab4(lab3, cdrt_root):

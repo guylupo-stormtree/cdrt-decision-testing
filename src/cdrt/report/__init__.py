@@ -213,6 +213,33 @@ def texts(d: dict[str, Any], dev: bool) -> dict[str, str]:
             "PathwaySentence": pathway_sentence(d["pathways"], dev), "CoverageSentence": mark + cov["sentence"]}
 
 
+# ------------------------------------------------------------------ code availability: one repository
+def _https(url: str) -> str:
+    url = url.strip()
+    if url.startswith("git@"):
+        host, _, path = url[4:].partition(":")
+        url = f"https://{host}/{path}"
+    return url[:-4] if url.endswith(".git") else url
+
+
+def availability(d: dict[str, Any], repoaudit_commit: str, tag: str) -> str:
+    """One repository for the reviewer: it holds everything, and cloning it with its submodules also fetches
+    ProofWeave and RepoAudit at the pinned versions. URLs come from the repositories' own git configuration."""
+    from .. import lock, paths
+    cdrt = _https(lock.git("remote", "get-url", "origin") or "<CDRT repository URL>")
+    pw = _https(lock.git("config", "-f", ".gitmodules", "--get", "submodule.vendor/proofweave-decision-assurance.url") or "")
+    ra = _https(lock.git("config", "-f", ".gitmodules", "--get", "submodule.vendor/RepoAudit.url", cwd=paths.pwexp_checkout()) or "")
+    pw_tag = d["lock"]["components"]["pwexp"].get("tag") or d["lock"]["components"]["pwexp"]["commit"][:12]
+    ref = f"tag \\texttt{{{tex(tag)}}}" if tag else f"commit \\texttt{{{tex(d['lock']['git_commit'][:12])}}}"
+    return (f"Everything needed to inspect and repeat the experiment is in one repository, \\url{{{cdrt}}} ({ref}). "
+            f"Cloning it with its submodules (\\texttt{{git clone --recurse-submodules}}) also fetches ProofWeave "
+            f"(\\url{{{pw}}}, tag \\texttt{{{tex(pw_tag)}}}) and RepoAudit (\\url{{{ra}}}, commit "
+            f"\\texttt{{{tex(repoaudit_commit[:7])}}}). The repository holds the capture declaration and protocol, the sealed "
+            f"corpus, the fixtures, the oracle, the lock file and every raw record. The assessment and timing phases can be "
+            f"repeated offline, without RepoAudit, a language model or an API key, with \\texttt{{cdrt lab run 3-9}}; the "
+            f"capture phase (\\texttt{{cdrt lab run 0-2}}) additionally needs access to the declared model.")
+
+
 # ------------------------------------------------------------------ blocks
 def header(name: str, d: dict[str, Any], inputs: list[str], root: Path) -> str:
     rel = lambda p: Path(p).resolve().relative_to(root).as_posix() if Path(p).resolve().is_relative_to(root) else str(p)  # noqa: E731
@@ -256,6 +283,7 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag:
     trace: dict[str, Any] = {}
 
     sha = d["bundle"]["corpus_sha256"]
+    t["CodeAvailabilityText"] = availability(d, repoaudit_commit, tag)
     res = {**t, "CorpusHash": "\\allowbreak ".join(sha[i:i + 16] for i in range(0, len(sha), 16)), "PWVersion": d["lock"]["components"]["pwexp"]["tag"],
            "RepoAuditCommit": repoaudit_commit[:7], "ModelId": tex(proto["acquisition"]["models"][0]["model"]),
            "TargetRepo": tex(f"{proto['target']['repository']}@{proto['target']['commit']}")}
@@ -264,6 +292,7 @@ def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag:
             else ["timing_records", "scale_stats", "run_manifest"]
     trace["ConclusionResultText"] = ["acceptance", "scale_stats"]
     trace["PathwaySentence"] = ["bundle"]
+    trace["CodeAvailabilityText"] = ["lock", "git remotes and submodules"]
     trace.update(CorpusHash=["bundle"], PWVersion=["lock"], RepoAuditCommit=["lock (pwexp checkout)"],
                  ModelId=["protocol"], TargetRepo=["protocol"])
     out = {"results_macros": "\n".join([header("results_macros", d, ["functional_records", "acceptance", "scale_stats",

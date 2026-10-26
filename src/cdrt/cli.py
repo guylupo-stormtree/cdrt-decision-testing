@@ -2,7 +2,10 @@
 
   cdrt lab status [--dev]          every lab: · locked  ▶ ready  ✓ passed  ✗ failed
   cdrt lab show N [--dev]          the lab's purpose and its last card
-  cdrt lab run N [--dev]           run lab N (refuses unless lab N-1 passed and its hand-off verifies)
+  cdrt lab run N[-M] [--dev]       run lab N, or labs N to M in order (each refuses unless the previous one
+                                   passed and its hand-off verifies). Labs 1-2 ask for the API key once at the
+                                   start, check it with one minimal call, and keep it in memory only
+  cdrt manifests approve --by NAME approve the scope manifests Lab 0 drafted (after reviewing them)
   cdrt lab view N NAME [--dev]     path of a review page of lab N's last attempt (e.g. 4 pathways)
   cdrt verify-lock [--dev]         recompute every locked component and compare (R-LOCK-2)
   cdrt pilot scale [--dev] [--blocks N] [--warmups N]
@@ -47,16 +50,62 @@ def cmd_show(a) -> int:
     return 0
 
 
+def _range(spec: str) -> list[int]:
+    a, _, b = str(spec).partition("-")
+    return list(range(int(a), int(b or a) + 1))
+
+
+def _key_for(labs: list[int], dev: bool) -> dict[str, str] | None:
+    """Labs that run RepoAudit need the model key: asked for once, here, and checked with one minimal call.
+    It lives in this process's memory for the run and is handed to pwexp on standard input only."""
+    from .labs import LABS
+    if dev or not any(l.needs_model for l in LABS if l.n in labs):
+        return {}
+    import getpass
+    from . import capture
+    cfg = capture.declaration()
+    bad = capture.problems(cfg)
+    if bad:
+        _p(f"{FAIL} capture/capture.yaml: " + "; ".join(bad))
+        return None
+    prov, model = cfg["model"]["provider"], cfg["model"]["model"]
+    key = getpass.getpass(f"API key for {prov}:{model} (kept in memory for this run only): ").strip()
+    ok, detail = capture.model_check(prov, model, key)
+    _p(f"{OK if ok else FAIL} key check: {detail}")
+    return {"key": key} if ok else None
+
+
 def cmd_run(a) -> int:
     b = book(a.dev)
+    labs = _range(a.n)
+    secrets = _key_for(labs, a.dev)
+    if secrets is None:
+        return 1
     try:
-        res = b.run(a.n, progress=lambda m: _p(f"  {m}"))
+        for n in labs:
+            res = b.run(n, progress=lambda m: _p(f"  {m}"), secrets=secrets)
+            _p("")
+            _p(res.summary["_card"])
+            if not res.passed:
+                return 1
+        return 0
     except LabError as e:
         _p(f"{FAIL} {e}")
         return 1
-    _p("")
-    _p(res.summary["_card"])
-    return 0 if res.passed else 1
+    finally:
+        secrets.clear()
+
+
+def cmd_approve(a) -> int:
+    from . import capture
+    try:
+        rec = capture.approve(a.by)
+    except capture.CaptureError as e:
+        _p(f"{FAIL} {e}")
+        return 1
+    _p(f"{OK} manifests approved by {rec['approved_by']}: M_h {rec['sizes']['M_h']}, M_q {rec['sizes']['M_q']} functions. "
+       "Now run Lab 0 again: cdrt lab run 0")
+    return 0
 
 
 def cmd_view(a) -> int:
@@ -118,9 +167,14 @@ def main(argv: list[str] | None = None) -> int:
                            ("view", cmd_view, ("n", "name"))):
         p = ls.add_parser(name)
         for x in args:
-            p.add_argument(x, type=int if x == "n" else str)
+            p.add_argument(x, type=(str if name == "run" else int) if x == "n" else str,
+                           help="a lab number, or a range such as 1-2 or 3-9" if name == "run" and x == "n" else None)
         p.add_argument("--dev", action="store_true", help="development mode (fixtures; never a result)")
         p.set_defaults(fn=fn)
+    mf = sub.add_parser("manifests", help="approve the reviewed scope manifests drafted by Lab 0")
+    mf.add_argument("action", choices=["approve"])
+    mf.add_argument("--by", required=True, help="the person approving them")
+    mf.set_defaults(fn=cmd_approve)
     vl = sub.add_parser("verify-lock", help="recompute every locked component (R-LOCK-2)")
     vl.add_argument("--dev", action="store_true", help="the development lock")
     vl.set_defaults(fn=cmd_verify_lock)

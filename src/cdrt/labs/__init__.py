@@ -1,15 +1,15 @@
 """The ten labs of the CDRT experiment (see README.md)."""
 from __future__ import annotations
 
-from . import lab3_corpus, lab4_review, lab5_fixtures, lab6_lock, lab7_functional, lab8_scale, lab9_report
+from . import lab0_declare, lab1_pilot, lab2_capture, lab3_corpus, lab4_review, lab5_fixtures, lab6_lock, lab7_functional, lab8_scale, lab9_report
 from .framework import Lab, LabBook
 
 LABS = [
     Lab(0, "Set up and declare", "Check the environment, fetch the target, draft and approve M_h and M_q, "
-        "write the policies and the decision schedule.", False, None, "B7"),
-    Lab(1, "Pilot capture", "A few G-main RepoAudit runs and one Semgrep run; declare tau_h (R-CAP-4); take "
-        "the capture lock.", True, None, "B7"),
-    Lab(2, "Capture", "Run the locked schedule of decisions; each context sealed before its runs.", True, None, "B7"),
+        "write the policy and the pilot protocol.", False, lab0_declare.run, "B7"),
+    Lab(1, "Pilot capture", "Pilot G-main RepoAudit runs; set tau_h by the declared rule (R-CAP-4); take "
+        "the capture lock.", True, lab1_pilot.run, "B7"),
+    Lab(2, "Capture", "Run the locked schedule of decisions; each context sealed before its runs.", True, lab2_capture.run, "B7"),
     Lab(3, "Build the corpus", "pwexp Stage 2 with decision binding; the record view re-verifies the corpus.",
         False, lab3_corpus.run, "B2", dev_first=True),
     Lab(4, "Review ProofWeave and freeze", "Review decisions and pathways; select the main, strict and pipeline "

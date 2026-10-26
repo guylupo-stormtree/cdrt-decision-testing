@@ -6,6 +6,31 @@ Control-decision risk testing over recorded decisions. A control (here RepoAudit
 
 **Status: under construction.** Labs 3–9 run in development mode; the CDRT runtime (registry, resolver, executor, the two decision tests, posture consumer, gateway, monitor), the independent oracle, the fixture build, the protocol lock, the functional and scale harnesses and the report generator are built. No result has been produced. Everything under `capture/dev/`, `capture/records-dev/`, `fixtures/out-dev/` and `results/labs-dev/` is development data built from ProofWeave's fixtures and is never a result.
 
+## Get everything (one repository)
+
+```bash
+git clone --recurse-submodules https://github.com/guylupo-stormtree/cdrt-decision-testing.git
+```
+
+This also fetches ProofWeave (`vendor/proofweave-decision-assurance`, pinned tag) and, inside it, RepoAudit
+(pinned commit). The frozen corpus, fixtures, oracle, lock file and raw records are in this repository, so Labs 3-9
+repeat offline with no RepoAudit, no language model and no API key:
+
+```bash
+uv venv --python 3.13 .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e '.[dev]'
+.venv/bin/cdrt verify-lock
+.venv/bin/cdrt lab run 3-9
+```
+
+## Capture (authors only: Labs 0-2)
+
+1. Fill `capture/capture.yaml`: target repository URL and full commit, model provider and name, run counts.
+2. `cdrt lab run 0`: environment, target fetched at its commit, scope manifests drafted from the code. Review
+   (and edit if needed) `capture/manifests/drafts/`, then `cdrt manifests approve --by "Your Name"` and run Lab 0 again.
+3. `cdrt lab run 1-2`: asks for the API key once, checks it with one minimal call, then runs the pilot (sets
+   tau_h, locks the capture protocol) and the campaign. The key stays in memory and is never written anywhere.
+4. `cdrt lab run 3-9`: corpus, review and freeze, fixtures, lock, RQ1, RQ2, report.
+
 ## Run it lab by lab
 
 ```bash

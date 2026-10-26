@@ -46,6 +46,9 @@ def _protocol_files(proto_file: Path) -> list[Path]:
     files = [proto_file]
     for block in ("policies", "manifests"):
         files += [proto_file.parent / v["file"] for v in (proto.get(block) or {}).values()]
+    # the real capture also keeps the authors' declaration, the manifest approval record and the capture lock
+    files += [f for f in (proto_file.parent / "capture.yaml", proto_file.parent / "manifests" / "REVIEW.json",
+                          proto_file.parent / "protocol.lock.json") if f.is_file()]
     return files
 
 

@@ -55,6 +55,7 @@ class LabContext:
     attempt_dir: Path
     inputs: dict[str, Any] | None                  # previous lab's hand-off (verified), or None for the first lab
     progress: Callable[[str], None] = print
+    secrets: dict[str, str] = field(default_factory=dict, repr=False)   # API key for Labs 1-2: memory only
 
 
 @dataclass
@@ -147,7 +148,7 @@ class LabBook:
                 return False, why
         return True, ""
 
-    def run(self, n: int, progress: Callable[[str], None] = print) -> LabResult:
+    def run(self, n: int, progress: Callable[[str], None] = print, secrets: dict[str, str] | None = None) -> LabResult:
         ok, why = self.can_run(n)
         if not ok:
             raise LabError(why)
@@ -161,7 +162,7 @@ class LabBook:
         inputs = self.handoff(n - 1) if n != self.first() else None
         started = _now()
         try:
-            res = lab.run(LabContext(n, self.dev, adir, inputs, progress))
+            res = lab.run(LabContext(n, self.dev, adir, inputs, progress, secrets or {}))
         except Exception as e:  # a crash is a failed attempt, recorded like any other
             res = LabResult([Check("lab ran to completion", False, f"{type(e).__name__}: {e}")], {})
         outputs = {k: {"path": rel(p), "sha256": digest(p)} for k, p in res.outputs.items() if Path(p).exists()}
