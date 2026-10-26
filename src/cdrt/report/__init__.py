@@ -209,7 +209,13 @@ def texts(d: dict[str, Any], dev: bool) -> dict[str, str]:
                   f"{'within' if h['within'] else 'beyond'} the {budget:g}\\,s budget.")
     return {"ResultState": state, "FunctionalResultText": functional, "ScaleResultText": s,
             "ConclusionResultText": conclusion, "ScaleFigureSentence": tex(d["scale"]["sentence"]),  # caption carries the dev mark
-            "ScaleAbstractText": abstract, "ScaleIntroText": intro, "ScaleWorstCase": w,
+            # main-17's abstract reads "completes in \\ScaleAbstractText seconds for \\ScaleLargestN records": the
+            # slowest update in seconds (control space at the end, so the following word keeps its space) and the
+            # largest actual decision-basis size
+            "ScaleAbstractText": (secs(h["worst_s"]) if h["worst_s"] is not None else "an unknown number of")
+            + (" (development data, not a result)" if dev else "") + "\\ ",
+            "ScaleLargestN": num(rows[-1]["N"]),
+            "ScaleIntroText": intro, "ScaleWorstCase": w,
             "PathwaySentence": pathway_sentence(d["pathways"], dev), "CoverageSentence": mark + cov["sentence"]}
 
 

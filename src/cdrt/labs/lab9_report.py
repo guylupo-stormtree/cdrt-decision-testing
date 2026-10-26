@@ -7,7 +7,7 @@ Table 4, the pathway and scale figures) from those records only, places it besid
 the manuscript with them and compiles the copy. The manuscript itself is never written here: blocks the
 manuscript does not have yet (the A17 revision) are inserted into the copy only, and listed.
 
-Manuscript: $CDRT_MANUSCRIPT, or ../ComposableCDRT/Manuscript/main-16.tex next to this repository. The folder name is
+Manuscript: $CDRT_MANUSCRIPT, or ../ComposableCDRT/Manuscript/main-17.tex next to this repository. The folder name is
 the one the manuscript reads: generated/ (the campaign) or generated-pending/ (the development mockup).
 """
 from __future__ import annotations
@@ -30,7 +30,7 @@ from .framework import Check, LabContext, LabResult, rel
 
 def manuscript() -> Path:
     env = os.environ.get("CDRT_MANUSCRIPT")
-    return Path(env) if env else paths.root().parent / "ComposableCDRT" / "Manuscript" / "main-16.tex"
+    return Path(env) if env else paths.root().parent / "ComposableCDRT" / "Manuscript" / "main-17.tex"
 
 
 def repoaudit_commit() -> str:
