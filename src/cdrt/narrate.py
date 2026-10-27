@@ -159,7 +159,8 @@ def _f1(h, dev):
     rows = [x.strip() for x in str(s.get("pilot decisions", "")).split(",") if x.strip()]
     greens = sum(" GREEN " in f" {r} " for r in rows)
     cov = [r.split()[-1] for r in rows]
-    return [f"All {len(rows)} first runs are in: {greens} said GREEN, no bugs found.",
+    return [f"All {len(rows)} first runs are in: {greens} said GREEN, no bugs found"
+            + ("." if greens == len(rows) else f"; {len(rows) - greens} reported possible bugs, and not the same ones."),
             f"But they did not check the same amount: of the auditor's area they covered {', '.join(cov)}.",
             f"From these runs the auditor's policy is now fixed: a run must cover at least {s.get('tau_h', 'the declared share')} "
             "of its area. This policy, and the number of runs, are locked in at the start of the real audit.",

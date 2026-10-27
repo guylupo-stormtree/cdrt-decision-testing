@@ -11,6 +11,7 @@ was complete and intact; the result it reports is whatever it is (requirements A
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -159,6 +160,7 @@ class LabBook:
         attempt = max([st.get(str(n), {}).get("attempt", 0), *done]) + 1
         adir = self.dir / f"lab{n}" / f"attempt{attempt}"
         adir.mkdir(parents=True, exist_ok=False)
+        (adir / "running.pid").write_text(f"{os.getpid()}\n")   # lets `cdrt lab watch` tell a live run from a stopped one
         inputs = self.handoff(n - 1) if n != self.first() else None
         started = _now()
         from .. import narrate

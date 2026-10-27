@@ -1,8 +1,9 @@
 """Lab 1: pilot capture (requirements R-CAP-2, R-CAP-4; A5.1).
 
 Runs the pilot G-main decisions through pwexp (Stages 1-2) into capture/records (pilot cycles, never results),
-reads each GREEN pilot decision's coverage of M_h through the record view, and sets tau_h by the declared rule
-(the largest multiple of 1/20 at which at least 80% of the pilot runs would conform). It reports model calls and
+reads each pilot decision's coverage of M_h through the record view, and sets tau_h by the paper's rule (§4.3:
+the largest multiple of 1/20 at which at least four of the five pilot runs would conform; coverage measures what a
+run examined, whatever its verdict). The number of GREEN pilot runs is reported, not a gate (D-027). It reports model calls and
 minutes per run, so the campaign size (runs.campaign) can be set before Lab 2 writes P1 and the campaign protocol
 and takes the capture lock. The API key is typed once at the start of `cdrt lab run 1-2`.
 """
@@ -45,8 +46,7 @@ def run(ctx: LabContext) -> LabResult:
         got = {r["target"] for r in assessments(s, d)["records"] if r["validator"] == BASE} & mh
         c = Fraction(len(got), len(mh)) if mh else Fraction(0)
         rows[d] = {"green": green, "coverage_M_h": f"{len(got)}/{len(mh)}"}
-        if green:
-            cov.append(c)
+        cov.append(c)
     runs = [json.loads(p.read_text()) for p in sorted((records / "cycles" / cid / "stage1").glob("attempt*/repoaudit/*/run*/manifest.json"))]
     calls = [r["provider_calls"] for r in runs]
     checks.append(Check("every pilot run consulted the model (a run with no model calls examined nothing)",
@@ -54,12 +54,11 @@ def run(ctx: LabContext) -> LabResult:
     n = int(cfg["runs"]["pilot"])
     tau, need = capture.tau_h_rule(cov, n)
     greens = sum(v["green"] for v in rows.values())
-    checks += [Check(f"at least {need} of {n} pilot runs GREEN (A5.1)", greens >= need, f"{greens} GREEN"),
-               Check("tau_h set by the declared rule and above zero (R-CAP-4)", tau is not None and tau > 0,
-                     f"tau_h = {tau}" if tau is not None else "too few GREEN pilot runs")]
+    checks += [Check(f"tau_h set by the declared rule (at least {need} of {n} pilot runs conform) and above zero (R-CAP-4)",
+                     tau is not None and tau > 0, f"tau_h = {tau}" if tau is not None else f"fewer than {need} pilot runs")]
     if not all(c.ok for c in checks):
         return LabResult(checks, {}, {"pilot decisions": json.dumps(rows)})
-    summary = {"pilot cycle": cid, "pilot decisions": ", ".join(f"{d} {'GREEN' if v['green'] else 'not green'} {v['coverage_M_h']}"
+    summary = {"pilot cycle": cid, "GREEN pilot runs": f"{greens} of {len(rows)} (reported, not a gate)", "pilot decisions": ", ".join(f"{d} {'GREEN' if v['green'] else 'not green'} {v['coverage_M_h']}"
                                                                  for d, v in rows.items()),
                "tau_h": f"{tau} ({float(tau):.0%})",
                "model calls per run": f"{min(calls)} to {max(calls)}",

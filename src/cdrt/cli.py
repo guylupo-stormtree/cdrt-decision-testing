@@ -133,7 +133,8 @@ def watch_line(dev: bool) -> str:
     import time
     from . import capture
     now = time.time()
-    running = [d for d in paths.labs_dir(dev).glob("lab*/attempt*") if not (d / "handoff.json").exists()]
+    running = [d for d in paths.labs_dir(dev).glob("lab*/attempt*")
+               if not (d / "handoff.json").exists() and _alive(d / "running.pid")]
     if not running:
         return "No lab is running."
     att = max(running, key=lambda d: d.stat().st_mtime)
@@ -159,6 +160,15 @@ def watch_line(dev: bool) -> str:
                     out += f" · model calls {sum(l.count(b' is running') for l in fh):,}"
             out += f" · last active {_dur(now - newest.stat().st_mtime)} ago"
     return out
+
+
+def _alive(pidfile) -> bool:
+    import os
+    try:
+        os.kill(int(pidfile.read_text()), 0)
+        return True
+    except (OSError, ValueError):
+        return False          # no pid file (stopped, or from before this check) or the process is gone
 
 
 def _dur(s: float) -> str:

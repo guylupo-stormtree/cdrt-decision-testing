@@ -314,7 +314,7 @@ def write_protocol(cfg: dict[str, Any], where: Path, count: int, semgrep_runs: i
 # ------------------------------------------------------------------ the declared pilot rule (R-CAP-4)
 def tau_h_rule(coverages: list[Fraction], n_runs: int, step: int = 20) -> tuple[Fraction | None, int]:
     """The largest multiple of 1/step at which at least ceil(0.8 n) of the n pilot runs would conform.
-    `coverages`: the M_h coverage of each GREEN pilot decision. Returns (tau_h or None, runs needed)."""
+    `coverages`: the M_h coverage of each pilot decision, whatever its verdict. Returns (tau_h or None, runs needed)."""
     need = math.ceil(0.8 * n_runs)
     ranked = sorted(coverages, reverse=True)
     if len(ranked) < need:
