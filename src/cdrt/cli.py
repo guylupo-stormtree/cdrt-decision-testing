@@ -6,6 +6,7 @@
                                    passed and its hand-off verifies). Labs 1-2 ask for the API key once at the
                                    start, check it with one minimal call, and keep it in memory only
   cdrt capture campaign-runs N     after the pilot, before Lab 2: set the campaign size (Lab 2 locks it)
+  cdrt capture publish             after Lab 9: commit the campaign's records, tag cdrt-<campaign>
   cdrt capture reset --label TEXT  archive the capture's working files so Lab 0 starts clean (before any campaign)
   cdrt manifests approve --by NAME approve the scope manifests Lab 0 drafted (after reviewing them)
   cdrt lab watch [--dev] [--once]  one live status line (run it in a second terminal while a lab runs)
@@ -200,7 +201,10 @@ def cmd_story(a) -> int:
 def cmd_capture(a) -> int:
     from . import capture
     try:
-        if a.what == "campaign-runs":
+        if a.what == "publish":
+            tag = capture.publish()
+            _p(f"{OK} campaign records committed and tagged {tag}; now: git push origin main --tags")
+        elif a.what == "campaign-runs":
             old = capture.set_campaign_runs(a.n)
             _p(f"{OK} campaign runs {old} → {a.n} in capture/capture.yaml; Lab 2 locks this number before its first run")
         else:
@@ -276,6 +280,8 @@ def main(argv: list[str] | None = None) -> int:
     rs = cp.add_parser("reset", help="archive target, manifests, protocols and pilot records (before any campaign)")
     rs.add_argument("--label", required=True, help="why, e.g. 'scope narrowed to the parser'")
     rs.set_defaults(fn=cmd_capture)
+    pb = cp.add_parser("publish", help="after Lab 9: commit the campaign's records and tag cdrt-<campaign>")
+    pb.set_defaults(fn=cmd_capture)
     mf = sub.add_parser("manifests", help="approve the reviewed scope manifests drafted by Lab 0")
     mf.add_argument("action", choices=["approve"])
     mf.add_argument("--by", required=True, help="the person approving them")

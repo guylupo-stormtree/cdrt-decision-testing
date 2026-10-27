@@ -42,6 +42,10 @@ uv venv --python 3.13 .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e '.[dev]'
 6. `cdrt lab run 3-9`: corpus, review and freeze, fixtures, lock, RQ1, RQ2, report.
    Offline (no key, no cost). If a lab is stopped, run again from that lab (e.g. `cdrt lab run 8-9`); it starts
    that lab over. Labs 3 and 4 are never repeated once passed: the corpus and the frozen bundle are built once.
+7. `cdrt capture publish`: commits the campaign's declaration, protocol, records, frozen bundle, lock file and lab
+   results on top of the locked code and tags the commit `cdrt-campaign-<NNN>`, the tag the manuscript cites; then
+   `git push origin main --tags`. The fixtures are not committed: `cdrt lab run 5` rebuilds them byte for byte. From a
+   clone of that tag, `cdrt lab run 5-9` repeats the assessment and timing offline.
 
 Every lab tells what it is about to do and, when it ends, what happened, in plain language for a non-technical
 audience; during the capture each audit run gets one plain line. Every number comes from the run's own records
@@ -69,7 +73,7 @@ uv venv --python 3.13 .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e '.[dev]'
 .venv/bin/cdrt lab run 9 --dev        # report: generated blocks and figure, filled into a compiled copy of the manuscript
 ```
 
-Lab 9 reads the manuscript from `../ComposableCDRT/Manuscript/main-15.tex` (or `$CDRT_MANUSCRIPT`) and never writes to it. main-15 holds no result: it reads everything the experiment generates from a `generated/` folder with `\input` (result and fixture macros, the *Experiment record* subsection with every version and hash, the before/after table, the pathway figure, the scale table and figure). Lab 9 writes that folder to `results/labs[-dev]/lab9/attempt<k>/generated/`, compiles a copy of the manuscript with it, and checks that the manuscript reads every file. After the reported campaign, replace the manuscript's `generated/` folder (in Overleaf too) with it.
+Lab 9 reads the newest manuscript, `../ComposableCDRT/Manuscript/main-<N>.tex` (or `$CDRT_MANUSCRIPT`), and never writes to it. main-15 holds no result: it reads everything the experiment generates from a `generated/` folder with `\input` (result and fixture macros, the *Experiment record* subsection with every version and hash, the before/after table, the pathway figure, the scale table and figure). Lab 9 writes that folder to `results/labs[-dev]/lab9/attempt<k>/generated/`, compiles a copy of the manuscript with it, and checks that the manuscript reads every file. After the reported campaign, replace the manuscript's `generated/` folder (in Overleaf too) with it.
 
 Each lab re-verifies the previous lab's hand-off, runs fixed checks, prints a lab card (inputs, checks, outputs, what it hands on) and seals its own hand-off. A lab passes only when every check passes; a check whose code is not built yet is shown as such and keeps the lab from passing. Passing a lab means the run was complete and intact. The result it reports is whatever it is.
 

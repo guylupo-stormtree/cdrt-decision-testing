@@ -252,13 +252,17 @@ def availability(d: dict[str, Any], repoaudit_commit: str, tag: str) -> str:
     pw = _https(lock.git("config", "-f", ".gitmodules", "--get", "submodule.vendor/proofweave-decision-assurance.url") or "")
     ra = _https(lock.git("config", "-f", ".gitmodules", "--get", "submodule.vendor/RepoAudit.url", cwd=paths.pwexp_checkout()) or "")
     pw_tag = d["lock"]["components"]["pwexp"].get("tag") or d["lock"]["components"]["pwexp"]["commit"][:12]
-    ref = f"tag \\texttt{{{tex(tag)}}}" if tag else f"commit \\texttt{{{tex(d['lock']['git_commit'][:12])}}}"
+    # the reported campaign is cited by the tag `cdrt capture publish` puts on its records (the locked code is below it)
+    campaign = d["lock"]["campaign_id"]
+    ref = (f"tag \\texttt{{cdrt-{tex(campaign)}}}" if campaign.startswith("campaign-") else
+           f"tag \\texttt{{{tex(tag)}}}" if tag else f"commit \\texttt{{{tex(d['lock']['git_commit'][:12])}}}")
     return (f"Everything needed to inspect and repeat the experiment is in one repository, \\url{{{cdrt}}} ({ref}). "
             f"After \\texttt{{git clone}}, its script \\texttt{{fetch-dependencies.sh}} fetches the two pinned dependencies, ProofWeave "
             f"(\\url{{{pw}}}, tag \\texttt{{{tex(pw_tag)}}}) and RepoAudit (\\url{{{ra}}}, commit "
             f"\\texttt{{{tex(repoaudit_commit[:7])}}}). The repository holds the capture declaration and protocol, the sealed "
-            f"corpus, the fixtures, the oracle, the lock file and every raw record. The assessment and timing phases can be "
-            f"repeated offline, without RepoAudit, a language model or an API key, with \\texttt{{cdrt lab run 3-9}}; the "
+            f"corpus, the oracle, the lock file and every raw record; the fixtures are rebuilt from the sealed corpus by "
+            f"\\texttt{{cdrt lab run 5}}, and the lock file records their hash. The assessment and timing phases can be "
+            f"repeated offline, without RepoAudit, a language model or an API key, with \\texttt{{cdrt lab run 5-9}}; the "
             f"capture phase (\\texttt{{cdrt lab run 0-2}}) additionally needs access to the declared model.")
 
 

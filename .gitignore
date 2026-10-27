@@ -3,8 +3,7 @@ __pycache__/
 .venv*/
 *.egg-info/
 .pytest_cache/
-# local capture records and development runs are never committed; the frozen bundle is
-capture/records/
+# development runs are never committed; the reported campaign's records are (`cdrt capture publish`)
 capture/records-dev/
 capture/bundle-dev/
 results/labs-dev/
@@ -13,3 +12,5 @@ results/pilot/
 *.env
 .env*
 fixtures/out-dev/
+# rebuilt by Lab 5 from the frozen bundle; the lock records their hash
+fixtures/out/

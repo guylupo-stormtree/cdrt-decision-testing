@@ -29,8 +29,13 @@ from .framework import Check, LabContext, LabResult, rel
 
 
 def manuscript() -> Path:
+    """$CDRT_MANUSCRIPT, else the newest main-<N>.tex in ../ComposableCDRT/Manuscript."""
     env = os.environ.get("CDRT_MANUSCRIPT")
-    return Path(env) if env else paths.root().parent / "ComposableCDRT" / "Manuscript" / "main-17.tex"
+    if env:
+        return Path(env)
+    d = paths.root().parent / "ComposableCDRT" / "Manuscript"
+    found = [(int(m.group(1)), f) for f in d.glob("main-*.tex") if (m := re.fullmatch(r"main-(\d+)\.tex", f.name))]
+    return max(found)[1] if found else d / "main.tex"
 
 
 def repoaudit_commit() -> str:

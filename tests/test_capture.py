@@ -208,3 +208,33 @@ def test_lab4_refreezes_only_a_bundle_no_passed_attempt_used(root):
     assert "already frozen" in lab4_review._clear_bundle(bundle, False, said.append)  # used by later labs: never
     assert bundle.exists()
     lab4_review._writable(aside[0])
+
+
+def test_publish_commits_the_campaign_records_and_tags_them(root, monkeypatch):
+    from cdrt import lock
+    from cdrt.labs import framework
+    def git(*a):
+        subprocess.run(["git", *a], cwd=root, check=True, capture_output=True)
+    git("init", "-q"); git("config", "user.email", "t@t"); git("config", "user.name", "t")
+    (root / "README.md").write_text("x\n"); git("add", "README.md"); git("commit", "-q", "-m", "code")
+    (root / ".gitignore").write_text("capture/records/\n")
+    git("add", ".gitignore"); git("commit", "-q", "-m", "ignore")
+    (root / "capture" / "records" / "cycles").mkdir(parents=True)
+    (root / "capture" / "records" / "cycles" / "run.json").write_text("{}")
+    (root / "results" / "labs" / "lab8" / "attempt1").mkdir(parents=True)
+    (root / "results" / "labs" / "lab8" / "attempt1" / "handoff.json").write_text(json.dumps({"handoff": {"lock_root": "L"}}))
+    doc = {"lock_root": "L", "campaign_id": "campaign-007", "git_commit": "c" * 40}
+    monkeypatch.setattr(lock, "verify", lambda dev: (True, [], doc))
+    monkeypatch.setattr(framework.LabBook, "state", lambda self: {
+        "8": {"status": "passed", "handoff": "results/labs/lab8/attempt1/handoff.json"}, "9": {"status": "passed"}})
+    leak = root / "capture" / "records" / "cycles" / "leak.txt"
+    leak.write_text("key sk-" + "a" * 30)
+    with pytest.raises(capture.CaptureError, match="API key"):
+        capture.publish()
+    leak.unlink()
+    assert capture.publish() == "cdrt-campaign-007"
+    files = subprocess.run(["git", "ls-tree", "-r", "--name-only", "cdrt-campaign-007"], cwd=root,
+                           capture_output=True, text=True).stdout.split()
+    assert "capture/records/cycles/run.json" in files and "results/labs/lab8/attempt1/handoff.json" in files
+    with pytest.raises(capture.CaptureError, match="already exists"):
+        capture.publish()

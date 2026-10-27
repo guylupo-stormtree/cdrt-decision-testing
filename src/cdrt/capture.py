@@ -416,3 +416,61 @@ def set_campaign_runs(n: int) -> int:
         raise CaptureError("runs.campaign not found in capture.yaml")
     f.write_text(new)
     return old
+
+
+# ------------------------------------------------------------------ after the campaign: publish its records
+PUBLISHED = ["capture/capture.yaml", "capture/cdrt-protocol.yaml", "capture/protocol.lock.json", "capture/manifests",
+             "capture/policies", "capture/target", "capture/pilot", "capture/archive", "capture/records",
+             "capture/bundle", "protocol/protocol.lock.json", "results/CAMPAIGNS.md", "results/labs",
+             "results/screen-capture"]
+_KEY = re.compile(rb"sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{30,}")
+
+
+def secret_hits(paths_: list[Path]) -> list[str]:
+    """Files that contain something shaped like an API key (keys are memory-only, so there should be none)."""
+    hits = []
+    for top in paths_:
+        for f in ([top] if top.is_file() else sorted(top.rglob("*")) if top.is_dir() else []):
+            if f.is_file() and _KEY.search(f.read_bytes()):
+                hits.append(f.relative_to(paths.root()).as_posix())
+    return hits
+
+
+def publish() -> str:
+    """Commit the reported campaign's declaration, protocol, records, frozen bundle, lock and lab results on top of
+    the locked code and tag the commit cdrt-<campaign>, the tag the manuscript cites. The fixtures are not
+    committed: Lab 5 rebuilds them byte for byte from the bundle and the lock records their hash. Push is left
+    to the operator."""
+    from . import lock
+    from .labs import book
+    ok, problems, doc = lock.verify(False)
+    if not ok:
+        raise CaptureError("the lock does not verify: " + "; ".join(problems))
+    st = book(dev=False).state()
+    if (st.get("9") or {}).get("status") != "passed":
+        raise CaptureError("Lab 9 has not passed for the current lock")
+    h8 = json.loads((paths.root() / st["8"]["handoff"]).read_text())["handoff"]
+    if h8.get("lock_root") != doc["lock_root"]:
+        raise CaptureError("Labs 8-9 did not run under the current lock")
+    tag = f"cdrt-{doc['campaign_id']}"
+    if lock.git("tag", "--list", tag):
+        raise CaptureError(f"tag {tag} already exists")
+    if lock.git("status", "--porcelain", "--untracked-files=no"):
+        raise CaptureError("working tree has uncommitted changes to tracked files")
+    present = [p for p in PUBLISHED if (paths.root() / p).exists()]
+    hits = secret_hits([paths.root() / p for p in present])
+    if hits:
+        raise CaptureError("something shaped like an API key in: " + ", ".join(hits[:5]))
+    r = subprocess.run(["git", "add", "-f", "--", *present], cwd=paths.root(), capture_output=True, text=True)
+    if r.returncode:
+        raise CaptureError(r.stderr.strip())
+    msg = (f"Campaign {doc['campaign_id']}: declaration, protocol, records, frozen bundle, lock and lab results\n\n"
+           f"Lock root {doc['lock_root']} (code commit {doc['git_commit'][:12]}). Fixtures are not committed: "
+           "`cdrt lab run 5` rebuilds them from the bundle; the lock records their hash.")
+    r = subprocess.run(["git", "commit", "-q", "-m", msg], cwd=paths.root(), capture_output=True, text=True)
+    if r.returncode:
+        raise CaptureError(r.stderr.strip() or r.stdout.strip())
+    lock.git("tag", "-a", tag, "-m", f"CDRT {doc['campaign_id']}: locked code with the campaign's records")
+    if not lock.git("rev-parse", "--verify", f"refs/tags/{tag}"):
+        raise CaptureError(f"could not create tag {tag}")
+    return tag
