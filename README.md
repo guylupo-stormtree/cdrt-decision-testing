@@ -1,5 +1,7 @@
 # Composable CDRT experiment
 
+Looking for the results, the logs or the data? See [GUIDE.md](GUIDE.md).
+
 Control-decision risk testing over recorded decisions. A control (here RepoAudit, an LLM-agent repository auditor) makes a decision; ProofWeave records it with its intent, its basis and the policy in force; registered decision tests then judge whether the decision was licensed by its own policy (conformance) and whether it is enough for today's requirement (adequacy), and only verdicts bound to the active requirement reach posture, which a TAIP posture stub rolls up for the gateway.
 
 **Scope (manuscript main-14).** Every RepoAudit run is captured as a decision under one policy (P1), and a Semgrep scan of the same repository is retained beside them, in no decision's basis. The first green conformant decision is tested by the two modules before and after the requirement adds `independent-check`, with one delayed-result check; every green decision is also assessed and drawn in the pathway figure. The timing study repeats the requirement change on synthetic bases of about 10² to 10⁵ records.
