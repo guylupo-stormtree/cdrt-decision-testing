@@ -72,7 +72,8 @@ def gather(root: Path, h: dict[str, Any], lock_doc: dict[str, Any]) -> dict[str,
     src = {"functional_records": fr, "acceptance": fr.with_name("acceptance.json"), "timing_records": tr,
            "scale_stats": tr.with_name("scale_stats.json"), "run_manifest": tr.with_name("run_manifest.json"),
            "parameters": root / h["parameters"], "bundle": root / h["bundle"] / "BUNDLE.json",
-           "protocol": root / h["bundle"] / "protocol" / "protocol.yaml"}
+           "protocol": next(f for f in (root / h["bundle"] / "protocol" / n for n in ("cdrt-protocol.yaml", "protocol.yaml"))
+                            if f.exists())}   # the frozen capture protocol keeps its name (real: cdrt-protocol.yaml)
     import yaml
     d = {"src": src, "lock": lock_doc,
          "functional": [json.loads(l) for l in fr.read_text().splitlines() if l.strip()],
@@ -158,6 +159,13 @@ def texts(d: dict[str, Any], dev: bool) -> dict[str, str]:
         failing = "; ".join(f"{k} ({CONDITIONS[k].lower()}) failed on {listing([tex(x) for x in v['failing']])}"
                             for k, v in conds.items() if not v["passes"])
         f += f" $A_{{\\mathrm{{comp}}}}$ is false: {failing}."
+        if before.get("A") == "FAIL" and before.get("gateway") == "hold":
+            f += (" These expectations assumed that the captured decisions together met the requirement before the "
+                  "change; they did not, so the gateway held throughout and there was no adequate result to withdraw "
+                  "or to arrive late.")
+            if all(by.get(k, {}).get("oracle_agrees") for k in ("before", "after")):
+                f += (" In both cases CDRT's verdicts agreed with the independent oracle; what differed were the "
+                      "scenario's expected values.")
     f += " Replay from the same locked inputs agreed." if acc["replay_agrees"] else \
         " Replay from the same locked inputs did not agree; the mismatch is kept in the records."
     cov = composition(d)
@@ -198,9 +206,17 @@ def texts(d: dict[str, Any], dev: bool) -> dict[str, str]:
             f"together they covered {cov['covered']} of the {cov['scope']} release functions and the gateway could proceed; "
             if cov["composed_ok"] and cov["narrow"] else
             f"the green RepoAudit decisions together covered {cov['covered']} of the {cov['scope']} release functions; ")
-    functional_short = (lead[0].upper() + lead[1:] + "when independent validation became required, conformance stayed "
-                        "successful, adequacy failed and TAIP moved the gateway to hold"
-                        if held else "The functional transition did not match its expectation")
+    held_before = before.get("A") == "FAIL" and before.get("gateway") == "hold"
+    if held and held_before:      # the captured decisions never met the requirement: TAIP held from the start
+        functional_short = (f"The {cov['eligible']} eligible green RepoAudit decisions together covered {cov['covered']} "
+                            f"of the {cov['scope']} release functions, below the {cov['tau']} requirement, so TAIP held "
+                            "the gateway; when independent validation became required, conformance stayed successful, "
+                            "adequacy still failed and the gateway stayed on hold")
+    elif held:
+        functional_short = (lead[0].upper() + lead[1:] + "when independent validation became required, conformance "
+                            "stayed successful, adequacy failed and TAIP moved the gateway to hold")
+    else:
+        functional_short = "The functional transition did not match its expectation"
     abstract = f"{mark}{functional_short}; {timing}."
     intro = f"{mark}{functional_short[0].upper()}{functional_short[1:]}, and {timing}."
     state = "development data, not a result" if dev else f"measured (campaign {tex(d['lock']['campaign_id'])})"
@@ -279,7 +295,8 @@ def composition(d: dict[str, Any]) -> dict[str, Any]:
          + (f"; {len(m.get('drift') or [])} observed function(s) were missing from the release manifest" if m.get("drift") else "")
          + ".")
     return {"sentence": s, "covered": covered, "scope": scope, "composed_ok": ok, "narrow": narrow,
-            "green": len(obs), "alone_ok": alone_ok, "estate": m.get("observed_estate_size", 0)}
+            "green": len(obs), "alone_ok": alone_ok, "estate": m.get("observed_estate_size", 0),
+            "eligible": len(m.get("eligible") or []), "tau": share(tau)}
 
 
 def blocks(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str, tag: str = "",

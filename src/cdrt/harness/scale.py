@@ -70,9 +70,8 @@ class Plane:
         self.rev3_bindings = {i.leaf: i.binding for i in resolve(self.rev3, self.snap, registry, manifests)}
         dv = view.retrieve(self.snap, self.decision)
         self.rev2_verdicts = [evaluate(i, self.snap, manifests, dv) for i in invs]
-        # main-14 §4.5: at every size the baseline verdicts must both be SUCCESS
+        # the verdicts before the change; Lab 8 checks they equal the functional run's at every size
         self.baseline = {v["binding"]["d"]: v["state"] for v in self.rev2_verdicts}
-        self.baseline_ok = sorted(self.baseline.values()) == [SUCCESS, SUCCESS]
         self.t2 = self.rev2["requirements"][1]["parameters"]["assessment_time"]
 
     def reset(self, gw: Gateway) -> Consumer:

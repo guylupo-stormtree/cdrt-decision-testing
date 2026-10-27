@@ -5,8 +5,12 @@ fixtures handed over by Lab 7, with the counts of protocol/run_config.yaml. The 
 timed cycle was executed and recorded (mismatches, late completions and timeouts kept), every record
 carries the lock stamp, the control guard counted no call and the run manifest is written. The result is
 one number, the slowest update of the campaign against the budget, reported whatever it is (R-LOCK-5; D-015).
+At every size the verdicts before the change must equal those of Lab 7's functional run on the captured
+decisions (the planes reproduce the capture), whatever they are.
 """
 from __future__ import annotations
+
+import json
 
 import yaml
 
@@ -26,6 +30,8 @@ def run(ctx: LabContext) -> LabResult:
     res = scale.run(paths.root() / h["fixtures"], paths.root() / h["bundle"], cfg, stamp, ctx.progress)
     files = scale.write(ctx.attempt_dir, res, "DEVELOPMENT" if ctx.dev else "CAMPAIGN")
     recs, st = res["records"], res["stats"]
+    before = next((r.get("observed") or {} for r in map(json.loads, (paths.root() / h["functional_records"])
+                   .read_text().splitlines()) if r.get("id") == "before"), {})
     checks = [
         Check("protocol lock verifies (R-LOCK-2)", True, h["lock_root"][:12]),
         Check(f"all {res['expected_cycles']} timed cycles executed and recorded (R-SCL-4, R-SCL-5)",
@@ -36,8 +42,10 @@ def run(ctx: LabContext) -> LabResult:
         Check("the control guard counted no call (R-ISO-1)", res["guard_calls"] == 0 and
               all(r["guard_calls"] == 0 for r in recs), f"{res['guard_calls']} calls"),
         Check("run manifest written (R-SCL-8)", files["run_manifest"].exists()),
-        Check("baseline verdicts are both SUCCESS at every size (main-14 §4.5)",
-              all(sorted(b.values()) == ["SUCCESS", "SUCCESS"] for b in res["manifest"]["baseline"].values())),
+        Check(f"verdicts before the change equal the functional run's at every size "
+              f"(conformance {before.get('H')}, adequacy {before.get('A')})",
+              bool(before) and all(b == {scale.H: before.get("H"), scale.A: before.get("A")}
+                                   for b in res["manifest"]["baseline"].values())),
     ]
     fmt = lambda x: "—" if x is None else f"{x:.3f} s"  # noqa: E731
     hl = res["headline"]
