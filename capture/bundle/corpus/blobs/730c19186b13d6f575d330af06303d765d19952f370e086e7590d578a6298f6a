@@ -1,0 +1,36 @@
+{
+    "0": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-zdtgez69/target/src/dateutil/parser/_parser.py, 1222, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-zdtgez69/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "_build_naive"
+            ],
+            [
+                "def _build_naive(self, res, default):\n        repl = {}\n        for attr in (\"year\", \"month\", \"day\", \"hour\",\n                     \"minute\", \"second\", \"microsecond\"):\n            value = getattr(res, attr)\n            if value is not None:\n                repl[attr] = value\n\n        if 'day' not in repl:\n            # If the default day exceeds the last day of the month, fall back\n            # to the end of the month.\n            cyear = default.year if res.year is None else res.year\n            cmonth = default.month if res.month is None else res.month\n            cday = default.day if res.day is None else res.day\n\n            if cday > monthrange(cyear, cmonth)[1]:\n                repl['day'] = monthrange(cyear, cmonth)[1]\n\n        naive = default.replace(**repl)\n\n        if res.weekday is not None and not res.day:\n            naive = naive + relativedelta.relativedelta(weekday=res.weekday)\n\n        return naive"
+            ]
+        ],
+        "explanation": "Explanation: The propagation path concerns the variable res at line 13 in _build_naive, specifically in the expression res.day. At the start of the function, res is used in getattr(res, attr) for several attributes, and values are checked for None. However, there is no explicit check to ensure that res itself is not None before accessing its attributes. If res is None, getattr(res, attr) at line 5 would raise an AttributeError, and res.day at line 13 would also raise an AttributeError. However, the NPD bug in question is about dereferencing a None value (i.e., accessing an attribute of None). Since there is no guard or check for res being None before line 13, and the function can be called with res as None, the propagation path is reachable and can cause an NPD bug at line 13 when res.day is accessed.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    },
+    "1": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-zdtgez69/target/src/dateutil/parser/_parser.py, 1230, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-zdtgez69/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "_build_naive"
+            ],
+            [
+                "def _build_naive(self, res, default):\n        repl = {}\n        for attr in (\"year\", \"month\", \"day\", \"hour\",\n                     \"minute\", \"second\", \"microsecond\"):\n            value = getattr(res, attr)\n            if value is not None:\n                repl[attr] = value\n\n        if 'day' not in repl:\n            # If the default day exceeds the last day of the month, fall back\n            # to the end of the month.\n            cyear = default.year if res.year is None else res.year\n            cmonth = default.month if res.month is None else res.month\n            cday = default.day if res.day is None else res.day\n\n            if cday > monthrange(cyear, cmonth)[1]:\n                repl['day'] = monthrange(cyear, cmonth)[1]\n\n        naive = default.replace(**repl)\n\n        if res.weekday is not None and not res.day:\n            naive = naive + relativedelta.relativedelta(weekday=res.weekday)\n\n        return naive"
+            ]
+        ],
+        "explanation": "Explanation: The propagation path concerns the call to monthrange(cyear, cmonth) at line 17 in _build_naive. For an NPD (Null Pointer Dereference) to occur here, either cyear or cmonth would need to be None. Let's analyze how cyear and cmonth are computed: cyear = default.year if res.year is None else res.year, and cmonth = default.month if res.month is None else res.month. Both default and res are assumed to be objects with year and month attributes. The only way cyear or cmonth could be None is if both res.year (or res.month) and default.year (or default.month) are None. However, the code does not check for None on default.year or default.month, so if default.year or default.month is None, cyear or cmonth could be None, and thus monthrange could be called with None arguments, potentially causing an NPD. There is no branch or guard in the code that prevents this. Therefore, the propagation path is reachable.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    }
+}

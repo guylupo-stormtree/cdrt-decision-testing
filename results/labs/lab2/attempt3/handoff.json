@@ -1,0 +1,33 @@
+{
+  "attempt": 3,
+  "dev": false,
+  "handoff": {
+    "cycle": "campaign-0001"
+  },
+  "handoff_sha256": "f5b388e07837d5a679d9cba0fe3594b985b3eb5217a0e4f54dd219e1cb1e0f0e",
+  "inputs_from": 1,
+  "inputs_handoff_sha256": "a19e013ec5fa3e414c06873b7b7969244554f64605dbce439b8b9bf5b0f17b7c",
+  "lab": 2,
+  "name": "Capture",
+  "outputs": {
+    "lock": {
+      "path": "capture/protocol.lock.json",
+      "sha256": "50a025c59587761f27e8a8bcf6064aa77632eeb5abc654a07d951caee3838380"
+    },
+    "protocol": {
+      "path": "capture/cdrt-protocol.yaml",
+      "sha256": "a2e8d87e30b90f40ac478e2c812bf11a396a26035fde8b7915e9ae0697432e43"
+    },
+    "stage1": {
+      "path": "capture/records/cycles/campaign-0001/stage1",
+      "sha256": "68caa63ef07929a79761fae5af497ba1ddb2de101bc322f18b8bafee9392cdd5"
+    }
+  },
+  "summary": {
+    "RepoAudit": "5/50 GREEN",
+    "Semgrep": "0/1 GREEN",
+    "campaign cycle": "campaign-0001",
+    "decisions": "{\"G-main\": {\"decisions\": 50, \"green\": 5, \"recorded\": 50}}"
+  },
+  "time": "2026-10-27T12:17:41Z"
+}

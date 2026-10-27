@@ -1,0 +1,10 @@
+{
+  "label": "scope narrowed to the parser",
+  "moved": [
+    "target",
+    "manifests",
+    "pilot",
+    "records"
+  ],
+  "at": "2026-10-26T17:53:12Z"
+}

@@ -1,0 +1,63 @@
+entries:
+- approved: true
+  code:
+  - tests_registered/conformance_check/__init__.py
+  - tests_registered/common.py
+  code_digest: 48155fe1ef4bc0059590bd1dbd5e6577b6781a37f7a205f3ff907f670edf2cf9
+  id: conformance-check
+  inputs:
+  - policy
+  - policy_digest_ok
+  - policy_manifest
+  - assessments
+  - record_status
+  limits:
+    memory_mb: 4096
+    wall_seconds: 60
+  meanings:
+    FAIL: the complete recorded basis shows the policy-at-event did not license the
+      decision
+    INCONCLUSIVE: the policy-at-event or the basis cannot be resolved well enough
+      to judge
+    SUCCESS: the decision was licensed by its own policy-at-event, on its recorded
+      basis
+  module: cdrt.tests_registered.conformance_check
+  parameters:
+    policy_source: recorded-decision-policy
+  prerequisites:
+  - decision-binding
+  version: '1.0'
+- approved: true
+  code:
+  - tests_registered/coverage_composition/__init__.py
+  - tests_registered/conformance_check/__init__.py
+  - tests_registered/common.py
+  code_digest: f76d6336ae1647889c555f7989bb2b65ab2fc0b6c3c8832b1a3c0c07333e282f
+  id: coverage-composition
+  inputs:
+  - decisions
+  - manifest
+  - current
+  limits:
+    memory_mb: 4096
+    wall_seconds: 60
+  meanings:
+    FAIL: the complete records of the eligible decisions together fall short of the
+      current coverage requirement
+    INCONCLUSIVE: a decision record in the set is incomplete, so a shortfall cannot
+      be established
+    SUCCESS: the eligible decisions together cover the release manifest to the required
+      share, with every required validator
+  module: cdrt.tests_registered.coverage_composition
+  parameters:
+    assessment_time: required
+    context: required
+    decision_set: required
+    manifest_ref: required
+    max_age_seconds: required
+    minimum_coverage: required
+    relative_threshold: required
+    validators: required
+  prerequisites:
+  - decision-binding
+  version: '1.0'

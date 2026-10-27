@@ -14,3 +14,5 @@ results/pilot/
 fixtures/out-dev/
 # rebuilt by Lab 5 from the frozen bundle; the lock records their hash
 fixtures/out/
+# Lab 9 compiles a copy of the manuscript beside its results; the paper is not published here
+results/labs/lab9/*/manuscript/

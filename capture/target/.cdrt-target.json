@@ -1,0 +1,1 @@
+{"repository": "https://github.com/dateutil/dateutil", "commit": "10f317fde11ce5bc6540e83f896af10e67d52937", "omit": ["src/dateutil/rrule.py", "src/dateutil/relativedelta.py", "src/dateutil/easter.py", "src/dateutil/utils.py", "src/dateutil/_tzdata_impl.py", "src/dateutil/tzwin.py", "src/dateutil/tz/*", "src/dateutil/zoneinfo/*", "tests/*", "docs/*"]}

@@ -1,0 +1,48 @@
+2026-10-26 15:35:33,266 - INFO - Start data-flow bug scanning in parallel...
+2026-10-26 15:35:33,266 - INFO - Max number of workers: 4
+2026-10-26 15:35:33,266 - INFO - 0 bug(s) was/were detected in total.
+2026-10-26 15:35:33,266 - INFO - The bug report(s) has/have been dumped to /home/guylupo/dev/cdrt-decision-testing/vendor/proofweave-decision-assurance/vendor/RepoAudit/result/dfbscan/gpt-pw-m1/NPD/Python/target/2026-10-26-15-35-33-0/detect_info.json
+2026-10-26 15:35:33,266 - INFO - The log files are as follows:
+2026-10-26 15:35:33,266 - INFO - /home/guylupo/dev/cdrt-decision-testing/vendor/proofweave-decision-assurance/vendor/RepoAudit/log/dfbscan/gpt-pw-m1/NPD/Python/target/2026-10-26-15-35-33-0/dfbscan.log
+/home/guylupo/dev/cdrt-decision-testing/vendor/proofweave-decision-assurance/vendor/RepoAudit/src/llmtool/LLM_utils.py:5: FutureWarning: 
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving 
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+/home/guylupo/dev/cdrt-decision-testing/vendor/proofweave-decision-assurance/vendor/.venv-repoaudit/lib/python3.13/site-packages/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+
+Parsing files:   0%|          | 0/46 [00:00<?, ?it/s]
+Parsing files:   2%|▏         | 1/46 [00:00<00:14,  3.13it/s]
+Parsing files: 100%|██████████| 46/46 [00:00<00:00, 140.42it/s]
+Parsing files: 100%|██████████| 46/46 [00:00<00:00, 109.11it/s]
+
+Analyzing functions:   0%|          | 0/1724 [00:00<?, ?it/s]
+Analyzing functions:   0%|          | 1/1724 [00:00<04:22,  6.57it/s]
+Analyzing functions:   5%|▌         | 90/1724 [00:00<00:04, 332.19it/s]
+Analyzing functions: 100%|██████████| 1724/1724 [00:00<00:00, 5187.75it/s]
+
+Analyzing call graphs:   0%|          | 0/1724 [00:00<?, ?it/s]
+Analyzing call graphs:   0%|          | 1/1724 [00:00<03:54,  7.36it/s]
+Analyzing call graphs:  21%|██▏       | 367/1724 [00:00<00:00, 1725.91it/s]
+Analyzing call graphs:  32%|███▏      | 551/1724 [00:00<00:01, 1034.17it/s]
+Analyzing call graphs:  51%|█████     | 883/1724 [00:00<00:00, 1598.88it/s]
+Analyzing call graphs:  63%|██████▎   | 1090/1724 [00:00<00:00, 1198.89it/s]
+Analyzing call graphs:  73%|███████▎  | 1251/1724 [00:01<00:00, 797.39it/s] 
+Analyzing call graphs:  80%|███████▉  | 1371/1724 [00:01<00:00, 509.77it/s]
+Analyzing call graphs:  85%|████████▍ | 1459/1724 [00:02<00:00, 474.51it/s]
+Analyzing call graphs:  89%|████████▉ | 1531/1724 [00:02<00:00, 467.84it/s]
+Analyzing call graphs:  92%|█████████▏| 1594/1724 [00:02<00:00, 441.87it/s]
+Analyzing call graphs:  96%|█████████▌| 1649/1724 [00:02<00:00, 343.05it/s]
+Analyzing call graphs:  98%|█████████▊| 1692/1724 [00:03<00:00, 282.06it/s]
+Analyzing call graphs: 100%|██████████| 1724/1724 [00:03<00:00, 570.34it/s]
+
+Parsing files:   0%|          | 0/1724 [00:00<?, ?it/s]
+Parsing files: 100%|██████████| 1724/1724 [00:00<00:00, 3563814.73it/s]
+
+Processing Source Values: 0src [00:00, ?src/s]
+Processing Source Values: 0src [00:00, ?src/s]

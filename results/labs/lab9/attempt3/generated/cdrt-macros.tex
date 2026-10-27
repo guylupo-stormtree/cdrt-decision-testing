@@ -1,0 +1,43 @@
+% BEGIN GENERATED:results_macros
+% generator: cdrt.report 1 (results_macros)
+% inputs: results/labs/lab7/attempt4/functional_records.jsonl 00968fd19027; results/labs/lab7/attempt4/acceptance.json 242e432eca16; results/labs/lab8/attempt4/scale_stats.json 85e2372a8fe0; capture/bundle/BUNDLE.json 1bd0e42b0dff; capture/bundle/protocol/cdrt-protocol.yaml a2e8d87e30b9
+% lock_root: 59af9d417b6025e385258c7484e2f9349269299ffc8db46b78d8fda049da0dca  campaign: campaign-004
+% commit: 14a86e55f4ba59bde407e00829916370219d84a6
+\newcommand{\ResultState}{measured (campaign-004)}
+\newcommand{\FunctionalResultText}{The functional protocol ran on the sealed corpus under lock \texttt{59af9d417b60}. On its own, the main decision covered 4/7 of the release functions (below the 80\% requirement); 0 of the 5 green decisions met the requirement alone, and 3 were green but narrow, each reaching less than 80\% of the 13 functions observed across all eligible decisions. Together the 4 eligible decisions covered 5 of 7 release functions, below the requirement; 46 decision(s) were excluded; 8 observed function(s) were missing from the release manifest. Before the change, conformance returned \Pass{} and adequacy \Fail{}, and the gateway read hold. After \texttt{independent-check} was required, conformance returned \Pass{} and adequacy \Fail{}, and the gateway read hold. $A_{\mathrm{comp}}$ is false: C1 (verdicts match the oracle before and after) failed on before; C3 (gateway transition and delayed-result rejection) failed on delayed success rejected and step 2 proceed. These expectations assumed that the captured decisions together met the requirement before the change; they did not, so the gateway held throughout and there was no adequate result to withdraw or to arrive late. In both cases CDRT's verdicts agreed with the independent oracle; what differed were the scenario's expected values. Replay from the same locked inputs agreed. Every judgement of the individual decisions agreed with the oracle.}
+\newcommand{\ScaleResultText}{Across 400 timed updates at 1,270, 1,270, 10,160 and 100,330 decision-basis records, the slowest took 1.57\,s, at 100,330 records. The slowest update grew from 0.078\,s at 1,270 records to 1.57\,s at 100,330 records. Every cycle returned the expected verdicts and the active requirement revision. Every update reached the gateway within the 5\,s budget for the measured workload.}
+\newcommand{\ConclusionResultText}{On the measured workload, $A_{\mathrm{comp}}$ is false, and the slowest of 400 updates, at up to 100,330 basis records, took 1.57\,s, within the 5\,s budget.}
+\newcommand{\ScaleFigureSentence}{Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest took 1.57 s.}
+\newcommand{\ScaleAbstractText}{1.57\ }
+\newcommand{\ScaleLargestN}{100,330}
+\newcommand{\ScaleIntroText}{The 4 eligible green RepoAudit decisions together covered 5 of the 7 release functions, below the 80\% requirement, so TAIP held the gateway; when independent validation became required, conformance stayed successful, adequacy still failed and the gateway stayed on hold, and the slowest of 400 timed updates took 1.57\,s, within that budget.}
+\newcommand{\ScaleWorstCase}{1.57\,s}
+\newcommand{\PathwaySentence}{The 5 green decisions of one model on the same code reached between 0 and 4 of the 5 functions in the auditor's scope, by 3 different paths.}
+\newcommand{\CoverageSentence}{On its own, the main decision covered 4/7 of the release functions (below the 80\% requirement); 0 of the 5 green decisions met the requirement alone, and 3 were green but narrow, each reaching less than 80\% of the 13 functions observed across all eligible decisions. Together the 4 eligible decisions covered 5 of 7 release functions, below the requirement; 46 decision(s) were excluded; 8 observed function(s) were missing from the release manifest.}
+\newcommand{\CodeAvailabilityText}{Everything needed to inspect and repeat the experiment is in one repository, \url{https://github.com/guylupo-stormtree/cdrt-decision-testing} (tag \texttt{cdrt-campaign-004}). After \texttt{git clone}, its script \texttt{fetch-dependencies.sh} fetches the two pinned dependencies, ProofWeave (\url{https://github.com/guylupo-stormtree/proofweave-decision-assurance}, tag \texttt{pw-v0.2.5}) and RepoAudit (\url{https://github.com/PurCL/RepoAudit}, commit \texttt{160f5bc}). The repository holds the capture declaration and protocol, the sealed corpus, the oracle, the lock file and every raw record; the fixtures are rebuilt from the sealed corpus by \texttt{cdrt lab run 5}, and the lock file records their hash. The assessment and timing phases can be repeated offline, without RepoAudit, a language model or an API key, with \texttt{cdrt lab run 5-9}; the capture phase (\texttt{cdrt lab run 0-2}) additionally needs access to the declared model.}
+\newcommand{\CorpusHash}{7aa7c04b5e217123\allowbreak d20cd207489ee03c\allowbreak 6a04e054883d4640\allowbreak a6fa895cc4d8104e}
+\newcommand{\PWVersion}{pw-v0.2.5}
+\newcommand{\RepoAuditCommit}{160f5bc}
+\newcommand{\ModelId}{gpt-4.1}
+\newcommand{\TargetRepo}{https://github.com/dateutil/dateutil@10f317fde11ce5bc6540e83f896af10e67d52937}
+% END GENERATED:results_macros
+% BEGIN GENERATED:fixture_macros
+% generator: cdrt.report 1 (fixture_macros)
+% inputs: fixtures/out/parameters.json 2d3cdf7c84cb; capture/bundle/stage1/decisions/G-main-19/policy/P1@1.json 00d8fbaeea62
+% lock_root: 59af9d417b6025e385258c7484e2f9349269299ffc8db46b78d8fda049da0dca  campaign: campaign-004
+% commit: 14a86e55f4ba59bde407e00829916370219d84a6
+\newcommand{\FixMh}{5}
+\newcommand{\FixMq}{7}
+\newcommand{\FixTauH}{40\%}
+\newcommand{\FixTauQ}{80\%}
+\newcommand{\FixAgeMax}{39,760\,s}
+\newcommand{\FixAssessTime}{\texttt{2026-10-27T12:27:39.342279Z}}
+\newcommand{\FixSizes}{1,270, 1,270, 10,160 and 100,330}
+\newcommand{\FixBasisMain}{1,270}
+\newcommand{\FixCoverageMain}{4/7}
+\newcommand{\FixRunCount}{50}
+\newcommand{\FixGreenCount}{5}
+\newcommand{\FixTauRel}{80\%}
+\newcommand{\FixEstateObserved}{13}
+\newcommand{\FixComposedCoverage}{5/7}
+% END GENERATED:fixture_macros

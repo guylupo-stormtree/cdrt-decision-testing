@@ -1,0 +1,201 @@
+{
+  "lock_root": "5027e2dd7806fc031b01e5880fcd83a8cca3381d7eb3cc3d5be6e4f1d233387c",
+  "manuscript": {
+    "inserted_in_copy": [],
+    "path": "/home/guylupo/dev/ComposableCDRT/Manuscript/main-17.tex",
+    "replaced": [
+      "cdrt-macros.tex",
+      "cdrt-record.tex",
+      "cdrt-functional-table.tex",
+      "cdrt-pathway-figure.tex",
+      "cdrt-coverage-table.tex",
+      "cdrt-coverage-figure.tex",
+      "cdrt-scale-table.tex",
+      "cdrt-scale-figure.tex"
+    ],
+    "sha256": "e51a95e42a694cc19b3b037327af825a8e97350687ca16908dcb35b0b2e3472a"
+  },
+  "sources": {
+    "acceptance": {
+      "path": "results/labs/lab7/attempt2/acceptance.json",
+      "sha256": "c0746bd9fb113f5fe9201552510a9f9653c56b53ef75ea3d27191b4d3d7e4055"
+    },
+    "bundle": {
+      "path": "capture/bundle/BUNDLE.json",
+      "sha256": "1bd0e42b0dfff18e5c0d00c65738c30a767b71f0907159a93eb13948b627a2c6"
+    },
+    "functional_records": {
+      "path": "results/labs/lab7/attempt2/functional_records.jsonl",
+      "sha256": "f3606099382d4641bb8caeea7a1e22707d7890267526bd5e0eef76a82e0ca4ec"
+    },
+    "parameters": {
+      "path": "fixtures/out/parameters.json",
+      "sha256": "2d3cdf7c84cba7cac3e639d97cd27f22c40d3d054c2bfc334c2c00a0d73a5178"
+    },
+    "policy_main": {
+      "path": "capture/bundle/stage1/decisions/G-main-19/policy/P1@1.json",
+      "sha256": "00d8fbaeea62721834d8d739a142a6785cf2986b5e4c4c33c3d4315ad203d4d4"
+    },
+    "protocol": {
+      "path": "capture/bundle/protocol/cdrt-protocol.yaml",
+      "sha256": "a2e8d87e30b90f40ac478e2c812bf11a396a26035fde8b7915e9ae0697432e43"
+    },
+    "run_manifest": {
+      "path": "results/labs/lab8/attempt2/run_manifest.json",
+      "sha256": "443b940a6eda39fc8daac0531efd0cdce1fca6fb2400edc194e14df63dfaf5d1"
+    },
+    "scale_stats": {
+      "path": "results/labs/lab8/attempt2/scale_stats.json",
+      "sha256": "2f77504400e24e19805f780e209fa3edbea269a4c9fc10e2339f6008e019f646"
+    },
+    "timing_records": {
+      "path": "results/labs/lab8/attempt2/timing_records.jsonl",
+      "sha256": "83cb3a108ce666107bc780340ab5f29ce475f3b85b56e3dcf262f1ede2e4e7c8"
+    }
+  },
+  "values": {
+    "CodeAvailabilityText": [
+      "lock",
+      "git remotes and submodules"
+    ],
+    "ConclusionResultText": [
+      "acceptance",
+      "scale_stats"
+    ],
+    "CorpusHash": [
+      "bundle"
+    ],
+    "CoverageSentence": [
+      "timing_records",
+      "scale_stats",
+      "run_manifest"
+    ],
+    "FixAgeMax": [
+      "parameters"
+    ],
+    "FixAssessTime": [
+      "parameters"
+    ],
+    "FixBasisMain": [
+      "parameters"
+    ],
+    "FixComposedCoverage": [
+      "functional_records"
+    ],
+    "FixCoverageMain": [
+      "parameters"
+    ],
+    "FixEstateObserved": [
+      "functional_records"
+    ],
+    "FixGreenCount": [
+      "parameters"
+    ],
+    "FixMh": [
+      "parameters"
+    ],
+    "FixMq": [
+      "parameters"
+    ],
+    "FixRunCount": [
+      "parameters"
+    ],
+    "FixSizes": [
+      "parameters"
+    ],
+    "FixTauH": [
+      "policy_main"
+    ],
+    "FixTauQ": [
+      "parameters"
+    ],
+    "FixTauRel": [
+      "parameters"
+    ],
+    "FunctionalResultText": [
+      "functional_records",
+      "acceptance"
+    ],
+    "ModelId": [
+      "protocol"
+    ],
+    "PWVersion": [
+      "lock"
+    ],
+    "PathwaySentence": [
+      "bundle"
+    ],
+    "RepoAuditCommit": [
+      "lock (pwexp checkout)"
+    ],
+    "ResultState": [
+      "functional_records",
+      "acceptance"
+    ],
+    "ScaleAbstractText": [
+      "timing_records",
+      "scale_stats",
+      "run_manifest"
+    ],
+    "ScaleFigureSentence": [
+      "timing_records",
+      "scale_stats",
+      "run_manifest"
+    ],
+    "ScaleIntroText": [
+      "timing_records",
+      "scale_stats",
+      "run_manifest"
+    ],
+    "ScaleLargestN": [
+      "timing_records",
+      "scale_stats",
+      "run_manifest"
+    ],
+    "ScaleResultText": [
+      "timing_records",
+      "scale_stats",
+      "run_manifest"
+    ],
+    "ScaleWorstCase": [
+      "timing_records",
+      "scale_stats",
+      "run_manifest"
+    ],
+    "TargetRepo": [
+      "protocol"
+    ],
+    "coverage_figure": [
+      "functional_records",
+      "scale_stats",
+      "parameters"
+    ],
+    "coverage_table": [
+      "functional_records",
+      "scale_stats",
+      "parameters"
+    ],
+    "experiment_record": [
+      "bundle",
+      "protocol",
+      "parameters",
+      "run_manifest",
+      "lock"
+    ],
+    "functional_table": [
+      "functional_records",
+      "acceptance"
+    ],
+    "pathway_figure": [
+      "bundle"
+    ],
+    "scale_figure": [
+      "timing_records",
+      "scale_stats"
+    ],
+    "scale_table": [
+      "scale_stats",
+      "parameters"
+    ]
+  }
+}

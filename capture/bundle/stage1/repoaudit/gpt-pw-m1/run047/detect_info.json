@@ -1,0 +1,22 @@
+{
+    "0": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-l5d3di7r/target/src/dateutil/parser/_parser.py, 340, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-l5d3di7r/target/src/dateutil/parser/_parser.py",
+                "/tmp/pwexp-subject-l5d3di7r/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "hms",
+                "_parse_hms"
+            ],
+            [
+                "def hms(self, name):\n        try:\n            return self._hms[name.lower()]\n        except KeyError:\n            return None",
+                "def _parse_hms(self, idx, tokens, info, hms_idx):\n        # TODO: Is this going to admit a lot of false-positives for when we\n        # just happen to have digits and \"h\", \"m\" or \"s\" characters in non-date\n        # text?  I guess hex hashes won't have that problem, but there's plenty\n        # of random junk out there.\n        if hms_idx is None:\n            hms = None\n            new_idx = idx\n        elif hms_idx > idx:\n            hms = info.hms(tokens[hms_idx])\n            new_idx = hms_idx\n        else:\n            # Looking backwards, increment one.\n            hms = info.hms(tokens[hms_idx]) + 1\n            new_idx = idx\n\n        return (new_idx, hms)"
+            ]
+        ],
+        "explanation": "Explanation:  \nLet's analyze the propagation path step by step:\n\n1. In the function hms, if the key is not found in self._hms, a KeyError is raised and the function returns None (line 5). So, hms can return None.\n\n2. In _parse_hms, at line 14, we have:  \n   hms = info.hms(tokens[hms_idx]) + 1  \n   This means that info.hms(tokens[hms_idx]) is called, and its result is added to 1.\n\n3. If info.hms(tokens[hms_idx]) returns None (which is possible, as shown above), then the code attempts to compute None + 1, which will raise a TypeError (since NoneType cannot be added to int). This is a classic None dereference (NPD) bug.\n\n4. There is no branch or check in _parse_hms that prevents info.hms(tokens[hms_idx]) from being None before the addition. The only relevant branches are:\n   - if hms_idx is None: (then hms is set to None, not relevant to this path)\n   - elif hms_idx > idx: (then hms = info.hms(tokens[hms_idx]), not relevant to this path)\n   - else: (this is where line 14 is executed)\n\n5. Therefore, if info.hms(tokens[hms_idx]) returns None, the code will attempt None + 1, causing an NPD bug.\n\n6. There are no conflicting conditions or guards that would prevent this propagation path from being taken.\n\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    }
+}

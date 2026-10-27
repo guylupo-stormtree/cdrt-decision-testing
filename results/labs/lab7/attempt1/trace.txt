@@ -1,0 +1,5 @@
+functional pass 1 of 2
+rev 1  │ H SUCCESS       │ A —             │ TAIP pass         │ gateway proceed
+rev 2  │ H SUCCESS       │ A FAIL          │ TAIP fail         │ gateway hold
+rev 3  │ H SUCCESS       │ A FAIL          │ TAIP fail         │ gateway hold
+functional pass 2 of 2

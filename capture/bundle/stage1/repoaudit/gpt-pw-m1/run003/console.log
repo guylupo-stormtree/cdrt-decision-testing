@@ -1,0 +1,278 @@
+2026-10-27 01:44:09,197 - INFO - Start data-flow bug scanning in parallel...
+2026-10-27 01:44:09,197 - INFO - Max number of workers: 4
+2026-10-27 01:44:09,198 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:09,198 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:09,199 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:09,200 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:16,541 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:27,998 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:34,235 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:35,676 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:41,145 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:41,439 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:48,257 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:52,079 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:44:55,134 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:44:55,696 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:44:55,696 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:00,238 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:00,898 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:01,048 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:01,437 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:06,717 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:08,774 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:09,074 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:12,110 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:14,057 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:15,042 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:17,143 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:19,193 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:21,350 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:23,305 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:27,540 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:28,429 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:28,825 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:33,135 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:36,605 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:36,634 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:37,486 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:42,450 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:44,784 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:46,936 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:46,941 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:46,941 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:47,953 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:49,109 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:57,448 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:58,491 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:45:59,817 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:02,096 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:07,343 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:11,344 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:11,346 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:15,509 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:22,241 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:22,770 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:23,134 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:24,735 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:32,328 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:33,352 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:34,517 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:40,484 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:46:42,675 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:43,040 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:43,060 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:47,419 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:48,018 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:46:50,160 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:50,739 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:51,754 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:57,505 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:46:59,952 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:03,443 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:03,447 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:47:08,044 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:08,052 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:47:11,975 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:47:15,148 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:15,476 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:47:15,671 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:18,605 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:47:22,191 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:47:23,684 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:47:28,825 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:47:28,887 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:47:29,409 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:30,906 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:35,042 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:35,208 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:47:39,890 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:41,671 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:43,422 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:43,856 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:43,861 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:48,226 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:48,232 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:51,792 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:54,292 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:57,214 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:57,835 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:47:59,058 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:04,410 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:04,830 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:05,154 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:09,265 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:12,809 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:15,363 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:17,716 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:48:21,270 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:48:23,022 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:26,753 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:48:30,385 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:31,009 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:34,085 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:34,516 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:41,501 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:42,819 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:44,062 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:46,098 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:52,758 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:53,951 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:55,696 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:48:56,485 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:03,560 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:04,304 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:04,912 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:12,784 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:12,789 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:12,999 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:13,896 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:14,092 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:21,028 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:23,834 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:28,177 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:29,919 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:32,699 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:33,242 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:35,170 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:37,213 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:42,944 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:49,623 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:52,533 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:52,700 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:54,489 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:49:58,784 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:50:04,496 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:50:05,612 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:50:08,185 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:50:09,198 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:50:12,291 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:50:13,261 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:50:15,851 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:50:18,619 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:50:19,104 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:50:21,563 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:50:22,264 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:50:25,068 - INFO - The LLM Tool IntraDataFlowAnalyzer is invoked.
+2026-10-27 01:50:25,723 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:50:29,444 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:50:32,752 - INFO - The LLM Tool PathValidator is invoked.
+2026-10-27 01:50:35,654 - INFO - 0 bug(s) was/were detected in total.
+2026-10-27 01:50:35,655 - INFO - The bug report(s) has/have been dumped to /home/guylupo/dev/cdrt-decision-testing/vendor/proofweave-decision-assurance/vendor/RepoAudit/result/dfbscan/gpt-pw-m1/NPD/Python/target/2026-10-27-01-44-09-0/detect_info.json
+2026-10-27 01:50:35,655 - INFO - The log files are as follows:
+2026-10-27 01:50:35,655 - INFO - /home/guylupo/dev/cdrt-decision-testing/vendor/proofweave-decision-assurance/vendor/RepoAudit/log/dfbscan/gpt-pw-m1/NPD/Python/target/2026-10-27-01-44-09-0/dfbscan.log
+/home/guylupo/dev/cdrt-decision-testing/vendor/proofweave-decision-assurance/vendor/RepoAudit/src/llmtool/LLM_utils.py:5: FutureWarning: 
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving 
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+/home/guylupo/dev/cdrt-decision-testing/vendor/proofweave-decision-assurance/vendor/.venv-repoaudit/lib/python3.13/site-packages/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+
+Parsing files:   0%|          | 0/6 [00:00<?, ?it/s]
+Parsing files: 100%|██████████| 6/6 [00:00<00:00, 341.72it/s]
+
+Analyzing functions:   0%|          | 0/84 [00:00<?, ?it/s]
+Analyzing functions: 100%|██████████| 84/84 [00:00<00:00, 2830.51it/s]
+
+Analyzing call graphs:   0%|          | 0/84 [00:00<?, ?it/s]
+Analyzing call graphs: 100%|██████████| 84/84 [00:00<00:00, 2716.16it/s]
+
+Parsing files:   0%|          | 0/84 [00:00<?, ?it/s]
+Parsing files: 100%|██████████| 84/84 [00:00<00:00, 3810.53it/s]
+
+Processing Source Values:   0%|          | 0/89 [00:00<?, ?src/s]
+Processing Source Values:   1%|          | 1/89 [00:07<10:46,  7.34s/src]
+Processing Source Values:   2%|▏         | 2/89 [00:18<14:09,  9.76s/src]
+Processing Source Values:   3%|▎         | 3/89 [00:25<11:41,  8.15s/src]
+Processing Source Values:   4%|▍         | 4/89 [00:26<07:47,  5.50s/src]
+Processing Source Values:   6%|▌         | 5/89 [00:31<07:41,  5.49s/src]
+Processing Source Values:   7%|▋         | 6/89 [00:32<05:09,  3.72s/src]
+Processing Source Values:   8%|▊         | 7/89 [00:39<06:28,  4.74s/src]
+Processing Source Values:   9%|▉         | 8/89 [00:45<07:18,  5.42s/src]
+Processing Source Values:  10%|█         | 9/89 [00:46<05:11,  3.90s/src]
+Processing Source Values:  11%|█         | 10/89 [00:51<05:39,  4.30s/src]
+Processing Source Values:  12%|█▏        | 11/89 [00:51<03:56,  3.03s/src]
+Processing Source Values:  13%|█▎        | 12/89 [01:05<08:10,  6.37s/src]
+Processing Source Values:  15%|█▍        | 13/89 [01:07<06:25,  5.07s/src]
+Processing Source Values:  16%|█▌        | 14/89 [01:09<05:12,  4.16s/src]
+Processing Source Values:  17%|█▋        | 15/89 [01:14<05:06,  4.15s/src]
+Processing Source Values:  18%|█▊        | 16/89 [01:33<10:32,  8.66s/src]
+Processing Source Values:  19%|█▉        | 17/89 [01:35<08:06,  6.76s/src]
+Processing Source Values:  20%|██        | 18/89 [01:37<06:21,  5.38s/src]
+Processing Source Values:  21%|██▏       | 19/89 [01:38<04:44,  4.07s/src]
+Processing Source Values:  22%|██▏       | 20/89 [01:48<06:32,  5.70s/src]
+Processing Source Values:  24%|██▎       | 21/89 [01:49<04:52,  4.30s/src]
+Processing Source Values:  25%|██▍       | 22/89 [01:52<04:34,  4.09s/src]
+Processing Source Values:  26%|██▌       | 23/89 [02:02<06:12,  5.64s/src]
+Processing Source Values:  27%|██▋       | 24/89 [02:06<05:37,  5.20s/src]
+Processing Source Values:  28%|██▊       | 25/89 [02:13<06:02,  5.66s/src]
+Processing Source Values:  29%|██▉       | 26/89 [02:13<04:19,  4.12s/src]
+Processing Source Values:  30%|███       | 27/89 [02:15<03:35,  3.47s/src]
+Processing Source Values:  31%|███▏      | 28/89 [02:25<05:27,  5.37s/src]
+Processing Source Values:  33%|███▎      | 29/89 [02:33<06:18,  6.31s/src]
+Processing Source Values:  34%|███▎      | 30/89 [02:40<06:26,  6.55s/src]
+Processing Source Values:  35%|███▍      | 31/89 [03:20<15:49, 16.36s/src]
+Processing Source Values:  36%|███▌      | 32/89 [03:21<11:18, 11.90s/src]
+Processing Source Values:  37%|███▋      | 33/89 [03:25<08:56,  9.57s/src]
+Processing Source Values:  38%|███▊      | 34/89 [03:30<07:28,  8.16s/src]
+Processing Source Values:  39%|███▉      | 35/89 [03:32<05:37,  6.24s/src]
+Processing Source Values:  40%|████      | 36/89 [03:34<04:19,  4.90s/src]
+Processing Source Values:  42%|████▏     | 37/89 [03:34<03:05,  3.56s/src]
+Processing Source Values:  43%|████▎     | 38/89 [03:39<03:13,  3.80s/src]
+Processing Source Values:  44%|████▍     | 39/89 [03:42<03:06,  3.73s/src]
+Processing Source Values:  45%|████▍     | 40/89 [03:45<02:44,  3.36s/src]
+Processing Source Values:  46%|████▌     | 41/89 [03:48<02:34,  3.23s/src]
+Processing Source Values:  47%|████▋     | 42/89 [03:48<01:54,  2.45s/src]
+Processing Source Values:  48%|████▊     | 43/89 [03:49<01:35,  2.08s/src]
+Processing Source Values:  49%|████▉     | 44/89 [03:55<02:23,  3.19s/src]
+Processing Source Values:  51%|█████     | 45/89 [03:55<01:42,  2.33s/src]
+Processing Source Values:  52%|█████▏    | 46/89 [04:00<02:03,  2.86s/src]
+Processing Source Values:  53%|█████▎    | 47/89 [04:06<02:41,  3.83s/src]
+Processing Source Values:  54%|█████▍    | 48/89 [04:13<03:24,  4.98s/src]
+Processing Source Values:  55%|█████▌    | 49/89 [04:21<03:47,  5.70s/src]
+Processing Source Values:  56%|█████▌    | 50/89 [04:21<02:42,  4.17s/src]
+Processing Source Values:  57%|█████▋    | 51/89 [04:24<02:26,  3.84s/src]
+Processing Source Values:  58%|█████▊    | 52/89 [04:25<01:44,  2.82s/src]
+Processing Source Values:  60%|█████▉    | 53/89 [04:32<02:26,  4.07s/src]
+Processing Source Values:  61%|██████    | 54/89 [04:33<01:53,  3.24s/src]
+Processing Source Values:  62%|██████▏   | 55/89 [04:34<01:29,  2.64s/src]
+Processing Source Values:  63%|██████▎   | 56/89 [04:36<01:21,  2.46s/src]
+Processing Source Values:  64%|██████▍   | 57/89 [04:43<01:59,  3.72s/src]
+Processing Source Values:  65%|██████▌   | 58/89 [04:44<01:31,  2.96s/src]
+Processing Source Values:  66%|██████▋   | 59/89 [04:46<01:17,  2.60s/src]
+Processing Source Values:  67%|██████▋   | 60/89 [04:47<00:59,  2.05s/src]
+Processing Source Values:  69%|██████▊   | 61/89 [04:54<01:39,  3.56s/src]
+Processing Source Values:  70%|██████▉   | 62/89 [04:55<01:13,  2.72s/src]
+Processing Source Values:  71%|███████   | 63/89 [05:03<01:55,  4.45s/src]
+Processing Source Values:  72%|███████▏  | 64/89 [05:03<01:19,  3.18s/src]
+Processing Source Values:  73%|███████▎  | 65/89 [05:04<00:59,  2.49s/src]
+Processing Source Values:  74%|███████▍  | 66/89 [05:04<00:41,  1.80s/src]
+Processing Source Values:  75%|███████▌  | 67/89 [05:11<01:13,  3.34s/src]
+Processing Source Values:  76%|███████▋  | 68/89 [05:14<01:06,  3.18s/src]
+Processing Source Values:  78%|███████▊  | 69/89 [05:18<01:10,  3.53s/src]
+Processing Source Values:  79%|███████▊  | 70/89 [05:20<00:56,  2.99s/src]
+Processing Source Values:  80%|███████▉  | 71/89 [05:23<00:52,  2.93s/src]
+Processing Source Values:  81%|████████  | 72/89 [05:24<00:37,  2.21s/src]
+Processing Source Values:  82%|████████▏ | 73/89 [05:28<00:43,  2.74s/src]
+Processing Source Values:  83%|████████▎ | 74/89 [05:33<00:54,  3.64s/src]
+Processing Source Values:  84%|████████▍ | 75/89 [05:40<01:03,  4.55s/src]
+Processing Source Values:  85%|████████▌ | 76/89 [05:45<01:00,  4.64s/src]
+Processing Source Values:  87%|████████▋ | 77/89 [05:49<00:54,  4.54s/src]
+Processing Source Values:  88%|████████▊ | 78/89 [05:55<00:53,  4.89s/src]
+Processing Source Values:  89%|████████▉ | 79/89 [05:56<00:37,  3.76s/src]
+Processing Source Values:  90%|████████▉ | 80/89 [05:58<00:30,  3.40s/src]
+Processing Source Values:  91%|█████████ | 81/89 [06:00<00:21,  2.69s/src]
+Processing Source Values:  92%|█████████▏| 82/89 [06:03<00:19,  2.81s/src]
+Processing Source Values:  93%|█████████▎| 83/89 [06:04<00:13,  2.26s/src]
+Processing Source Values:  94%|█████████▍| 84/89 [06:06<00:11,  2.36s/src]
+Processing Source Values:  96%|█████████▌| 85/89 [06:09<00:09,  2.48s/src]
+Processing Source Values:  97%|█████████▋| 86/89 [06:17<00:12,  4.27s/src]
+Processing Source Values:  98%|█████████▊| 87/89 [06:17<00:06,  3.02s/src]
+Processing Source Values:  99%|█████████▉| 88/89 [06:20<00:02,  2.72s/src]
+Processing Source Values: 100%|██████████| 89/89 [06:26<00:00,  3.84s/src]
+Processing Source Values: 100%|██████████| 89/89 [06:26<00:00,  4.34s/src]

@@ -1,0 +1,7 @@
+Lab 2 · Capture ─────────────────────────────────────────────── NOT PASSED ✗
+Inputs   Lab 1 hand-off a19e013ec5fa (re-verified)
+Checks   ✓ this host's UTC offset equals the declared log_utc_offset: host +00:00, declared +00:00
+         ✓ unfinished campaign resumed under its own lock, nothing rewritten or relocked: campaign-0001
+         ✗ campaign finished (it was paused: `cdrt lab run 2` resumes it): ⏸ Stage 1 paused (Ctrl-C); recorded work is kept. Resume: the same command with --resume
+         campaign cycle: campaign-0001
+         status: paused

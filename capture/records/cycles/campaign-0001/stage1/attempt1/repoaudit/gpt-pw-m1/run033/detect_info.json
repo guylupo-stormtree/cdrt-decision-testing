@@ -1,0 +1,39 @@
+{
+    "0": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-01wccufl/target/src/dateutil/parser/_parser.py, 1222, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-01wccufl/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "_build_naive"
+            ],
+            [
+                "def _build_naive(self, res, default):\n        repl = {}\n        for attr in (\"year\", \"month\", \"day\", \"hour\",\n                     \"minute\", \"second\", \"microsecond\"):\n            value = getattr(res, attr)\n            if value is not None:\n                repl[attr] = value\n\n        if 'day' not in repl:\n            # If the default day exceeds the last day of the month, fall back\n            # to the end of the month.\n            cyear = default.year if res.year is None else res.year\n            cmonth = default.month if res.month is None else res.month\n            cday = default.day if res.day is None else res.day\n\n            if cday > monthrange(cyear, cmonth)[1]:\n                repl['day'] = monthrange(cyear, cmonth)[1]\n\n        naive = default.replace(**repl)\n\n        if res.weekday is not None and not res.day:\n            naive = naive + relativedelta.relativedelta(weekday=res.weekday)\n\n        return naive"
+            ]
+        ],
+        "explanation": "Explanation: The propagation path concerns the variable default being dereferenced at line 14 in _build_naive: cday = default.day if res.day is None else res.day. For an NPD (None Pointer Dereference) to occur here, default would need to be None. However, throughout the function, there is no assignment or modification to default; it is a parameter. There are no checks or guards that would prevent default from being None, nor is there any code that would guarantee it is non-None. Therefore, if _build_naive is called with default=None, then default.day would raise an AttributeError (since NoneType has no attribute 'day'), causing an NPD bug. Since there is no branch or condition in the function that prevents default from being None, the propagation path is reachable and the NPD bug can occur.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    },
+    "1": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-01wccufl/target/src/dateutil/parser/_parser.py, 340, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-01wccufl/target/src/dateutil/parser/_parser.py",
+                "/tmp/pwexp-subject-01wccufl/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "hms",
+                "_parse_hms"
+            ],
+            [
+                "def hms(self, name):\n        try:\n            return self._hms[name.lower()]\n        except KeyError:\n            return None",
+                "def _parse_hms(self, idx, tokens, info, hms_idx):\n        # TODO: Is this going to admit a lot of false-positives for when we\n        # just happen to have digits and \"h\", \"m\" or \"s\" characters in non-date\n        # text?  I guess hex hashes won't have that problem, but there's plenty\n        # of random junk out there.\n        if hms_idx is None:\n            hms = None\n            new_idx = idx\n        elif hms_idx > idx:\n            hms = info.hms(tokens[hms_idx])\n            new_idx = hms_idx\n        else:\n            # Looking backwards, increment one.\n            hms = info.hms(tokens[hms_idx]) + 1\n            new_idx = idx\n\n        return (new_idx, hms)"
+            ]
+        ],
+        "explanation": "Explanation:  \nLet's analyze the propagation path step by step:\n\n1. In the function hms, if the key is not found in self._hms, a KeyError is raised and caught, and the function returns None (line 5). So, hms can return None.\n\n2. In _parse_hms, at line 14, we have:  \n   hms = info.hms(tokens[hms_idx]) + 1  \n   This means that info.hms(tokens[hms_idx]) is called, and its result is used in an addition operation.\n\n3. The propagation path is:  \n   - hms returns None (from hms, line 5)  \n   - info.hms(tokens[hms_idx]) receives this None (in _parse_hms, line 14)  \n   - The result is used in hms = info.hms(tokens[hms_idx]) + 1 (in _parse_hms, line 14)  \n   - tokens is also involved as a sink at this line, but the NPD bug in question is about the use of None in the addition.\n\n4. Is it possible for info.hms(tokens[hms_idx]) to return None at line 14?  \n   - Yes, because hms can return None if the key is not found.\n\n5. Is there any guard or check before this addition to ensure that info.hms(tokens[hms_idx]) is not None?  \n   - No. The only relevant branches are:\n     - if hms_idx is None: (then hms is set to None, but this does not reach line 14)\n     - elif hms_idx > idx: (then hms = info.hms(tokens[hms_idx]), but this is line 10, not 14)\n     - else: (this is where line 14 is executed)\n   - In the else branch, there is no check on the result of info.hms(tokens[hms_idx]) before performing the addition.\n\n6. Therefore, if info.hms(tokens[hms_idx]) returns None, then hms = None + 1 will be executed, which will raise a TypeError (attempting to add 1 to None).\n\n7. There are no conflicting conditions or guards that would prevent this path from being taken if info.hms(tokens[hms_idx]) returns None.\n\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    }
+}

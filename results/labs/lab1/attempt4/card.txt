@@ -1,0 +1,8 @@
+Lab 1 · Pilot capture ───────────────────────────────────────── NOT PASSED ✗
+Inputs   Lab 0 hand-off 86328c0afc46 (re-verified)
+Checks   ✓ pilot Stage 1 passed its checks (every run kept, below the timeout, no key in any output)
+         ✓ pilot Stage 2 bound every pilot decision
+         ✓ every pilot run consulted the model (a run with no model calls examined nothing): model calls per run: 143, 141, 139, 139, 139
+         ✗ at least 4 of 5 pilot runs GREEN (A5.1): 1 GREEN
+         ✗ tau_h set by the declared rule and above zero (R-CAP-4): too few GREEN pilot runs
+         pilot decisions: {"G-main-01": {"green": false, "coverage_M_h": "1/5"}, "G-main-02": {"green": false, "coverage_M_h": "2/5"}, "G-main-03": {"green": true, "coverage_M_h": "3/5"}, "G-main-04": {"green": false, "coverage_M_h": "3/5"}, "G-main-05": {"green": false, "coverage_M_h": "2/5"}}

@@ -1,0 +1,58 @@
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 8 · How fast is it?
+────────────────────────────────────────────────────────────────────────────────────────────────
+  How fast does this work? We make the evidence much larger, up to about a hundred thousand
+  records, and time how long a requirement change takes to reach the gateway, 400 times over,
+  against a 5-second limit.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+loading plane N ≈ 100 (untimed)
+loading plane N ≈ 1,000 (untimed)
+loading plane N ≈ 10,000 (untimed)
+loading plane N ≈ 100,000 (untimed)
+warm-ups done for N = 1,270
+warm-ups done for N = 1,270
+warm-ups done for N = 10,160
+warm-ups done for N = 100,330
+block   1/100  N=1,270: slowest 0.045s (0 over)  N=1,270: slowest 0.047s (0 over)  N=10,160: slowest 0.114s (0 over)  N=100,330: slowest 1.260s (0 over)
+block  10/100  N=1,270: slowest 0.067s (0 over)  N=1,270: slowest 0.055s (0 over)  N=10,160: slowest 0.129s (0 over)  N=100,330: slowest 1.484s (0 over)
+block  20/100  N=1,270: slowest 0.078s (0 over)  N=1,270: slowest 0.071s (0 over)  N=10,160: slowest 0.171s (0 over)  N=100,330: slowest 1.484s (0 over)
+block  30/100  N=1,270: slowest 0.078s (0 over)  N=1,270: slowest 0.071s (0 over)  N=10,160: slowest 0.171s (0 over)  N=100,330: slowest 1.484s (0 over)
+block  40/100  N=1,270: slowest 0.078s (0 over)  N=1,270: slowest 0.071s (0 over)  N=10,160: slowest 0.183s (0 over)  N=100,330: slowest 1.487s (0 over)
+block  50/100  N=1,270: slowest 0.078s (0 over)  N=1,270: slowest 0.071s (0 over)  N=10,160: slowest 0.183s (0 over)  N=100,330: slowest 1.487s (0 over)
+block  60/100  N=1,270: slowest 0.078s (0 over)  N=1,270: slowest 0.073s (0 over)  N=10,160: slowest 0.245s (0 over)  N=100,330: slowest 1.487s (0 over)
+block  70/100  N=1,270: slowest 0.078s (0 over)  N=1,270: slowest 0.073s (0 over)  N=10,160: slowest 0.245s (0 over)  N=100,330: slowest 1.487s (0 over)
+block  80/100  N=1,270: slowest 0.078s (0 over)  N=1,270: slowest 0.073s (0 over)  N=10,160: slowest 0.245s (0 over)  N=100,330: slowest 1.487s (0 over)
+block  90/100  N=1,270: slowest 0.078s (0 over)  N=1,270: slowest 0.073s (0 over)  N=10,160: slowest 0.245s (0 over)  N=100,330: slowest 1.570s (0 over)
+block 100/100  N=1,270: slowest 0.078s (0 over)  N=1,270: slowest 0.073s (0 over)  N=10,160: slowest 0.245s (0 over)  N=100,330: slowest 1.570s (0 over)
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 8 · How fast is it? · what happened
+────────────────────────────────────────────────────────────────────────────────────────────────
+  Even with 100,330 records of evidence, the slowest of all 400 updates reached the gateway in
+  1.570 seconds, inside the 5-second limit.
+
+  Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest
+  took 1.57 s.
+
+  This step passed all its checks.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+Lab 8 · Scale run (RQ2) ─────────────────────────────────────────── PASSED ✓
+Inputs   Lab 7 hand-off c15492aa944c (re-verified)
+Checks   ✓ protocol lock verifies (R-LOCK-2): 59af9d417b60
+         ✓ all 400 timed cycles executed and recorded (R-SCL-4, R-SCL-5): 400 records
+         ✓ every record carries the lock stamp (R-LOCK-4)
+         ✓ the control guard counted no call (R-ISO-1): 0 calls
+         ✓ run manifest written (R-SCL-8)
+         ✓ verdicts before the change equal the functional run's at every size (conformance SUCCESS, adequacy FAIL)
+Outputs  timing_records: results/labs/lab8/attempt4/timing_records.jsonl (071312af3328)
+         scale_stats: results/labs/lab8/attempt4/scale_stats.json (85e2372a8fe0)
+         run_manifest: results/labs/lab8/attempt4/run_manifest.json (0828f32be859)
+         slowest update (T_max): 1.570 s at N = 100,330
+         N = 1,270: slowest 0.073 s · 0/100 over 5 s
+         N = 10,160: slowest 0.245 s · 0/100 over 5 s
+         N = 100,330: slowest 1.570 s · 0/100 over 5 s
+         result: Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest took 1.57 s.
+Next     cdrt lab run 9

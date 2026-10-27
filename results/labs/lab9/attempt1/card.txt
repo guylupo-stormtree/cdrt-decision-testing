@@ -1,0 +1,21 @@
+Lab 9 · Report ──────────────────────────────────────────────────── PASSED ✓
+Inputs   Lab 8 hand-off ee80e83236fb (re-verified)
+Checks   ✓ lock verifies and the campaign is complete (R-REP-1): 10 functional and 400 timing records, lock 5027e2dd7806
+         ✓ every value traces to a record carrying the lock root: 38 values traced (trace.json)
+         ✓ wording rules (R-REP-5)
+         ✓ the manuscript reads every generated file: 8 \input{generated-pending/...} files
+         ✓ the filled manuscript copy compiles with 0 errors: 0 errors
+         ✓ the scale figure compiles on its own
+         ✓ the composed-coverage figure compiles on its own: On its own, the main decision covered 4/7 of the release functions (below the 80\% requirement); 0 of the 5 green decisions met the requirement alone, and 3 were green but narrow, each reaching less than 80\% of the 13 functions observed across all eligible decisions. Together the 4 eligible decisions covered 5 of 7 release functions, below the requirement; 46 decision(s) were excluded; 8 observed function(s) were missing from the release manifest.
+         ✓ the same-green-different-paths figure compiles on its own: The 5 green decisions of one model on the same code reached between 0 and 4 of the 5 functions in the auditor's scope, by 3 different paths.
+Outputs  generated: results/labs/lab9/attempt1/generated-pending (fde2ea6847a1)
+         manuscript_copy: results/labs/lab9/attempt1/manuscript/main-17.tex (e51a95e42a69)
+         trace: results/labs/lab9/attempt1/trace.json (ba941ea4f79a)
+         figure_preview: results/labs/lab9/attempt1/figure-preview/preview.pdf (ec2026de6baf)
+         pathways_preview: results/labs/lab9/attempt1/figure-preview/pathways-preview.pdf (e024148ae91c)
+         RQ1: A_comp = false; C1 ✗ (before), C2 ✓, C3 ✗ (delayed success rejected, step 2 proceed), C4 ✓
+         RQ2: Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest took 2.30 s.
+         generated: results/labs/lab9/attempt1/generated-pending (8 files + figures): replace the manuscript's generated/ folder with it
+         pdf: results/labs/lab9/attempt1/manuscript/main-17.pdf
+         coverage: On its own, the main decision covered 4/7 of the release functions (below the 80\% requirement); 0 of the 5 green decisions met the requirement alone, and 3 were green but narrow, each reaching less than 80\% of the 13 functions observed across all eligible decisions. Together the 4 eligible decisions covered 5 of 7 release functions, below the requirement; 46 decision(s) were excluded; 8 observed function(s) were missing from the release manifest.
+Next     the generated blocks are ready for the A17 manuscript revision

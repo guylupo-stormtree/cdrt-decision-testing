@@ -1,0 +1,29 @@
+entries:
+- approved: true
+  code:
+  - tests_registered/conformance_check/__init__.py
+  - tests_registered/common.py
+  code_digest: 48155fe1ef4bc0059590bd1dbd5e6577b6781a37f7a205f3ff907f670edf2cf9
+  id: conformance-check
+  inputs:
+  - policy
+  - policy_digest_ok
+  - policy_manifest
+  - assessments
+  - record_status
+  limits:
+    memory_mb: 4096
+    wall_seconds: 60
+  meanings:
+    FAIL: the complete recorded basis shows the policy-at-event did not license the
+      decision
+    INCONCLUSIVE: the policy-at-event or the basis cannot be resolved well enough
+      to judge
+    SUCCESS: the decision was licensed by its own policy-at-event, on its recorded
+      basis
+  module: cdrt.tests_registered.conformance_check
+  parameters:
+    policy_source: recorded-decision-policy
+  prerequisites:
+  - decision-binding
+  version: '1.0'

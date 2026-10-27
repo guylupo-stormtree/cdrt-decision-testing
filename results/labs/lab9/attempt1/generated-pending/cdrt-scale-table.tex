@@ -1,0 +1,21 @@
+% BEGIN GENERATED:scale_table
+% generator: cdrt.report 1 (scale_table)
+% inputs: results/labs/lab8/attempt2/timing_records.jsonl 83cb3a108ce6; results/labs/lab8/attempt2/scale_stats.json 2f77504400e2; results/labs/lab8/attempt2/run_manifest.json 443b940a6eda; fixtures/out/parameters.json 2d3cdf7c84cb
+% lock_root: 5027e2dd7806fc031b01e5880fcd83a8cca3381d7eb3cc3d5be6e4f1d233387c  campaign: campaign-002
+% commit: 94766191d437ffb3b094db957e369b9e98784e51
+\begin{table}[pos=tbp]
+\centering\small
+\caption{Requirement-change-to-posture latency per decision-basis size: 100 timed updates each. $N$ basis records in all, $k$ copies of each green decision's run; the slowest update in seconds and the updates over the 5\,s budget. The slowest overall is $T_{\max}$.}
+\label{tab:scale-results}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}rrrr@{}}
+\toprule
+Records $N$ & Copies $k$ & Slowest update (s) & Over budget \\
+\midrule
+1,270 & 1 & 0.093 & 0/100 \\
+1,270 & 1 & 0.138 & 0/100 \\
+10,160 & 8 & 0.197 & 0/100 \\
+100,330 & 79 & 2.30 & 0/100 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+% END GENERATED:scale_table

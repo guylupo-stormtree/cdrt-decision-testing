@@ -1,0 +1,29 @@
+{
+  "basis_runs": [
+    "gpt-pw-m1/run001"
+  ],
+  "context_written_at": "2026-10-27T01:00:08.609742Z",
+  "control_id": "repoaudit",
+  "control_version": "repoaudit@160f5bcd378a",
+  "decision_id": "G-main-04",
+  "decision_rule": "DR-11",
+  "intent": {
+    "action": "release",
+    "bug_type": "NPD",
+    "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+    "created_at": "2026-10-27T01:00:08.609502Z",
+    "intent_id": "intent-G-main-04",
+    "repo": "https://github.com/dateutil/dateutil",
+    "requested_by": "authors",
+    "scope_ref": {
+      "file": "../manifests/M_h.json",
+      "sha256": "8ddd8872b72b010e8fb38cf27d6f021612c2643f6aebc44593cbe294a437fb8d"
+    }
+  },
+  "policy_ref": {
+    "file": "policy/P1@1.json",
+    "id": "P1",
+    "sha256": "5f5e1ec45f6b3b87524e6a0f869258f938adaee13a5fc604af178bcf7b9ebcbc",
+    "version": "1"
+  }
+}

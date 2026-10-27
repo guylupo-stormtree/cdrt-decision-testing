@@ -1,0 +1,45 @@
+{
+  "attempt": 1,
+  "dev": false,
+  "handoff": {
+    "bundle": "capture/bundle",
+    "bundle_sha256": "b7bc0a6c2dfe347f8483e5b30c3da1c472f927a440724173ea20795b86218fe3",
+    "fixtures": "fixtures/out",
+    "green": [
+      "G-main-08",
+      "G-main-17",
+      "G-main-19",
+      "G-main-25",
+      "G-main-35"
+    ],
+    "parameters": "fixtures/out/parameters.json",
+    "selection": {
+      "main": "G-main-19"
+    }
+  },
+  "handoff_sha256": "29f97e40565a03ae1482149c771288c298f117b0d01a35d21fd3d17ee836c0d9",
+  "inputs_from": 4,
+  "inputs_handoff_sha256": "7e2f42715f824b7bb9bbd5805ca18c66a734b8dd634f097db26366f613e6e4c2",
+  "lab": 5,
+  "name": "Build fixtures",
+  "outputs": {
+    "fixtures": {
+      "path": "fixtures/out",
+      "sha256": "1baa103eed87b7df295fcd48780a6d26ea2e883bf54b7d5b4ec45e0bacdbea2d"
+    },
+    "macros_preview": {
+      "path": "results/labs/lab5/attempt1/fixture_macros.preview.tex",
+      "sha256": "18a1bfa955e381b68a67c3e9bf63786a9ad3c317fd4a2d4a53469e683ff488e2"
+    }
+  },
+  "summary": {
+    "c_obs (main alone)": "4/7",
+    "captured decisions": "50 (5 GREEN)",
+    "fixtures_sha256": "1baa103eed87b7df295fcd48780a6d26ea2e883bf54b7d5b4ec45e0bacdbea2d",
+    "max_age_seconds (Delta_q)": 39760,
+    "scale sizes (actual N)": "1,270, 1,270, 10,160, 100,330",
+    "t_e": "2026-10-27T12:27:39.342279Z",
+    "tau_q": "4/5"
+  },
+  "time": "2026-10-27T13:02:04Z"
+}

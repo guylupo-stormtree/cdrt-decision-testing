@@ -1,0 +1,36 @@
+{
+  "code": {
+    "commit": "120960734254a460382bfda00185a2ce2ef2918e",
+    "dirty": false
+  },
+  "created_at": "2026-10-26T15:51:31Z",
+  "id": "pilot-0003",
+  "mode": "pilot",
+  "models": [],
+  "protocol_lock_sha256": null,
+  "replay_of": null,
+  "stages": {
+    "1": {
+      "attempt": 1,
+      "name": "Acquire and freeze evidence",
+      "started_at": "2026-10-26T15:51:31Z",
+      "status": "running"
+    },
+    "2": {
+      "attempt": 1,
+      "name": "ProofWeave within the threshold",
+      "status": "pending"
+    },
+    "3": {
+      "attempt": 1,
+      "name": "Scale and threshold again",
+      "status": "pending"
+    },
+    "4": {
+      "attempt": 1,
+      "name": "Three GREENs, not enough coverage",
+      "status": "pending"
+    }
+  },
+  "status": "in progress"
+}

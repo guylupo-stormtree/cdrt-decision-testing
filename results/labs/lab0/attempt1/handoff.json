@@ -1,0 +1,21 @@
+{
+  "attempt": 1,
+  "dev": false,
+  "handoff": {},
+  "handoff_sha256": "5c5db843dcfb3b2bbbd0cd4ece63b236e90cc2430f1f6519a849382c849951d6",
+  "inputs_from": null,
+  "inputs_handoff_sha256": null,
+  "lab": 0,
+  "name": "Set up and declare",
+  "outputs": {
+    "drafts": {
+      "path": "capture/manifests/drafts",
+      "sha256": "30d29a375a25bf790dec4a4dc572015eeb2e462050f327568155f8892b2ec571"
+    }
+  },
+  "summary": {
+    "M_h (draft)": 9,
+    "M_q (draft)": 12
+  },
+  "time": "2026-10-26T15:18:23Z"
+}

@@ -1,0 +1,36 @@
+{
+  "attempt": 3,
+  "dev": false,
+  "handoff": {
+    "pilot_protocol": "capture/pilot/protocol.yaml",
+    "snapshot_sha256": "7a404ea3b93a269babd430e59c94b5aaf34ae15065cfc6bc3c52bc6d2b447366",
+    "target": "capture/target"
+  },
+  "handoff_sha256": "88b41884934175ae9a2a8a27224c44c772ecf8892d459c7be6832c9935200bed",
+  "inputs_from": null,
+  "inputs_handoff_sha256": null,
+  "lab": 0,
+  "name": "Set up and declare",
+  "outputs": {
+    "manifests": {
+      "path": "capture/manifests",
+      "sha256": "7e4145cf9601f9da76c1b0ccaeaf6b40b4b636cc32b1b315b1943cddc105cdaf"
+    },
+    "pilot_protocol": {
+      "path": "capture/pilot/protocol.yaml",
+      "sha256": "d4591d687cf3ec55d25a99acfdad536a53b7d077baaa2c9663cfb592659854fe"
+    },
+    "target": {
+      "path": "capture/target",
+      "sha256": "cb6e21ec890e9e2e6067471bb4e531a6df7a0648a65c3ddf83fd50fedc3c45bd"
+    }
+  },
+  "summary": {
+    "licence": "LICENSE: Copyright 2017- Paul Ganssle <paul@ganssle.io>",
+    "model": "openai:gpt-4.1",
+    "runs": "pilot 5, campaign 50, standalone Semgrep 1",
+    "snapshot_sha256": "7a404ea3b93a269babd430e59c94b5aaf34ae15065cfc6bc3c52bc6d2b447366",
+    "target": "https://github.com/dateutil/dateutil @ 10f317fde11c"
+  },
+  "time": "2026-10-26T15:33:58Z"
+}

@@ -1,0 +1,145 @@
+{
+  "code": {
+    "commit": "120960734254a460382bfda00185a2ce2ef2918e",
+    "dirty": false
+  },
+  "created_at": "2026-10-27T01:00:08Z",
+  "id": "pilot-0002",
+  "mode": "pilot",
+  "models": [],
+  "protocol_lock_sha256": null,
+  "replay_of": null,
+  "stages": {
+    "1": {
+      "attempt": 1,
+      "checks": {
+        "RepoAudit pinned and unmodified before and after": true,
+        "decision context written before its first basis run, decision after its last": true,
+        "every decision's basis runs retained": true,
+        "every output hashed in the sealed manifest": true,
+        "every provider call attributed to a run": true,
+        "every scheduled decision recorded with a complete bundle": true,
+        "every scheduled run accounted for": true,
+        "no API key in any retained output": true
+      },
+      "finished_at": "2026-10-27T01:30:22Z",
+      "name": "Acquire and freeze evidence",
+      "outcome": {
+        "attempt_dir": "attempt1",
+        "by_model": {
+          "openai:gpt-4.1": {
+            "adverse": 4,
+            "failed": 0,
+            "green": 1,
+            "input_tokens": 2630943,
+            "output_tokens": 871448,
+            "runs": 5
+          }
+        },
+        "decisions": {
+          "by_group": {
+            "G-main": {
+              "decisions": 5,
+              "green": 1,
+              "recorded": 5
+            }
+          },
+          "count": 5,
+          "green": 1
+        },
+        "repoaudit_adverse": 4,
+        "repoaudit_failed": 0,
+        "repoaudit_green": 1,
+        "repoaudit_runs": 5,
+        "sealed_manifest_sha256": "3eba4b8251cce8a90713bb1410192b448c23efbcb1d6ee29c60ab0d22393b7dd",
+        "secret_hits": [],
+        "semgrep_green": 0,
+        "semgrep_runs": 0
+      },
+      "outputs_manifest_sha256": "3eba4b8251cce8a90713bb1410192b448c23efbcb1d6ee29c60ab0d22393b7dd",
+      "started_at": "2026-10-27T01:00:08Z",
+      "status": "complete"
+    },
+    "2": {
+      "attempt": 1,
+      "checks": {
+        "components sum to t4 \u2212 t0 for every observation": true,
+        "corpus E sealed from authentic evidence only": true,
+        "every bundle became queryable in every repetition": true,
+        "every decision bound to its intent, policy and complete basis": true,
+        "graph rebuilt from the ledger equals the checkpoint": true,
+        "identical graph in every repetition (determinism)": true,
+        "sealed corpus ledger intact": true,
+        "target snapshot available for entity resolution": true
+      },
+      "finished_at": "2026-10-27T01:30:23Z",
+      "name": "ProofWeave within the threshold",
+      "outcome": {
+        "attempt_dir": "attempt1",
+        "bundles": 5,
+        "components": {
+          "bind": {
+            "max_ms": 27.466,
+            "median_ms": 15.738,
+            "min_ms": 6.293
+          },
+          "ledger": {
+            "max_ms": 20.714,
+            "median_ms": 12.944,
+            "min_ms": 12.036
+          },
+          "query_ready": {
+            "max_ms": 0.041,
+            "median_ms": 0.014,
+            "min_ms": 0.002
+          },
+          "weave": {
+            "max_ms": 4.443,
+            "median_ms": 1.684,
+            "min_ms": 0.034
+          }
+        },
+        "corpus_sha256": "83f029c89b7a025bcacd2a5399268a866f6a9f2306cc1a3dfd81b2e0b57cabc0",
+        "decisions": {
+          "G-main-01": "complete",
+          "G-main-02": "complete",
+          "G-main-03": "complete",
+          "G-main-04": "complete",
+          "G-main-05": "complete"
+        },
+        "durability": "fsync-per-bundle",
+        "graph_edges": 2673,
+        "graph_nodes": 1161,
+        "graph_sha256": "19e7e0f7318fc723303ef4f4bcefd07d8ba7d656cbf9a40d8639ef08a1824d71",
+        "max_ms": 52.664,
+        "median_ms": 30.469,
+        "min_ms": 18.38,
+        "observations": 10,
+        "records": 1561,
+        "repetitions": 1,
+        "threshold_s": 5.0,
+        "unresolved_functions": [
+          "fn?:None",
+          "fn?:__init__",
+          "fn?:parse",
+          "fn?:rse_tzstr(se"
+        ],
+        "within_threshold": 10
+      },
+      "outputs_manifest_sha256": "83f029c89b7a025bcacd2a5399268a866f6a9f2306cc1a3dfd81b2e0b57cabc0",
+      "started_at": "2026-10-27T01:30:22Z",
+      "status": "complete"
+    },
+    "3": {
+      "attempt": 1,
+      "name": "Scale and threshold again",
+      "status": "pending"
+    },
+    "4": {
+      "attempt": 1,
+      "name": "Three GREENs, not enough coverage",
+      "status": "pending"
+    }
+  },
+  "status": "in progress"
+}

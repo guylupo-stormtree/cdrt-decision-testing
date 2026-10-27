@@ -1,0 +1,233 @@
+{
+  "code": {
+    "commit": "120960734254a460382bfda00185a2ce2ef2918e",
+    "dirty": false
+  },
+  "created_at": "2026-10-27T01:30:23Z",
+  "id": "campaign-0001",
+  "mode": "campaign",
+  "models": [],
+  "protocol_lock_sha256": "3bab4bba99c1f06e8c9729f210c77ffcff8540a5b6c5af7509e854d1555ffa9d",
+  "replay_of": null,
+  "stages": {
+    "1": {
+      "attempt": 1,
+      "checks": {
+        "RepoAudit pinned and unmodified before and after": true,
+        "decision context written before its first basis run, decision after its last": true,
+        "every decision's basis runs retained": true,
+        "every output hashed in the sealed manifest": true,
+        "every provider call attributed to a run": true,
+        "every scheduled decision recorded with a complete bundle": true,
+        "every scheduled run accounted for": true,
+        "no API key in any retained output": true
+      },
+      "finished_at": "2026-10-27T12:17:41Z",
+      "name": "Acquire and freeze evidence",
+      "outcome": {
+        "attempt_dir": "attempt1",
+        "by_model": {
+          "openai:gpt-4.1": {
+            "adverse": 45,
+            "failed": 0,
+            "green": 5,
+            "input_tokens": 24659368,
+            "output_tokens": 8538888,
+            "runs": 50
+          }
+        },
+        "decisions": {
+          "by_group": {
+            "G-main": {
+              "decisions": 50,
+              "green": 5,
+              "recorded": 50
+            }
+          },
+          "count": 50,
+          "green": 5
+        },
+        "interrupted": [
+          {
+            "at": "2026-10-27T02:38:55Z",
+            "moved": "decisions/G-main-04",
+            "to": "interrupted/decisions/G-main-04",
+            "why": "decision cut off by a pause or stop"
+          },
+          {
+            "at": "2026-10-27T02:38:55Z",
+            "moved": "repoaudit/gpt-pw-m1/run005",
+            "to": "interrupted/repoaudit/gpt-pw-m1/run005",
+            "why": "run cut off by a pause or stop"
+          },
+          {
+            "at": "2026-10-27T05:30:58Z",
+            "moved": "decisions/G-main-30",
+            "to": "interrupted/decisions/G-main-30",
+            "why": "decision cut off by a pause or stop"
+          },
+          {
+            "at": "2026-10-27T05:30:58Z",
+            "moved": "repoaudit/gpt-pw-m1/run026",
+            "to": "interrupted/repoaudit/gpt-pw-m1/run026",
+            "why": "run cut off by a pause or stop"
+          }
+        ],
+        "repoaudit_adverse": 45,
+        "repoaudit_failed": 0,
+        "repoaudit_green": 5,
+        "repoaudit_runs": 50,
+        "sealed_manifest_sha256": "4325fed13887d57f1522c8efe17a6fa9f774359eaa4fbfcd609ce17ae06b3922",
+        "secret_hits": [],
+        "semgrep_green": 0,
+        "semgrep_runs": 1
+      },
+      "outputs_manifest_sha256": "4325fed13887d57f1522c8efe17a6fa9f774359eaa4fbfcd609ce17ae06b3922",
+      "pauses": [
+        {
+          "at": "2026-10-27T04:44:18Z",
+          "reason": "Ctrl-C"
+        }
+      ],
+      "resumed": [
+        {
+          "at": "2026-10-27T02:38:55Z",
+          "from": "stopped without pausing"
+        },
+        {
+          "at": "2026-10-27T05:30:58Z",
+          "from": "paused"
+        }
+      ],
+      "started_at": "2026-10-27T01:30:23Z",
+      "status": "complete"
+    },
+    "2": {
+      "attempt": 1,
+      "checks": {
+        "components sum to t4 \u2212 t0 for every observation": true,
+        "corpus E sealed from authentic evidence only": true,
+        "every bundle became queryable in every repetition": true,
+        "every decision bound to its intent, policy and complete basis": true,
+        "graph rebuilt from the ledger equals the checkpoint": true,
+        "identical graph in every repetition (determinism)": true,
+        "sealed corpus ledger intact": true,
+        "target snapshot available for entity resolution": true
+      },
+      "finished_at": "2026-10-27T13:00:50Z",
+      "name": "ProofWeave within the threshold",
+      "outcome": {
+        "attempt_dir": "attempt1",
+        "bundles": 51,
+        "components": {
+          "bind": {
+            "max_ms": 64.572,
+            "median_ms": 27.231,
+            "min_ms": 0.226
+          },
+          "ledger": {
+            "max_ms": 20.285,
+            "median_ms": 13.704,
+            "min_ms": 7.332
+          },
+          "query_ready": {
+            "max_ms": 0.042,
+            "median_ms": 0.01,
+            "min_ms": 0.002
+          },
+          "weave": {
+            "max_ms": 6.676,
+            "median_ms": 0.081,
+            "min_ms": 0.034
+          }
+        },
+        "corpus_sha256": "7aa7c04b5e217123d20cd207489ee03c6a04e054883d4640a6fa895cc4d8104e",
+        "decisions": {
+          "G-main-01": "complete",
+          "G-main-02": "complete",
+          "G-main-03": "complete",
+          "G-main-04": "complete",
+          "G-main-05": "complete",
+          "G-main-06": "complete",
+          "G-main-07": "complete",
+          "G-main-08": "complete",
+          "G-main-09": "complete",
+          "G-main-10": "complete",
+          "G-main-11": "complete",
+          "G-main-12": "complete",
+          "G-main-13": "complete",
+          "G-main-14": "complete",
+          "G-main-15": "complete",
+          "G-main-16": "complete",
+          "G-main-17": "complete",
+          "G-main-18": "complete",
+          "G-main-19": "complete",
+          "G-main-20": "complete",
+          "G-main-21": "complete",
+          "G-main-22": "complete",
+          "G-main-23": "complete",
+          "G-main-24": "complete",
+          "G-main-25": "complete",
+          "G-main-26": "complete",
+          "G-main-27": "complete",
+          "G-main-28": "complete",
+          "G-main-29": "complete",
+          "G-main-30": "complete",
+          "G-main-31": "complete",
+          "G-main-32": "complete",
+          "G-main-33": "complete",
+          "G-main-34": "complete",
+          "G-main-35": "complete",
+          "G-main-36": "complete",
+          "G-main-37": "complete",
+          "G-main-38": "complete",
+          "G-main-39": "complete",
+          "G-main-40": "complete",
+          "G-main-41": "complete",
+          "G-main-42": "complete",
+          "G-main-43": "complete",
+          "G-main-44": "complete",
+          "G-main-45": "complete",
+          "G-main-46": "complete",
+          "G-main-47": "complete",
+          "G-main-48": "complete",
+          "G-main-49": "complete",
+          "G-main-50": "complete"
+        },
+        "durability": "fsync-per-bundle",
+        "graph_edges": 21617,
+        "graph_nodes": 8631,
+        "graph_sha256": "63b68ebf3130b0c45c142988cb8ca166c95cf8e3bdc74a5d842ecd7bed13f21c",
+        "max_ms": 84.91,
+        "median_ms": 48.811,
+        "min_ms": 7.627,
+        "observations": 101,
+        "records": 14437,
+        "repetitions": 1,
+        "threshold_s": 5.0,
+        "unresolved_functions": [
+          "fn?:None",
+          "fn?:__init__",
+          "fn?:parse",
+          "fn?:rse_isotime(se",
+          "fn?:rse_tzstr(se"
+        ],
+        "within_threshold": 101
+      },
+      "outputs_manifest_sha256": "7aa7c04b5e217123d20cd207489ee03c6a04e054883d4640a6fa895cc4d8104e",
+      "started_at": "2026-10-27T13:00:38Z",
+      "status": "complete"
+    },
+    "3": {
+      "attempt": 1,
+      "name": "Scale and threshold again",
+      "status": "pending"
+    },
+    "4": {
+      "attempt": 1,
+      "name": "Three GREENs, not enough coverage",
+      "status": "pending"
+    }
+  },
+  "status": "in progress"
+}

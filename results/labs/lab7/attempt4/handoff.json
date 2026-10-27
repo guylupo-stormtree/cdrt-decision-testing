@@ -1,0 +1,62 @@
+{
+  "attempt": 4,
+  "dev": false,
+  "handoff": {
+    "A_comp": false,
+    "acceptance": {
+      "C1": false,
+      "C2": true,
+      "C3": false,
+      "C4": true
+    },
+    "bundle": "capture/bundle",
+    "campaign_id": "campaign-004",
+    "fixtures": "fixtures/out",
+    "functional_records": "results/labs/lab7/attempt4/functional_records.jsonl",
+    "git_commit": "14a86e55f4ba59bde407e00829916370219d84a6",
+    "green": [
+      "G-main-08",
+      "G-main-17",
+      "G-main-19",
+      "G-main-25",
+      "G-main-35"
+    ],
+    "lock": "protocol/protocol.lock.json",
+    "lock_root": "59af9d417b6025e385258c7484e2f9349269299ffc8db46b78d8fda049da0dca",
+    "parameters": "fixtures/out/parameters.json",
+    "pwexp_commit": "8d233e98bb7f2d822c4ce8945a56dca1847a87d4",
+    "selection": {
+      "main": "G-main-19"
+    }
+  },
+  "handoff_sha256": "c15492aa944ce48282e0c267617a230ab9526f106ab4f899038029a936a3fb4c",
+  "inputs_from": 6,
+  "inputs_handoff_sha256": "214870e7c7506ed8d0d7a217299fd15e397142930133f0327ed51699b5d0398c",
+  "lab": 7,
+  "name": "Functional run (RQ1)",
+  "outputs": {
+    "acceptance": {
+      "path": "results/labs/lab7/attempt4/acceptance.json",
+      "sha256": "242e432eca16039359a012c250427f90a7125eabfb34617cbb276dd421299a68"
+    },
+    "functional_records": {
+      "path": "results/labs/lab7/attempt4/functional_records.jsonl",
+      "sha256": "00968fd1902739a6c75d4e545133da7a3b5914d8addab702b2c134a052359d11"
+    },
+    "trace": {
+      "path": "results/labs/lab7/attempt4/trace.txt",
+      "sha256": "23e90ed6089b4bfc66f6691a3fe1738c2370480d80cbc6597a351828ca410591"
+    }
+  },
+  "summary": {
+    "A_comp": false,
+    "after (rev 3)": "H SUCCESS · A FAIL · gateway hold",
+    "before (rev 2)": "H SUCCESS · A FAIL · gateway hold",
+    "conditions": "C1✗ C2✓ C3✗ C4✓",
+    "failing": "C1: before; C3: delayed success rejected, step 2 proceed",
+    "observation": "5 GREEN decisions; alone (H, release coverage, share, gateway): G-main-08 FAIL 0/7 None hold, G-main-17 SUCCESS 4/7 7/13 narrow hold, G-main-19 SUCCESS 4/7 7/13 narrow hold, G-main-25 SUCCESS 5/7 12/13 hold, G-main-35 SUCCESS 5/7 9/13 narrow hold",
+    "records": "results/labs/lab7/attempt4/functional_records.jsonl",
+    "replay agrees": true
+  },
+  "time": "2026-10-27T15:24:51Z"
+}

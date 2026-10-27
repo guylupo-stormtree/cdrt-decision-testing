@@ -1,0 +1,9 @@
+{
+  "decided_at": "2026-10-27T01:36:56.104830Z",
+  "decision_id": "G-main-42",
+  "harness_version": "pwexp stage1 120960734254",
+  "per_run": {
+    "gpt-pw-m1/run001": false
+  },
+  "verdict": "not_green"
+}

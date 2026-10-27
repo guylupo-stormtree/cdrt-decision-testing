@@ -1,0 +1,17 @@
+Lab 8 · Scale run (RQ2) ─────────────────────────────────────────── PASSED ✓
+Inputs   Lab 7 hand-off c15492aa944c (re-verified)
+Checks   ✓ protocol lock verifies (R-LOCK-2): 59af9d417b60
+         ✓ all 400 timed cycles executed and recorded (R-SCL-4, R-SCL-5): 400 records
+         ✓ every record carries the lock stamp (R-LOCK-4)
+         ✓ the control guard counted no call (R-ISO-1): 0 calls
+         ✓ run manifest written (R-SCL-8)
+         ✓ verdicts before the change equal the functional run's at every size (conformance SUCCESS, adequacy FAIL)
+Outputs  timing_records: results/labs/lab8/attempt4/timing_records.jsonl (071312af3328)
+         scale_stats: results/labs/lab8/attempt4/scale_stats.json (85e2372a8fe0)
+         run_manifest: results/labs/lab8/attempt4/run_manifest.json (0828f32be859)
+         slowest update (T_max): 1.570 s at N = 100,330
+         N = 1,270: slowest 0.073 s · 0/100 over 5 s
+         N = 10,160: slowest 0.245 s · 0/100 over 5 s
+         N = 100,330: slowest 1.570 s · 0/100 over 5 s
+         result: Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest took 1.57 s.
+Next     cdrt lab run 9

@@ -1,0 +1,39 @@
+{
+    "0": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-druu81s7/target/src/dateutil/parser/_parser.py, 340, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-druu81s7/target/src/dateutil/parser/_parser.py",
+                "/tmp/pwexp-subject-druu81s7/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "hms",
+                "_parse_hms"
+            ],
+            [
+                "def hms(self, name):\n        try:\n            return self._hms[name.lower()]\n        except KeyError:\n            return None",
+                "def _parse_hms(self, idx, tokens, info, hms_idx):\n        # TODO: Is this going to admit a lot of false-positives for when we\n        # just happen to have digits and \"h\", \"m\" or \"s\" characters in non-date\n        # text?  I guess hex hashes won't have that problem, but there's plenty\n        # of random junk out there.\n        if hms_idx is None:\n            hms = None\n            new_idx = idx\n        elif hms_idx > idx:\n            hms = info.hms(tokens[hms_idx])\n            new_idx = hms_idx\n        else:\n            # Looking backwards, increment one.\n            hms = info.hms(tokens[hms_idx]) + 1\n            new_idx = idx\n\n        return (new_idx, hms)"
+            ]
+        ],
+        "explanation": "Explanation:  \nLet's analyze the propagation path step by step:\n\n1. The path starts with hms returning None at line 5 (the except KeyError: return None branch).\n2. In _parse_hms, at line 14, we see hms = info.hms(tokens[hms_idx]) + 1. This means the result of info.hms(tokens[hms_idx]) is being used in an arithmetic operation (+ 1).\n3. For info.hms(tokens[hms_idx]) to be None (i.e., for hms to be None at this point), the hms function must have returned None, which only happens if a KeyError is raised in self._hms[name.lower()].\n4. If info.hms(tokens[hms_idx]) returns None, then the code at line 14 will attempt to compute None + 1, which will raise a TypeError (since NoneType cannot be added to int). This is a potential NPD (None Propagation Dereference) bug.\n5. There are no guards or checks in _parse_hms to ensure that info.hms(tokens[hms_idx]) is not None before performing the + 1 operation. The only check is on hms_idx (if hms_idx is None, then hms is set to None, but the else branch is taken when hms_idx is not None and not greater than idx).\n6. The propagation path is: tokens[hms_idx] (argument to hms as name) \u2192 hms(name) returns None (if KeyError) \u2192 result used in _parse_hms at line 14 as info.hms(tokens[hms_idx]) + 1, which dereferences None.\n7. There are no conflicting branch conditions or early returns that would prevent this path from being taken.\n\nTherefore, the propagation path is reachable and can cause an NPD bug.\n\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    },
+    "1": {
+        "bug_type": "NPD",
+        "buggy_value": "((e, m, /tmp/pwexp-subject-druu81s7/target/src/dateutil/parser/isoparser.py, 412, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-druu81s7/target/src/dateutil/parser/isoparser.py"
+            ],
+            [
+                "rse_tzstr(se"
+            ],
+            [
+                " _parse_tzstr(self, tzstr, zero_as_utc=True):\n        if tzstr == b'Z' or tzstr == b'z':\n            return tz.UTC\n\n        if len(tzstr) not in {3, 5, 6}:\n            raise ValueError('Time zone offset must be 1, 3, 5 or 6 characters')\n\n        if tzstr[0:1] == b'-':\n            mult = -1\n        elif tzstr[0:1] == b'+':\n            mult = 1\n        else:\n            raise ValueError('Time zone offset requires sign')\n\n        hours = int(tzstr[1:3])\n        if len(tzstr) == 3:\n            minutes = 0\n        else:\n            minutes = int(tzstr[(4 if tzstr[3:4] == self._TIME_SEP else 3):])\n\n        if zero_as_utc and hours == 0 and minutes == 0:\n            return tz.UTC\n        else:\n            if minutes > 59:\n                raise ValueError('Invalid minutes in time zone offset')\n\n            if hours > 23:\n                raise ValueError('Invalid hours in time zone offset')\n\n            return tz.tzoffset(None, mult * (hours * 60 + minutes) * 60)\n\n\n"
+            ]
+        ],
+        "explanation": "Explanation: The propagation path concerns the use of tz at line 30: return tz.tzoffset(None, mult * (hours * 60 + minutes) * 60). In the provided code, tz is used as a module or object (likely imported elsewhere), and tz.tzoffset is called. There is no assignment or modification to tz within this function, nor is there any branch or check that would set tz to None or otherwise invalidate it. The function always reaches line 30 unless an earlier return or exception is triggered. Since tz is not shown to be None or checked for None, and there is no evidence in the provided code that tz could be None at this point, the propagation path is reachable if tz is None at the module level. However, based solely on the code provided, we cannot conclude that tz is None or not; we only analyze the propagation within this function. Since there is no guard or modification to tz, the path is reachable if tz is None, and thus the NPD bug is possible.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    }
+}

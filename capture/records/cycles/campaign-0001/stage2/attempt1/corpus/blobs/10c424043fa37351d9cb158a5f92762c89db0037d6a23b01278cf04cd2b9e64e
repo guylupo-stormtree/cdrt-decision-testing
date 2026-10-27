@@ -1,0 +1,36 @@
+{
+    "0": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-7xchxq_6/target/src/dateutil/parser/_parser.py, 399, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-7xchxq_6/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "__init__"
+            ],
+            [
+                "def __init__(self, *args, **kwargs):\n        super(self.__class__, self).__init__(*args, **kwargs)\n        self.century_specified = False\n        self.dstridx = None\n        self.mstridx = None\n        self.ystridx = None"
+            ]
+        ],
+        "explanation": "Explanation: In the provided __init__ function, the attribute self.mstridx is explicitly set to None at line 5. There are no conditional branches or checks that would prevent self.mstridx from being None at this point, nor is there any code that modifies its value before or at line 5. If the propagation path refers to the use (dereference) of self.mstridx at line 5 as a sink, then self.mstridx is guaranteed to be None at that point, which could cause an NPD bug if it is dereferenced or used in a way that requires a non-None value. Since there are no guards or conflicting conditions, the path is reachable.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    },
+    "1": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-7xchxq_6/target/src/dateutil/parser/_parser.py, 1230, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-7xchxq_6/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "_build_naive"
+            ],
+            [
+                "def _build_naive(self, res, default):\n        repl = {}\n        for attr in (\"year\", \"month\", \"day\", \"hour\",\n                     \"minute\", \"second\", \"microsecond\"):\n            value = getattr(res, attr)\n            if value is not None:\n                repl[attr] = value\n\n        if 'day' not in repl:\n            # If the default day exceeds the last day of the month, fall back\n            # to the end of the month.\n            cyear = default.year if res.year is None else res.year\n            cmonth = default.month if res.month is None else res.month\n            cday = default.day if res.day is None else res.day\n\n            if cday > monthrange(cyear, cmonth)[1]:\n                repl['day'] = monthrange(cyear, cmonth)[1]\n\n        naive = default.replace(**repl)\n\n        if res.weekday is not None and not res.day:\n            naive = naive + relativedelta.relativedelta(weekday=res.weekday)\n\n        return naive"
+            ]
+        ],
+        "explanation": "Explanation: At line 14, cday is assigned as default.day if res.day is None, else res.day. This means cday will only be None if both default.day and res.day are None. However, default is an input parameter, and there is no check in the code to ensure default.day is not None before this assignment. Similarly, res.day could also be None. Therefore, it is possible for cday to be None at line 14, and there is no branch or guard that prevents this. Thus, the propagation path to the sink is reachable and could cause an NPD bug if cday is used in a context that does not accept None.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    }
+}

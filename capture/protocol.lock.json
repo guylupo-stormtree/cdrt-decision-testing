@@ -1,0 +1,86 @@
+{
+  "files": {
+    "manifests/M_h.json": "8ddd8872b72b010e8fb38cf27d6f021612c2643f6aebc44593cbe294a437fb8d",
+    "manifests/M_q.json": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995",
+    "policies/P1@1.json": "6a89512f4ee1012f16ef569b5897877c80799f9513a4ef371d79d723115c34fb",
+    "protocol.yaml": "a2e8d87e30b90f40ac478e2c812bf11a396a26035fde8b7915e9ae0697432e43",
+    "target_snapshot_manifest": "fe292648ecbbf15e2dcfd8343e098400ac783ed8a9151a30c0c257853f59a04f"
+  },
+  "lock_sha256": "3bab4bba99c1f06e8c9729f210c77ffcff8540a5b6c5af7509e854d1555ffa9d",
+  "locked_at": "2026-10-27T01:30:23Z",
+  "protocol": {
+    "acquisition": {
+      "call_depth": 3,
+      "models": [
+        {
+          "model": "gpt-4.1",
+          "provider": "openai"
+        }
+      ],
+      "semgrep_runs": 1,
+      "temperature": 0.0,
+      "timeout_s": 3600,
+      "workers": 4
+    },
+    "capture": {
+      "log_utc_offset": "+00:00"
+    },
+    "decisions": {
+      "groups": [
+        {
+          "basis": [
+            "repoaudit"
+          ],
+          "control": "repoaudit",
+          "count": 50,
+          "group": "G-main",
+          "policy": "P1@1",
+          "rule": "DR-11"
+        }
+      ],
+      "intent": {
+        "action": "release",
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil",
+        "requested_by": "authors",
+        "scope": "manifests/M_h.json"
+      },
+      "seed": 20261026
+    },
+    "green_mapping": "DR-11",
+    "manifests": {
+      "M_h": {
+        "file": "manifests/M_h.json"
+      },
+      "M_q": {
+        "file": "manifests/M_q.json"
+      }
+    },
+    "policies": {
+      "P1@1": {
+        "file": "policies/P1@1.json"
+      }
+    },
+    "protocol_version": 1,
+    "semgrep": {
+      "ruleset": "../vendor/proofweave-decision-assurance/protocol/semgrep-rules/python-none-deref.yaml",
+      "version": "1.181.0"
+    },
+    "target": {
+      "bug_type": "NPD",
+      "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+      "language": "Python",
+      "repository": "https://github.com/dateutil/dateutil",
+      "snapshot_path": "target"
+    },
+    "timing": {
+      "durability": "fsync-per-bundle",
+      "reference_threshold_s": 5,
+      "repetitions": 1,
+      "volumes": [
+        10
+      ]
+    }
+  }
+}

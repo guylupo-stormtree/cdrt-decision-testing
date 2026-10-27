@@ -1,0 +1,13 @@
+Lab 6 · Lock ────────────────────────────────────────────────────── PASSED ✓
+Inputs   Lab 5 hand-off 29f97e40565a (re-verified)
+Checks   ✓ verify-lock passes (every component recomputed)
+         ✓ workbench/ is excluded from the lock
+         ✓ oracle expectations were committed before the decision tests (R-ORC-1): expectations 41ebdbf6 · decision tests 5e9c7063
+         ✓ lock commit tagged: cdrt-protocol-v3
+Outputs  lock: protocol/protocol.lock.json (c657b170b425)
+         lock_root: f26528d86fc2cca0bfd8f901298d801526814363c5f4a0f0edc5878543caafb5
+         campaign_id: campaign-003
+         git_commit: f5fc02f6d3e3
+         pwexp: pw-v0.2.5 8d233e98bb7f
+         tag: cdrt-protocol-v3
+Next     cdrt lab run 7

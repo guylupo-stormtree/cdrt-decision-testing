@@ -1,0 +1,13 @@
+{
+  "approved_by": "Guy Lupo",
+  "approved_at": "2026-10-26T18:20:00Z",
+  "files": {
+    "M_h.json": "8ddd8872b72b010e8fb38cf27d6f021612c2643f6aebc44593cbe294a437fb8d",
+    "M_q.json": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+  },
+  "sizes": {
+    "M_h": 5,
+    "M_q": 7
+  },
+  "snapshot_sha256": "789f4de577b30f54464182585a10e1f3ad5c587f601d58ce389b57ce814fcf92"
+}

@@ -1,0 +1,22 @@
+{
+    "0": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-d8rnodk4/target/src/dateutil/parser/_parser.py, 340, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-d8rnodk4/target/src/dateutil/parser/_parser.py",
+                "/tmp/pwexp-subject-d8rnodk4/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "hms",
+                "_parse_hms"
+            ],
+            [
+                "def hms(self, name):\n        try:\n            return self._hms[name.lower()]\n        except KeyError:\n            return None",
+                "def _parse_hms(self, idx, tokens, info, hms_idx):\n        # TODO: Is this going to admit a lot of false-positives for when we\n        # just happen to have digits and \"h\", \"m\" or \"s\" characters in non-date\n        # text?  I guess hex hashes won't have that problem, but there's plenty\n        # of random junk out there.\n        if hms_idx is None:\n            hms = None\n            new_idx = idx\n        elif hms_idx > idx:\n            hms = info.hms(tokens[hms_idx])\n            new_idx = hms_idx\n        else:\n            # Looking backwards, increment one.\n            hms = info.hms(tokens[hms_idx]) + 1\n            new_idx = idx\n\n        return (new_idx, hms)"
+            ]
+        ],
+        "explanation": "Explanation: Let's analyze the propagation path step by step. The first function, hms, returns None if a KeyError is raised (line 5). In _parse_hms, at line 10, info.hms(tokens[hms_idx]) is called. If hms_idx > idx (the elif branch), hms is assigned the result of info.hms(tokens[hms_idx]) (line 10). There is no check in _parse_hms to ensure that info.hms(tokens[hms_idx]) is not None before it is used or returned. Therefore, if info.hms(tokens[hms_idx]) returns None (which can happen if the key is not found in self._hms in hms), then hms will be None at line 10 in _parse_hms. The propagation path is: hms returns None \u2192 info.hms(tokens[hms_idx]) is assigned None \u2192 info is the object whose method returned None. Since there is no branch or check preventing None from propagating along this path, and the None value can flow from hms to _parse_hms without interference, the path is reachable and can cause an NPD bug if hms is dereferenced later.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    }
+}

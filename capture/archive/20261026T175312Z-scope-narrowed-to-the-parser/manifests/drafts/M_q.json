@@ -1,0 +1,23 @@
+{
+  "id": "M_q",
+  "about": "Release scope: M_h, functions passed a None as an argument, and callers one step further where the None can travel on.",
+  "target": {
+    "repository": "https://github.com/dateutil/dateutil",
+    "commit": "10f317fde11ce5bc6540e83f896af10e67d52937"
+  },
+  "derivation": "cdrt capture.draft_manifests: own ast parse of the target, never RepoAudit output",
+  "functions": [
+    "src/dateutil/parser/_parser.py::_could_be_tzname",
+    "src/dateutil/parser/_parser.py::_find_hms_idx",
+    "src/dateutil/parser/_parser.py::_parse",
+    "src/dateutil/parser/_parser.py::_parse_hms",
+    "src/dateutil/parser/_parser.py::_parse_numeric_token",
+    "src/dateutil/parser/_parser.py::next",
+    "src/dateutil/parser/_parser.py::tzoffset",
+    "src/dateutil/relativedelta.py::__add__",
+    "src/dateutil/tz/_tzfile.py::_is_ambiguous_or_imaginary",
+    "src/dateutil/tz/tz.py::__get_gettz",
+    "src/dateutil/tz/tz.py::_delta",
+    "src/dateutil/tz/tz.py::_find_compdt"
+  ]
+}

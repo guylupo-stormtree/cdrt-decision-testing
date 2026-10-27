@@ -1,0 +1,69 @@
+% BEGIN GENERATED:coverage_table
+% generator: cdrt.report 1 (coverage_table)
+% inputs: results/labs/lab7/attempt2/functional_records.jsonl f3606099382d; results/labs/lab8/attempt2/scale_stats.json 2f77504400e2; fixtures/out/parameters.json 2d3cdf7c84cb
+% lock_root: 5027e2dd7806fc031b01e5880fcd83a8cca3381d7eb3cc3d5be6e4f1d233387c  campaign: campaign-002
+% commit: 94766191d437ffb3b094db957e369b9e98784e51
+\begin{table*}[pos=t]
+\centering\small
+\caption{Green decisions on their own and composed. Rows follow capture order. \emph{Alone}: the decision's own coverage of the release manifest $M_q$ and the gateway reading if it relied on this decision only; \emph{share}: its part of the estate observed across all eligible decisions, with decisions below \FixTauRel{} marked narrow; \emph{composed}: coverage of $M_q$ by all decisions admitted so far. Requirement: \FixTauQ{} of \FixMq{} functions.}
+\label{tab:coverage}
+\begin{tabularx}{\textwidth}{@{}lccccccY@{}}
+\toprule
+Decision & Green & Conformant & Alone & Share & Gateway alone & Composed & Gateway composed \\
+\midrule
+\texttt{G-main-42} & yes & -- & -- & -- &  & 0/7 & Hold \\
+\texttt{G-main-21} & yes & -- & -- & -- &  & 0/7 & Hold \\
+\texttt{G-main-19} & yes & \Pass{} & 4/7 & 7/13 (narrow) & Hold & 4/7 & Hold \\
+\texttt{G-main-25} & yes & \Pass{} & 5/7 & 12/13 & Hold & 5/7 & Hold \\
+\texttt{G-main-04} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-47} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-50} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-49} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-29} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-27} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-03} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-48} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-43} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-31} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-34} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-11} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-33} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-39} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-17} & yes & \Pass{} & 4/7 & 7/13 (narrow) & Hold & 5/7 & Hold \\
+\texttt{G-main-41} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-10} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-14} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-36} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-05} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-28} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-30} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-20} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-16} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-12} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-07} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-02} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-24} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-37} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-46} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-18} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-13} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-40} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-22} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-23} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-38} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-45} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-01} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-06} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-35} & yes & \Pass{} & 5/7 & 9/13 (narrow) & Hold & 5/7 & Hold \\
+\texttt{G-main-26} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-32} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-09} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-44} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-15} & yes & -- & -- & -- &  & 5/7 & Hold \\
+\texttt{G-main-08} & yes & \Fail{} & 0/7 & -- & Hold & 5/7 & Hold \\
+\midrule
+All eligible & & & & & & 5/7 & Hold; slowest composed update 2.30\,s \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+% END GENERATED:coverage_table

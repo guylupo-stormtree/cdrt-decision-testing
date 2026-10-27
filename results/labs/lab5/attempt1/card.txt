@@ -1,0 +1,16 @@
+Lab 5 · Build fixtures ──────────────────────────────────────────── PASSED ✓
+Inputs   Lab 4 hand-off 7e2f42715f82 (re-verified)
+Checks   ✓ tau_q and tau_rel declared in run_config before capture (not derived from the data): tau_q = 4/5, tau_rel = 4/5
+         ✓ profiles rev 1-3 and the one-decision observation profile written
+         ✓ every scale plane verified and checkpointed: N=1,270 · N=1,270 · N=10,160 · N=100,330
+         ✓ two builds give identical bytes (R-FIX-5): 1862 files
+Outputs  fixtures: fixtures/out (1baa103eed87)
+         macros_preview: results/labs/lab5/attempt1/fixture_macros.preview.tex (18a1bfa955e3)
+         captured decisions: 50 (5 GREEN)
+         c_obs (main alone): 4/7
+         tau_q: 4/5
+         t_e: 2026-10-27T12:27:39.342279Z
+         max_age_seconds (Delta_q): 39760
+         scale sizes (actual N): 1,270, 1,270, 10,160, 100,330
+         fixtures_sha256: 1baa103eed87b7df295fcd48780a6d26ea2e883bf54b7d5b4ec45e0bacdbea2d
+Next     cdrt lab run 6

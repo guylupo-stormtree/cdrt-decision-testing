@@ -1,0 +1,32 @@
+# CDRT capture declaration (Labs 0-2). Fill every TODO before `cdrt lab run 0`. Declared before any run;
+# Lab 0 generates the pilot protocol from this file and the approved manifests; Lab 2 locks the campaign protocol.
+# API keys never go here: they are typed at the start of `cdrt lab run 1-2`, checked, and kept in memory only.
+target:
+  repository: https://github.com/dateutil/dateutil   # python-dateutil, Apache-2.0 + BSD-3
+  commit: 10f317fde11ce5bc6540e83f896af10e67d52937    # release 3.0.0
+  pypi: python-dateutil             # its PyPI name: Lab 0's narration reads its public download count
+  expected_functions: [5, 40]       # functions that can receive a None (A5.1 as amended, D-023, D-026); outside the range Lab 0 stops
+  scope: its date parser, the part that reads dates written as text   # in plain words, for the narration
+  omit:                             # left out of the snapshot before anything runs: RepoAudit audits only the parser (D-026)
+    - "src/dateutil/rrule.py"
+    - "src/dateutil/relativedelta.py"
+    - "src/dateutil/easter.py"
+    - "src/dateutil/utils.py"
+    - "src/dateutil/_tzdata_impl.py"
+    - "src/dateutil/tzwin.py"
+    - "src/dateutil/tz/*"
+    - "src/dateutil/zoneinfo/*"
+    - "tests/*"
+    - "docs/*"
+  exclude: ["tests/*", "test/*", "*/tests/*", "test_*.py", "*_test.py", "docs/*", "examples/*"]
+bug_type: NPD                       # RepoAudit's null-pointer detector; sources are None values (its default)
+model:
+  provider: openai                  # openai | anthropic
+  model: gpt-4.1                    # one model and one configuration for the whole campaign
+runs:
+  pilot: 5                          # pilot G-main runs: set tau_h before the capture lock (never results)
+  campaign: 50                      # captured G-main runs; every outcome is kept
+  semgrep_standalone: 1             # standalone Semgrep scans, in no decision's basis
+seed: 20261026
+log_utc_offset: "+00:00"            # the capture host's UTC offset (RepoAudit logs local time without a zone)
+requested_by: authors

@@ -1,0 +1,23 @@
+{
+  "campaign_id": "campaign-004",
+  "components": {
+    "capture_bundle": "83a6131c6ad24d5f6c331d8a24f8a65c2799ef5e58453a9a2f42c68c926d20bc",
+    "fixtures": "1baa103eed87b7df295fcd48780a6d26ea2e883bf54b7d5b4ec45e0bacdbea2d",
+    "harness": "2a93484ff16e88f43054ee9e4973ab684a08fc3deac4d4d6a0766cbebbd9a6d1",
+    "oracle": "46d6b5422b21c8df258dc48b34dbcf6bb8f2c900861514d0b5e43a3d8ce6b7ab",
+    "profiles": "d0a092e6f0089be774edb47f9eb069cf08ea18f2607c8a74ff72bc0798467e55",
+    "pwexp": {
+      "clean": true,
+      "commit": "8d233e98bb7f2d822c4ce8945a56dca1847a87d4",
+      "tag": "pw-v0.2.5"
+    },
+    "run_config": "d111352211a3acfcb2dff5777be1e87b530630d85fb44714b4e3d0b55df1c0aa",
+    "runtime_src_cdrt": "570271cc2b748527615773ab9b9fe48ceea6bb1529c21657574f185fbeeef435",
+    "uv_lock": "592d2d58f39832ce6a085c8da453f642f9b459a94c1a4f0360c18fa40529a49a"
+  },
+  "development": false,
+  "git_commit": "14a86e55f4ba59bde407e00829916370219d84a6",
+  "lock_root": "59af9d417b6025e385258c7484e2f9349269299ffc8db46b78d8fda049da0dca",
+  "locked_at": "2026-10-27T15:24:02Z",
+  "working_tree_dirty": false
+}

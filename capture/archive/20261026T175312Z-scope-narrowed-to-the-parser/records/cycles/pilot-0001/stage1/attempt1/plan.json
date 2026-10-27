@@ -1,0 +1,80 @@
+{
+  "decision_schedule": true,
+  "decisions": [
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-04",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-05",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-03",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-02",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-01",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    }
+  ],
+  "finished": "2026-10-26T15:25:37Z",
+  "models": [
+    {
+      "alias": "gpt-pw-m1",
+      "model": "gpt-4.1",
+      "provider": "openai",
+      "role": "repoaudit"
+    }
+  ],
+  "runs_per_model": 0,
+  "seed": 20261026,
+  "semgrep_runs": 0,
+  "started": "2026-10-26T15:25:11Z",
+  "subject_after": {
+    "head": "160f5bcd378a02a2417e32e999f93ef5fa0f5e64",
+    "pinned": true,
+    "tracked_files_modified": false
+  },
+  "subject_before": {
+    "head": "160f5bcd378a02a2417e32e999f93ef5fa0f5e64",
+    "pinned": true,
+    "tracked_files_modified": false
+  },
+  "target": "/home/guylupo/dev/cdrt-decision-testing/capture/pilot/../target",
+  "target_manifest_sha256": "cb6e21ec890e9e2e6067471bb4e531a6df7a0648a65c3ddf83fd50fedc3c45bd"
+}

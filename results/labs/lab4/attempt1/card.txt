@@ -1,0 +1,15 @@
+Lab 4 · Review ProofWeave and freeze ────────────────────────────── PASSED ✓
+Inputs   Lab 3 hand-off 06c35f4a9890 (re-verified)
+Checks   ✓ review pages written (decisions, pathways, decision graphs)
+         ✓ frozen corpus re-verifies with the same corpus hash
+         ✓ frozen bundle is read-only
+         ✓ a main decision selected by the declared rule
+         ✓ the independent oracle makes the same selection and the same conformance judgements
+Outputs  bundle: capture/bundle (83a6131c6ad2)
+         views: results/labs/lab4/attempt1/views (4bb71885b4d5)
+         bundle_sha256: b7bc0a6c2dfe347f8483e5b30c3da1c472f927a440724173ea20795b86218fe3
+         review: results/labs/lab4/attempt1/views/pathways.html
+         selected: main G-main-19
+         captured G-main: 50 decisions, 5 GREEN
+         other GREEN G-main: G-main-25 H=SUCCESS, G-main-17 H=SUCCESS, G-main-35 H=SUCCESS, G-main-08 H=FAIL
+Next     cdrt lab run 5

@@ -1,0 +1,28 @@
+{
+  "attempt": 5,
+  "dev": false,
+  "handoff": {
+    "pilot_cycle": "pilot-0002",
+    "tau_h": "2/5"
+  },
+  "handoff_sha256": "a19e013ec5fa3e414c06873b7b7969244554f64605dbce439b8b9bf5b0f17b7c",
+  "inputs_from": 0,
+  "inputs_handoff_sha256": "86328c0afc461cb7bf5bee5f7863de4927c6840d18f2fb8cde2356c89efaf74a",
+  "lab": 1,
+  "name": "Pilot capture",
+  "outputs": {
+    "pilot": {
+      "path": "capture/records/cycles/pilot-0002",
+      "sha256": "a800c26a89b3397581cffc933748c1339f8ac80e01141b14e65bf06cce9ae24c"
+    }
+  },
+  "summary": {
+    "GREEN pilot runs": "1 of 5 (reported, not a gate)",
+    "minutes per run": "6 to 7",
+    "model calls per run": "147 to 163",
+    "pilot cycle": "pilot-0002",
+    "pilot decisions": "G-main-01 not green 3/5, G-main-02 not green 4/5, G-main-03 GREEN 4/5, G-main-04 not green 1/5, G-main-05 not green 2/5",
+    "tau_h": "2/5 (40%)"
+  },
+  "time": "2026-10-27T01:30:23Z"
+}

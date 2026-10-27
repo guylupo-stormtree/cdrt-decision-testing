@@ -1,0 +1,57 @@
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 7 · CDRT tests the decisions
+────────────────────────────────────────────────────────────────────────────────────────────────
+  CDRT now tests the recorded decisions without running the auditor again. First it asks: did
+  each decision follow the policy of its time? Then: is the evidence enough for today's
+  requirement? Then the requirement changes, and we watch the gateway react.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+functional pass 1 of 2
+rev 1  │ H SUCCESS       │ A —             │ TAIP pass         │ gateway proceed
+rev 2  │ H SUCCESS       │ A FAIL          │ TAIP fail         │ gateway hold
+rev 3  │ H SUCCESS       │ A FAIL          │ TAIP fail         │ gateway hold
+functional pass 2 of 2
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 7 · CDRT tests the decisions · what happened
+────────────────────────────────────────────────────────────────────────────────────────────────
+  First question, did each decision follow the policy of its time? 4 of 5: yes.
+
+  Second question, is the evidence enough for today? The chosen run alone checked 4/7: the
+  gateway would say HOLD. 3 of the 5 GREEN runs were each too narrow on their own.
+
+  CDRT then combines the qualified runs: together they checked 5/7, and the gateway says HOLD.
+  The decision rests on independently tested, combined evidence, not on one GREEN verdict.
+
+  Now the requirement changes: an independent second check is also required, which no run had.
+  The past decisions still followed their own policy, but they are no longer enough: the
+  gateway says HOLD.
+
+  A late, outdated 'yes' from before the change arrives afterwards and is refused, so it
+  cannot switch the gateway back to proceed.
+
+  Throughout, the AI auditor was never run again.
+
+  This step passed all its checks.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+Lab 7 · Functional run (RQ1) ────────────────────────────────────── PASSED ✓
+Inputs   Lab 6 hand-off 214870e7c750 (re-verified)
+Checks   ✓ protocol lock verifies (R-LOCK-2): 59af9d417b60
+         ✓ every step, the before/after judgements, the delayed result and the observation executed
+         ✓ every record carries the lock stamp (R-LOCK-4): 10 records
+         ✓ the control guard counted no call (R-ISO-1): 0 calls
+         ✓ the protocol ran 2 times for the replay comparison
+Outputs  functional_records: results/labs/lab7/attempt4/functional_records.jsonl (00968fd19027)
+         acceptance: results/labs/lab7/attempt4/acceptance.json (242e432eca16)
+         trace: results/labs/lab7/attempt4/trace.txt (23e90ed6089b)
+         A_comp: False
+         replay agrees: True
+         conditions: C1✗ C2✓ C3✗ C4✓
+         before (rev 2): H SUCCESS · A FAIL · gateway hold
+         after (rev 3): H SUCCESS · A FAIL · gateway hold
+         failing: C1: before; C3: delayed success rejected, step 2 proceed
+         observation: 5 GREEN decisions; alone (H, release coverage, share, gateway): G-main-08 FAIL 0/7 None hold, G-main-17 SUCCESS 4/7 7/13 narrow hold, G-main-19 SUCCESS 4/7 7/13 narrow hold, G-main-25 SUCCESS 5/7 12/13 hold, G-main-35 SUCCESS 5/7 9/13 narrow hold
+         records: results/labs/lab7/attempt4/functional_records.jsonl
+Next     cdrt lab run 8

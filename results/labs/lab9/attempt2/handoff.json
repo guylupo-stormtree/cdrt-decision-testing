@@ -1,0 +1,46 @@
+{
+  "attempt": 2,
+  "dev": false,
+  "handoff": {
+    "A_comp": false,
+    "generated": "results/labs/lab9/attempt2/generated-pending",
+    "lock_root": "f26528d86fc2cca0bfd8f901298d801526814363c5f4a0f0edc5878543caafb5",
+    "manuscript_copy": "results/labs/lab9/attempt2/manuscript/main-17.tex",
+    "sentence": "Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest took 1.43 s."
+  },
+  "handoff_sha256": "578e8255529d0a5df5e66c91870c0d7adf5cf6c262d0130923dc3d5d0ef648ce",
+  "inputs_from": 8,
+  "inputs_handoff_sha256": "613d18c5a342715f201a5a8ab8c64b7bf5dff6993bc388f5fac44690dade8312",
+  "lab": 9,
+  "name": "Report",
+  "outputs": {
+    "figure_preview": {
+      "path": "results/labs/lab9/attempt2/figure-preview/preview.pdf",
+      "sha256": "2fbe82ab6b41030037cdc74e43aa34d61e19d401b8f228925d63dd6840f04850"
+    },
+    "generated": {
+      "path": "results/labs/lab9/attempt2/generated-pending",
+      "sha256": "e13dc631de2f61a915d15e6bb1a228545c785ce932f9c250a8bc2c5fb3eb6412"
+    },
+    "manuscript_copy": {
+      "path": "results/labs/lab9/attempt2/manuscript/main-17.tex",
+      "sha256": "e51a95e42a694cc19b3b037327af825a8e97350687ca16908dcb35b0b2e3472a"
+    },
+    "pathways_preview": {
+      "path": "results/labs/lab9/attempt2/figure-preview/pathways-preview.pdf",
+      "sha256": "73f5f1da61b8bbde251e5b95d70e69c945b86eca4c812113246ecc5617f97546"
+    },
+    "trace": {
+      "path": "results/labs/lab9/attempt2/trace.json",
+      "sha256": "ecd1266e9957d572957730773be58d2288b1713c66eed45314913b96e231e0bc"
+    }
+  },
+  "summary": {
+    "RQ1": "A_comp = false; C1 ✗ (before), C2 ✓, C3 ✗ (delayed success rejected, step 2 proceed), C4 ✓",
+    "RQ2": "Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest took 1.43 s.",
+    "coverage": "On its own, the main decision covered 4/7 of the release functions (below the 80\\% requirement); 0 of the 5 green decisions met the requirement alone, and 3 were green but narrow, each reaching less than 80\\% of the 13 functions observed across all eligible decisions. Together the 4 eligible decisions covered 5 of 7 release functions, below the requirement; 46 decision(s) were excluded; 8 observed function(s) were missing from the release manifest.",
+    "generated": "results/labs/lab9/attempt2/generated-pending (8 files + figures): replace the manuscript's generated/ folder with it",
+    "pdf": "results/labs/lab9/attempt2/manuscript/main-17.pdf"
+  },
+  "time": "2026-10-27T13:54:56Z"
+}

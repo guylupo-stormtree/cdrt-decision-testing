@@ -1,0 +1,31 @@
+% BEGIN GENERATED:experiment_record
+% generator: cdrt.report 1 (experiment_record)
+% inputs: capture/bundle/BUNDLE.json 1bd0e42b0dff; capture/bundle/protocol/cdrt-protocol.yaml a2e8d87e30b9; fixtures/out/parameters.json 2d3cdf7c84cb; results/labs/lab8/attempt2/run_manifest.json 443b940a6eda
+% lock_root: 5027e2dd7806fc031b01e5880fcd83a8cca3381d7eb3cc3d5be6e4f1d233387c  campaign: campaign-002
+% commit: 94766191d437ffb3b094db957e369b9e98784e51
+\subsection{Experiment record}
+\label{sec:experiment-record}
+
+This subsection is generated from the locked campaign. Table~\ref{tab:experiment-record} identifies the target, the control and its configuration, the captured decisions, the decision ledger, the sealed corpus, the protocol lock, the experiment code and the timing host. Every result in Section~\ref{sec:results} is generated from records that carry this lock root.
+
+\begin{table}[pos=tbp]
+\centering\small
+\caption{Experiment record, campaign \texttt{campaign-002}.}
+\label{tab:experiment-record}
+\begin{tabularx}{\columnwidth}{@{}L{.3\columnwidth}Y@{}}
+\toprule
+Item & Value \\
+\midrule
+Target repository & \texttt{https://github.com/dateutil/dateutil} at commit \texttt{10f317fde11ce5bc6540e83f896af10e67d52937} (Python, NPD) \\
+Control & RepoAudit at commit \texttt{160f5bcd378a}, model \texttt{gpt-4.1}, temperature 0.0, call depth 3 \\
+Independent validator & Semgrep 1.181.0; 1 standalone scan(s), in no decision's basis \\
+Captured decisions & 50 RepoAudit runs under P1, 5 green; main decision \texttt{G-main-19} \\
+Decision ledger & ProofWeave \texttt{pw-v0.2.5} (commit \texttt{8d233e98bb7f}) \\
+Sealed corpus (SHA-256) & \texttt{7aa7c04b5e217123\allowbreak d20cd207489ee03c\allowbreak 6a04e054883d4640\allowbreak a6fa895cc4d8104e} \\
+Protocol lock & root \texttt{5027e2dd7806fc03\allowbreak 1b01e5880fcd83a8\allowbreak cca3381d7eb3cc3d\allowbreak 5be6e4f1d233387c}; campaign \texttt{campaign-002}; tag \texttt{cdrt-protocol-v2} \\
+Experiment code & cdrt-decision-testing at commit \texttt{94766191d437}; fixtures \texttt{1baa103eed87b7df\allowbreak 295fcd48780a6d26} \\
+Timing host & Apple, 6 CPUs, 11686776 kB; Linux-7.0.0-38-generic-aarch64-with-glibc2.43; Python 3.13.14 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+% END GENERATED:experiment_record

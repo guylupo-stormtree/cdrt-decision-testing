@@ -1,0 +1,14 @@
+Lab 1 · Pilot capture ───────────────────────────────────────────── PASSED ✓
+Inputs   Lab 0 hand-off 86328c0afc46 (re-verified)
+Checks   ✓ pilot Stage 1 passed its checks (every run kept, below the timeout, no key in any output)
+         ✓ pilot Stage 2 bound every pilot decision
+         ✓ every pilot run consulted the model (a run with no model calls examined nothing): model calls per run: 162, 163, 147, 154, 148
+         ✓ tau_h set by the declared rule (at least 4 of 5 pilot runs conform) and above zero (R-CAP-4): tau_h = 2/5
+Outputs  pilot: capture/records/cycles/pilot-0002 (a800c26a89b3)
+         pilot cycle: pilot-0002
+         GREEN pilot runs: 1 of 5 (reported, not a gate)
+         pilot decisions: G-main-01 not green 3/5, G-main-02 not green 4/5, G-main-03 GREEN 4/5, G-main-04 not green 1/5, G-main-05 not green 2/5
+         tau_h: 2/5 (40%)
+         model calls per run: 147 to 163
+         minutes per run: 6 to 7
+Next     check the cost per run; adjust with `cdrt capture campaign-runs N` if needed; then `cdrt lab run 2`

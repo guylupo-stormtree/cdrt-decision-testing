@@ -1,0 +1,53 @@
+{
+    "0": {
+        "bug_type": "NPD",
+        "buggy_value": "((e]\n , /tmp/pwexp-subject-v4kl8eku/target/src/dateutil/parser/isoparser.py, 332, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-v4kl8eku/target/src/dateutil/parser/isoparser.py"
+            ],
+            [
+                "rse_isotime(se"
+            ],
+            [
+                " _parse_isotime(self, timestr):\n        len_str = len(timestr)\n        components = [0, 0, 0, 0, None]\n        pos = 0\n        comp = -1\n\n        if len_str < 2:\n            raise ValueError('ISO time too short')\n\n        has_sep = False\n\n        while pos < len_str and comp < 5:\n            comp += 1\n\n            if timestr[pos:pos + 1] in b'-+Zz':\n                # Detect time zone boundary\n                components[-1] = self._parse_tzstr(timestr[pos:])\n                pos = len_str\n                break\n\n            if comp == 1 and timestr[pos:pos+1] == self._TIME_SEP:\n                has_sep = True\n                pos += 1\n            elif comp == 2 and has_sep:\n                if timestr[pos:pos+1] != self._TIME_SEP:\n                    raise ValueError('Inconsistent use of colon separator')\n                pos += 1\n\n            if comp < 3:\n                # Hour, minute, second\n                components[comp] = int(timestr[pos:pos + 2])\n                pos += 2\n\n            if comp == 3:\n                # Fraction of a second\n                frac = self._FRACTION_REGEX.match(timestr[pos:])\n                if not frac:\n                    continue\n\n                us_str = frac.group(1)[:6]  # Truncate to microseconds\n                components[comp] = int(us_str) * 10**(6 - len(us_str))\n                pos += len(frac.group())\n\n        if pos < len_str:\n            raise ValueError('Unused components in ISO string')\n\n        if components[0] == 24:\n            # Standard supports 00:00 and 24:00 as representations of midnight\n            if any(component != 0 for component in components[1:4]):\n                raise ValueError('Hour may only be 24 at 24:00:00.000')\n\n        return components\n\n "
+            ]
+        ],
+        "explanation": "Explanation: The propagation path concerns the dereference or use of components[-1] at line 17 in _parse_isotime. At line 3, components is initialized as [0, 0, 0, 0, None], so components[-1] is initially None. At line 17, components[-1] is assigned the result of self._parse_tzstr(timestr[pos:]), which may or may not be None depending on the implementation of _parse_tzstr (not provided). However, the code does not check whether self._parse_tzstr returns None before assigning it to components[-1], nor is there any guard or check on components[-1] before it is used. Therefore, if _parse_tzstr returns None, components[-1] will be None at the sink. Since there is no branch or condition in the code that prevents components[-1] from being None at line 17, the propagation path is reachable and could cause an NPD bug if components[-1] is dereferenced or used in a way that requires it to be non-None.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    },
+    "1": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-v4kl8eku/target/src/dateutil/parser/_parser.py, 382, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-v4kl8eku/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "validate"
+            ],
+            [
+                "def validate(self, res):\n        # move to info\n        if res.year is not None:\n            res.year = self.convertyear(res.year, res.century_specified)\n\n        if ((res.tzoffset == 0 and not res.tzname) or\n             (res.tzname == 'Z' or res.tzname == 'z')):\n            res.tzname = \"UTC\"\n            res.tzoffset = 0\n        elif res.tzoffset != 0 and res.tzname and self.utczone(res.tzname):\n            res.tzoffset = 0\n        return True"
+            ]
+        ],
+        "explanation": "Explanation: The propagation path concerns the use of res at line 3 in the function validate, specifically res.year is not None. For an NPD (Null Pointer Dereference) to occur, res itself would need to be None at the point of dereference (i.e., res.year). However, before line 3, there is no check or assignment that would prevent res from being None. If validate is called with res=None, then res.year would raise an AttributeError (since NoneType has no attribute 'year'), which is a form of NPD in Python. There are no branch conditions or early returns that would prevent this; thus, the path is reachable and the NPD bug can occur.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    },
+    "2": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-v4kl8eku/target/src/dateutil/parser/_parser.py, 1230, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-v4kl8eku/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "_build_naive"
+            ],
+            [
+                "def _build_naive(self, res, default):\n        repl = {}\n        for attr in (\"year\", \"month\", \"day\", \"hour\",\n                     \"minute\", \"second\", \"microsecond\"):\n            value = getattr(res, attr)\n            if value is not None:\n                repl[attr] = value\n\n        if 'day' not in repl:\n            # If the default day exceeds the last day of the month, fall back\n            # to the end of the month.\n            cyear = default.year if res.year is None else res.year\n            cmonth = default.month if res.month is None else res.month\n            cday = default.day if res.day is None else res.day\n\n            if cday > monthrange(cyear, cmonth)[1]:\n                repl['day'] = monthrange(cyear, cmonth)[1]\n\n        naive = default.replace(**repl)\n\n        if res.weekday is not None and not res.day:\n            naive = naive + relativedelta.relativedelta(weekday=res.weekday)\n\n        return naive"
+            ]
+        ],
+        "explanation": "Explanation: The propagation path concerns the variable default being dereferenced at line 14 in _build_naive: cday = default.day if res.day is None else res.day. For an NPD (None Pointer Dereference) to occur here, default would need to be None. However, there are no checks or assignments in the provided code that modify or verify the None-ness of default before line 14. The function receives default as a parameter and immediately accesses its attributes (default.year, default.month, default.day) at lines 12\u201314 without any guard. Therefore, if default is None, accessing default.day at line 14 will cause an AttributeError (the Python equivalent of an NPD). Since there is no branch or condition preventing default from being None, the propagation path is reachable and can cause the NPD bug.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    }
+}

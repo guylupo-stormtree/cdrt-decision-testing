@@ -1,0 +1,53 @@
+{
+    "0": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-xwhguivl/target/src/dateutil/parser/_parser.py, 982, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-xwhguivl/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "_parse_numeric_token"
+            ],
+            [
+                "def _parse_numeric_token(self, tokens, idx, info, ymd, res, fuzzy):\n        # Token is a number\n        value_repr = tokens[idx]\n        try:\n            value = self._to_decimal(value_repr)\n        except Exception as e:\n            six.raise_from(ValueError('Unknown numeric token'), e)\n\n        len_li = len(value_repr)\n\n        len_l = len(tokens)\n\n        if (len(ymd) == 3 and len_li in (2, 4) and\n            res.hour is None and\n            (idx + 1 >= len_l or\n             (tokens[idx + 1] != ':' and\n              info.hms(tokens[idx + 1]) is None))):\n            # 19990101T23[59]\n            s = tokens[idx]\n            res.hour = int(s[:2])\n\n            if len_li == 4:\n                res.minute = int(s[2:])\n\n        elif len_li == 6 or (len_li > 6 and tokens[idx].find('.') == 6):\n            # YYMMDD or HHMMSS[.ss]\n            s = tokens[idx]\n\n            if not ymd and '.' not in tokens[idx]:\n                ymd.append(s[:2])\n                ymd.append(s[2:4])\n                ymd.append(s[4:])\n            else:\n                # 19990101T235959[.59]\n\n                # TODO: Check if res attributes already set.\n                res.hour = int(s[:2])\n                res.minute = int(s[2:4])\n                res.second, res.microsecond = self._parsems(s[4:])\n\n        elif len_li in (8, 12, 14):\n            # YYYYMMDD\n            s = tokens[idx]\n            ymd.append(s[:4], 'Y')\n            ymd.append(s[4:6])\n            ymd.append(s[6:8])\n\n            if len_li > 8:\n                res.hour = int(s[8:10])\n                res.minute = int(s[10:12])\n\n                if len_li > 12:\n                    res.second = int(s[12:])\n\n        elif self._find_hms_idx(idx, tokens, info, allow_jump=True) is not None:\n            # HH[ ]h or MM[ ]m or SS[.ss][ ]s\n            hms_idx = self._find_hms_idx(idx, tokens, info, allow_jump=True)\n            (idx, hms) = self._parse_hms(idx, tokens, info, hms_idx)\n            if hms is not None:\n                # TODO: checking that hour/minute/second are not\n                # already set?\n                self._assign_hms(res, value_repr, hms)\n\n        elif idx + 2 < len_l and tokens[idx + 1] == ':':\n            # HH:MM[:SS[.ss]]\n            res.hour = int(value)\n            value = self._to_decimal(tokens[idx + 2])  # TODO: try/except for this?\n            (res.minute, res.second) = self._parse_min_sec(value)\n\n            if idx + 4 < len_l and tokens[idx + 3] == ':':\n                res.second, res.microsecond = self._parsems(tokens[idx + 4])\n\n                idx += 2\n\n            idx += 2\n\n        elif idx + 1 < len_l and tokens[idx + 1] in ('-', '/', '.'):\n            sep = tokens[idx + 1]\n            ymd.append(value_repr)\n\n            if idx + 2 < len_l and not info.jump(tokens[idx + 2]):\n                if tokens[idx + 2].isdigit():\n                    # 01-01[-01]\n                    ymd.append(tokens[idx + 2])\n                else:\n                    # 01-Jan[-01]\n                    value = info.month(tokens[idx + 2])\n\n                    if value is not None:\n                        ymd.append(value, 'M')\n                    else:\n                        raise ValueError()\n\n                if idx + 3 < len_l and tokens[idx + 3] == sep:\n                    # We have three members\n                    value = info.month(tokens[idx + 4])\n\n                    if value is not None:\n                        ymd.append(value, 'M')\n                    else:\n                        ymd.append(tokens[idx + 4])\n                    idx += 2\n\n                idx += 1\n            idx += 1\n\n        elif idx + 1 >= len_l or info.jump(tokens[idx + 1]):\n            if idx + 2 < len_l and info.ampm(tokens[idx + 2]) is not None:\n                # 12 am\n                hour = int(value)\n                res.hour = self._adjust_ampm(hour, info.ampm(tokens[idx + 2]))\n                idx += 1\n            else:\n                # Year, month or day\n                ymd.append(value)\n            idx += 1\n\n        elif info.ampm(tokens[idx + 1]) is not None and (0 <= value < 24):\n            # 12am\n            hour = int(value)\n            res.hour = self._adjust_ampm(hour, info.ampm(tokens[idx + 1]))\n            idx += 1\n\n        elif ymd.could_be_day(value):\n            ymd.append(value)\n\n        elif not fuzzy:\n            raise ValueError()\n\n        return idx"
+            ]
+        ],
+        "explanation": "Explanation: The propagation path concerns the variable info at line 108 in the function _parse_numeric_token, specifically at the use info.ampm(tokens[idx + 2]). To determine if a NoneType dereference (NPD) is possible, we must check if info could be None at this point. At the start of the function, info is a parameter and is used in multiple places before line 108 (e.g., info.hms, info.jump, info.month, info.ampm). There are no checks or assignments that would guarantee info is not None before line 108. If info is None, then calling info.ampm(...) would raise an AttributeError (i.e., a NoneType dereference). There are no branch conditions or guards that prevent info from being None before this line, nor is info modified or checked for None. Therefore, the propagation path is reachable and can cause an NPD bug.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    },
+    "1": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-xwhguivl/target/src/dateutil/parser/_parser.py, 1229, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-xwhguivl/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "_build_naive"
+            ],
+            [
+                "def _build_naive(self, res, default):\n        repl = {}\n        for attr in (\"year\", \"month\", \"day\", \"hour\",\n                     \"minute\", \"second\", \"microsecond\"):\n            value = getattr(res, attr)\n            if value is not None:\n                repl[attr] = value\n\n        if 'day' not in repl:\n            # If the default day exceeds the last day of the month, fall back\n            # to the end of the month.\n            cyear = default.year if res.year is None else res.year\n            cmonth = default.month if res.month is None else res.month\n            cday = default.day if res.day is None else res.day\n\n            if cday > monthrange(cyear, cmonth)[1]:\n                repl['day'] = monthrange(cyear, cmonth)[1]\n\n        naive = default.replace(**repl)\n\n        if res.weekday is not None and not res.day:\n            naive = naive + relativedelta.relativedelta(weekday=res.weekday)\n\n        return naive"
+            ]
+        ],
+        "explanation": "Explanation: The propagation path concerns the variable default being dereferenced at line 13 in _build_naive: cmonth = default.month if res.month is None else res.month. For a None dereference to occur, default would have to be None at this point. However, there are no checks or assignments in the function that would prevent default from being None, nor is there any branch that guards against default being None before line 13. Therefore, if default is passed as None to _build_naive, the code will attempt to access default.month, causing an AttributeError (NPD bug). Since there is no conflicting branch or guard, the path is reachable.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    },
+    "2": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-xwhguivl/target/src/dateutil/parser/_parser.py, 1222, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-xwhguivl/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "_build_naive"
+            ],
+            [
+                "def _build_naive(self, res, default):\n        repl = {}\n        for attr in (\"year\", \"month\", \"day\", \"hour\",\n                     \"minute\", \"second\", \"microsecond\"):\n            value = getattr(res, attr)\n            if value is not None:\n                repl[attr] = value\n\n        if 'day' not in repl:\n            # If the default day exceeds the last day of the month, fall back\n            # to the end of the month.\n            cyear = default.year if res.year is None else res.year\n            cmonth = default.month if res.month is None else res.month\n            cday = default.day if res.day is None else res.day\n\n            if cday > monthrange(cyear, cmonth)[1]:\n                repl['day'] = monthrange(cyear, cmonth)[1]\n\n        naive = default.replace(**repl)\n\n        if res.weekday is not None and not res.day:\n            naive = naive + relativedelta.relativedelta(weekday=res.weekday)\n\n        return naive"
+            ]
+        ],
+        "explanation": "Explanation: The propagation path concerns the variable default being dereferenced at line 13 in _build_naive: cmonth = default.month if res.month is None else res.month. For a None dereference to occur, default would have to be None at this point. However, there are no checks or assignments in the function that would prevent default from being None, nor is there any branch that guards against default being None before line 13. Therefore, if default is passed as None to _build_naive, the code will attempt to access default.month, causing an AttributeError (NPD bug). Since there is no conflicting branch or guard, the path is reachable.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    }
+}

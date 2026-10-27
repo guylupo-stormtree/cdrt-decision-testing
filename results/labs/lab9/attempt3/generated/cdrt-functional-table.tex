@@ -1,0 +1,20 @@
+% BEGIN GENERATED:functional_table
+% generator: cdrt.report 1 (functional_table)
+% inputs: results/labs/lab7/attempt4/functional_records.jsonl 00968fd19027; results/labs/lab7/attempt4/acceptance.json 242e432eca16
+% lock_root: 59af9d417b6025e385258c7484e2f9349269299ffc8db46b78d8fda049da0dca  campaign: campaign-004
+% commit: 14a86e55f4ba59bde407e00829916370219d84a6
+\begin{table*}[pos=t]
+\centering\small
+\caption{Before-and-after decision testing. Expected values were predeclared; observed values come from the locked functional run (lock \texttt{59af9d417b60}). $A_{\mathrm{comp}}$ is false; replay agreed.}
+\label{tab:functional-results}
+\label{tab:functional-protocol}
+\begin{tabularx}{\textwidth}{@{}L{.31\textwidth}L{.13\textwidth}L{.13\textwidth}L{.13\textwidth}Y@{}}
+\toprule
+Requirement state & Expected conformance & Expected adequacy & Expected gateway & Observed conformance / adequacy / gateway \\
+\midrule
+Before: \texttt{base-check} & \Pass{} & \Pass{} & Proceed & \Pass{} / \Fail{} / Hold \\
+After: adds \texttt{independent-check} & \Pass{} & \Fail{} & Hold & \Pass{} / \Fail{} / Hold \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+% END GENERATED:functional_table

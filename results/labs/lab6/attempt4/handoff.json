@@ -1,0 +1,43 @@
+{
+  "attempt": 4,
+  "dev": false,
+  "handoff": {
+    "bundle": "capture/bundle",
+    "campaign_id": "campaign-004",
+    "fixtures": "fixtures/out",
+    "git_commit": "14a86e55f4ba59bde407e00829916370219d84a6",
+    "green": [
+      "G-main-08",
+      "G-main-17",
+      "G-main-19",
+      "G-main-25",
+      "G-main-35"
+    ],
+    "lock": "protocol/protocol.lock.json",
+    "lock_root": "59af9d417b6025e385258c7484e2f9349269299ffc8db46b78d8fda049da0dca",
+    "parameters": "fixtures/out/parameters.json",
+    "pwexp_commit": "8d233e98bb7f2d822c4ce8945a56dca1847a87d4",
+    "selection": {
+      "main": "G-main-19"
+    }
+  },
+  "handoff_sha256": "214870e7c7506ed8d0d7a217299fd15e397142930133f0327ed51699b5d0398c",
+  "inputs_from": 5,
+  "inputs_handoff_sha256": "29f97e40565a03ae1482149c771288c298f117b0d01a35d21fd3d17ee836c0d9",
+  "lab": 6,
+  "name": "Lock",
+  "outputs": {
+    "lock": {
+      "path": "protocol/protocol.lock.json",
+      "sha256": "98a11a31f7e1c79fb2bdc2089e9ab06553e7a5044c5d16b95a5898342f9069b5"
+    }
+  },
+  "summary": {
+    "campaign_id": "campaign-004",
+    "git_commit": "14a86e55f4ba",
+    "lock_root": "59af9d417b6025e385258c7484e2f9349269299ffc8db46b78d8fda049da0dca",
+    "pwexp": "pw-v0.2.5 8d233e98bb7f",
+    "tag": "cdrt-protocol-v4"
+  },
+  "time": "2026-10-27T15:24:03Z"
+}

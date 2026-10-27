@@ -1,0 +1,57 @@
+{
+  "gateway_timeouts": 0,
+  "headline": {
+    "budget_s": 5.0,
+    "incomplete": 0,
+    "mismatches": 0,
+    "over": 0,
+    "total": 400,
+    "within": true,
+    "worst_N": 100330,
+    "worst_s": 2.297554626
+  },
+  "mark": "CAMPAIGN",
+  "sentence": "Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest took 2.30 s.",
+  "stats": {
+    "100": {
+      "N": 1270,
+      "completed": 100,
+      "exceedances": 0,
+      "late": 0,
+      "mismatches": 0,
+      "observations": 100,
+      "slowest_s": 0.093446955,
+      "timeouts": 0
+    },
+    "1000": {
+      "N": 1270,
+      "completed": 100,
+      "exceedances": 0,
+      "late": 0,
+      "mismatches": 0,
+      "observations": 100,
+      "slowest_s": 0.137677697,
+      "timeouts": 0
+    },
+    "10000": {
+      "N": 10160,
+      "completed": 100,
+      "exceedances": 0,
+      "late": 0,
+      "mismatches": 0,
+      "observations": 100,
+      "slowest_s": 0.196729929,
+      "timeouts": 0
+    },
+    "100000": {
+      "N": 100330,
+      "completed": 100,
+      "exceedances": 0,
+      "late": 0,
+      "mismatches": 0,
+      "observations": 100,
+      "slowest_s": 2.297554626,
+      "timeouts": 0
+    }
+  }
+}

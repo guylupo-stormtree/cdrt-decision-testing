@@ -1,0 +1,57 @@
+{
+  "A_comp": false,
+  "RQ1_supported": false,
+  "acceptance": {
+    "C1": {
+      "checked": [
+        "before",
+        "after",
+        "composed coverage after every admission"
+      ],
+      "failing": [
+        "before"
+      ],
+      "passes": false,
+      "row": "Verdicts match the oracle before and after"
+    },
+    "C2": {
+      "checked": [
+        "only registration",
+        "only a profile edit",
+        "fingerprints unchanged"
+      ],
+      "failing": [],
+      "passes": true,
+      "row": "Second-module composition"
+    },
+    "C3": {
+      "checked": [
+        "step 1 proceed",
+        "step 2 proceed",
+        "step 3 no green then hold",
+        "delayed success rejected"
+      ],
+      "failing": [
+        "delayed success rejected",
+        "step 2 proceed"
+      ],
+      "passes": false,
+      "row": "Gateway transition and delayed-result rejection"
+    },
+    "C4": {
+      "checked": [
+        "guard counted no call",
+        "fingerprints unchanged"
+      ],
+      "failing": [],
+      "passes": true,
+      "row": "No control re-execution"
+    }
+  },
+  "campaign_id": "campaign-003",
+  "git_commit": "f5fc02f6d3e3b2d20e4d81a102ed87d258460e2b",
+  "lock_root": "f26528d86fc2cca0bfd8f901298d801526814363c5f4a0f0edc5878543caafb5",
+  "pwexp_commit": "8d233e98bb7f2d822c4ce8945a56dca1847a87d4",
+  "replay_agrees": true,
+  "runs": 2
+}

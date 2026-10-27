@@ -1,0 +1,3053 @@
+[
+  {
+    "decision": "G-main-19",
+    "kind": "conformance"
+  },
+  {
+    "decision": "G-main-08",
+    "kind": "conformance"
+  },
+  {
+    "decision": "G-main-17",
+    "kind": "conformance"
+  },
+  {
+    "decision": "G-main-25",
+    "kind": "conformance"
+  },
+  {
+    "decision": "G-main-35",
+    "kind": "conformance"
+  },
+  {
+    "current": "G-main-19",
+    "decisions": [
+      "G-main-01",
+      "G-main-02",
+      "G-main-03",
+      "G-main-04",
+      "G-main-05",
+      "G-main-06",
+      "G-main-07",
+      "G-main-08",
+      "G-main-09",
+      "G-main-10",
+      "G-main-11",
+      "G-main-12",
+      "G-main-13",
+      "G-main-14",
+      "G-main-15",
+      "G-main-16",
+      "G-main-17",
+      "G-main-18",
+      "G-main-19",
+      "G-main-20",
+      "G-main-21",
+      "G-main-22",
+      "G-main-23",
+      "G-main-24",
+      "G-main-25",
+      "G-main-26",
+      "G-main-27",
+      "G-main-28",
+      "G-main-29",
+      "G-main-30",
+      "G-main-31",
+      "G-main-32",
+      "G-main-33",
+      "G-main-34",
+      "G-main-35",
+      "G-main-36",
+      "G-main-37",
+      "G-main-38",
+      "G-main-39",
+      "G-main-40",
+      "G-main-41",
+      "G-main-42",
+      "G-main-43",
+      "G-main-44",
+      "G-main-45",
+      "G-main-46",
+      "G-main-47",
+      "G-main-48",
+      "G-main-49",
+      "G-main-50"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-19",
+    "decisions": [
+      "G-main-01",
+      "G-main-02",
+      "G-main-03",
+      "G-main-04",
+      "G-main-05",
+      "G-main-06",
+      "G-main-07",
+      "G-main-08",
+      "G-main-09",
+      "G-main-10",
+      "G-main-11",
+      "G-main-12",
+      "G-main-13",
+      "G-main-14",
+      "G-main-15",
+      "G-main-16",
+      "G-main-17",
+      "G-main-18",
+      "G-main-19",
+      "G-main-20",
+      "G-main-21",
+      "G-main-22",
+      "G-main-23",
+      "G-main-24",
+      "G-main-25",
+      "G-main-26",
+      "G-main-27",
+      "G-main-28",
+      "G-main-29",
+      "G-main-30",
+      "G-main-31",
+      "G-main-32",
+      "G-main-33",
+      "G-main-34",
+      "G-main-35",
+      "G-main-36",
+      "G-main-37",
+      "G-main-38",
+      "G-main-39",
+      "G-main-40",
+      "G-main-41",
+      "G-main-42",
+      "G-main-43",
+      "G-main-44",
+      "G-main-45",
+      "G-main-46",
+      "G-main-47",
+      "G-main-48",
+      "G-main-49",
+      "G-main-50"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check",
+        "independent-check"
+      ]
+    }
+  },
+  {
+    "decision": "G-main-19",
+    "kind": "adequacy",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "decision": "G-main-08",
+    "kind": "adequacy",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "decision": "G-main-17",
+    "kind": "adequacy",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "decision": "G-main-25",
+    "kind": "adequacy",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "decision": "G-main-35",
+    "kind": "adequacy",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-42",
+    "decisions": [
+      "G-main-42"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-21",
+    "decisions": [
+      "G-main-42",
+      "G-main-21"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-19",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-25",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-04",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-47",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-50",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-49",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-29",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-27",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-03",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-48",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-43",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-31",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-34",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-11",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-33",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-39",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-17",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-41",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-10",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-14",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-36",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-05",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-28",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-30",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-20",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-16",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-12",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-07",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-02",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-24",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-37",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-46",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-18",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-13",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-40",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-22",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-23",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-38",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23",
+      "G-main-38"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-45",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23",
+      "G-main-38",
+      "G-main-45"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-01",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23",
+      "G-main-38",
+      "G-main-45",
+      "G-main-01"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-06",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23",
+      "G-main-38",
+      "G-main-45",
+      "G-main-01",
+      "G-main-06"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-35",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23",
+      "G-main-38",
+      "G-main-45",
+      "G-main-01",
+      "G-main-06",
+      "G-main-35"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-26",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23",
+      "G-main-38",
+      "G-main-45",
+      "G-main-01",
+      "G-main-06",
+      "G-main-35",
+      "G-main-26"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-32",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23",
+      "G-main-38",
+      "G-main-45",
+      "G-main-01",
+      "G-main-06",
+      "G-main-35",
+      "G-main-26",
+      "G-main-32"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-09",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23",
+      "G-main-38",
+      "G-main-45",
+      "G-main-01",
+      "G-main-06",
+      "G-main-35",
+      "G-main-26",
+      "G-main-32",
+      "G-main-09"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-44",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23",
+      "G-main-38",
+      "G-main-45",
+      "G-main-01",
+      "G-main-06",
+      "G-main-35",
+      "G-main-26",
+      "G-main-32",
+      "G-main-09",
+      "G-main-44"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-15",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23",
+      "G-main-38",
+      "G-main-45",
+      "G-main-01",
+      "G-main-06",
+      "G-main-35",
+      "G-main-26",
+      "G-main-32",
+      "G-main-09",
+      "G-main-44",
+      "G-main-15"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  },
+  {
+    "current": "G-main-08",
+    "decisions": [
+      "G-main-42",
+      "G-main-21",
+      "G-main-19",
+      "G-main-25",
+      "G-main-04",
+      "G-main-47",
+      "G-main-50",
+      "G-main-49",
+      "G-main-29",
+      "G-main-27",
+      "G-main-03",
+      "G-main-48",
+      "G-main-43",
+      "G-main-31",
+      "G-main-34",
+      "G-main-11",
+      "G-main-33",
+      "G-main-39",
+      "G-main-17",
+      "G-main-41",
+      "G-main-10",
+      "G-main-14",
+      "G-main-36",
+      "G-main-05",
+      "G-main-28",
+      "G-main-30",
+      "G-main-20",
+      "G-main-16",
+      "G-main-12",
+      "G-main-07",
+      "G-main-02",
+      "G-main-24",
+      "G-main-37",
+      "G-main-46",
+      "G-main-18",
+      "G-main-13",
+      "G-main-40",
+      "G-main-22",
+      "G-main-23",
+      "G-main-38",
+      "G-main-45",
+      "G-main-01",
+      "G-main-06",
+      "G-main-35",
+      "G-main-26",
+      "G-main-32",
+      "G-main-09",
+      "G-main-44",
+      "G-main-15",
+      "G-main-08"
+    ],
+    "kind": "composition",
+    "params": {
+      "assessment_time": "2026-10-27T12:27:39.342279Z",
+      "context": {
+        "bug_type": "NPD",
+        "commit": "10f317fde11ce5bc6540e83f896af10e67d52937",
+        "repo": "https://github.com/dateutil/dateutil"
+      },
+      "manifest": {
+        "file": "manifests/M_q.json",
+        "sha256": "3535f79fc49de8df32f4dc46feeb486f847bf049e5fbe25dc1e2ba3b26a34995"
+      },
+      "max_age_seconds": 39760,
+      "minimum_coverage": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "relative_threshold": {
+        "denominator": 5,
+        "numerator": 4
+      },
+      "validators": [
+        "base-check"
+      ]
+    }
+  }
+]

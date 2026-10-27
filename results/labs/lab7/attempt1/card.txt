@@ -1,0 +1,19 @@
+Lab 7 · Functional run (RQ1) ────────────────────────────────────── PASSED ✓
+Inputs   Lab 6 hand-off e0320e741df7 (re-verified)
+Checks   ✓ protocol lock verifies (R-LOCK-2): 21de6a1e1654
+         ✓ every step, the before/after judgements, the delayed result and the observation executed
+         ✓ every record carries the lock stamp (R-LOCK-4): 10 records
+         ✓ the control guard counted no call (R-ISO-1): 0 calls
+         ✓ the protocol ran 2 times for the replay comparison
+Outputs  functional_records: results/labs/lab7/attempt1/functional_records.jsonl (9d2ea4ebb40a)
+         acceptance: results/labs/lab7/attempt1/acceptance.json (d1daffb10b3e)
+         trace: results/labs/lab7/attempt1/trace.txt (23e90ed6089b)
+         A_comp: False
+         replay agrees: True
+         conditions: C1✗ C2✓ C3✗ C4✓
+         before (rev 2): H SUCCESS · A FAIL · gateway hold
+         after (rev 3): H SUCCESS · A FAIL · gateway hold
+         failing: C1: before; C3: delayed success rejected, step 2 proceed
+         observation: 5 GREEN decisions; alone (H, release coverage, share, gateway): G-main-08 FAIL 0/7 None hold, G-main-17 SUCCESS 4/7 7/13 narrow hold, G-main-19 SUCCESS 4/7 7/13 narrow hold, G-main-25 SUCCESS 5/7 12/13 hold, G-main-35 SUCCESS 5/7 9/13 narrow hold
+         records: results/labs/lab7/attempt1/functional_records.jsonl
+Next     cdrt lab run 8

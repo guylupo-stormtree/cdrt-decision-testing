@@ -1,0 +1,16 @@
+Lab 8 · Scale run (RQ2) ─────────────────────────────────────── NOT PASSED ✗
+Inputs   Lab 7 hand-off 7e5e485692e9 (re-verified)
+Checks   ✓ protocol lock verifies (R-LOCK-2): 21de6a1e1654
+         ✓ all 400 timed cycles executed and recorded (R-SCL-4, R-SCL-5): 400 records
+         ✓ every record carries the lock stamp (R-LOCK-4)
+         ✓ the control guard counted no call (R-ISO-1): 0 calls
+         ✓ run manifest written (R-SCL-8)
+         ✗ baseline verdicts are both SUCCESS at every size (main-14 §4.5)
+Outputs  timing_records: results/labs/lab8/attempt1/timing_records.jsonl (602cb03c1241)
+         scale_stats: results/labs/lab8/attempt1/scale_stats.json (b26eded8c3c6)
+         run_manifest: results/labs/lab8/attempt1/run_manifest.json (4b84b5f27ad9)
+         slowest update (T_max): 1.756 s at N = 100,330
+         N = 1,270: slowest 0.058 s · 0/100 over 5 s
+         N = 10,160: slowest 0.160 s · 0/100 over 5 s
+         N = 100,330: slowest 1.756 s · 0/100 over 5 s
+         result: Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest took 1.76 s.

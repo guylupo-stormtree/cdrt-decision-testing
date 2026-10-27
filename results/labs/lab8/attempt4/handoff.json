@@ -1,0 +1,49 @@
+{
+  "attempt": 4,
+  "dev": false,
+  "handoff": {
+    "A_comp": false,
+    "bundle": "capture/bundle",
+    "campaign_id": "campaign-004",
+    "fixtures": "fixtures/out",
+    "functional_records": "results/labs/lab7/attempt4/functional_records.jsonl",
+    "git_commit": "14a86e55f4ba59bde407e00829916370219d84a6",
+    "lock": "protocol/protocol.lock.json",
+    "lock_root": "59af9d417b6025e385258c7484e2f9349269299ffc8db46b78d8fda049da0dca",
+    "parameters": "fixtures/out/parameters.json",
+    "pwexp_commit": "8d233e98bb7f2d822c4ce8945a56dca1847a87d4",
+    "scale_stats": "results/labs/lab8/attempt4/scale_stats.json",
+    "selection": {
+      "main": "G-main-19"
+    },
+    "sentence": "Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest took 1.57 s.",
+    "timing_records": "results/labs/lab8/attempt4/timing_records.jsonl"
+  },
+  "handoff_sha256": "4c79dab3565a89fdbaec6cb58789e5f3eaae5efed54a8bd9786c089730becd26",
+  "inputs_from": 7,
+  "inputs_handoff_sha256": "c15492aa944ce48282e0c267617a230ab9526f106ab4f899038029a936a3fb4c",
+  "lab": 8,
+  "name": "Scale run (RQ2)",
+  "outputs": {
+    "run_manifest": {
+      "path": "results/labs/lab8/attempt4/run_manifest.json",
+      "sha256": "0828f32be859fe57f06db89e47a784902631dd14d7ba332ebe697912ba706775"
+    },
+    "scale_stats": {
+      "path": "results/labs/lab8/attempt4/scale_stats.json",
+      "sha256": "85e2372a8fe0dc929cc01f472b9e11c255664535d01df55504a3f4d17eabf84f"
+    },
+    "timing_records": {
+      "path": "results/labs/lab8/attempt4/timing_records.jsonl",
+      "sha256": "071312af332839c39ac4e024feb20e70b771ced83872d689c771ee37b6d7c3ee"
+    }
+  },
+  "summary": {
+    "N = 1,270": "slowest 0.073 s · 0/100 over 5 s",
+    "N = 10,160": "slowest 0.245 s · 0/100 over 5 s",
+    "N = 100,330": "slowest 1.570 s · 0/100 over 5 s",
+    "result": "Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest took 1.57 s.",
+    "slowest update (T_max)": "1.570 s at N = 100,330"
+  },
+  "time": "2026-10-27T15:27:51Z"
+}

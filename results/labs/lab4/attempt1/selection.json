@@ -1,0 +1,412 @@
+{
+  "oracle": {
+    "main": "G-main-19",
+    "main_candidates": {
+      "G-main-01": {
+        "H": null,
+        "green": false
+      },
+      "G-main-02": {
+        "H": null,
+        "green": false
+      },
+      "G-main-03": {
+        "H": null,
+        "green": false
+      },
+      "G-main-04": {
+        "H": null,
+        "green": false
+      },
+      "G-main-05": {
+        "H": null,
+        "green": false
+      },
+      "G-main-06": {
+        "H": null,
+        "green": false
+      },
+      "G-main-07": {
+        "H": null,
+        "green": false
+      },
+      "G-main-08": {
+        "H": "FAIL",
+        "green": true
+      },
+      "G-main-09": {
+        "H": null,
+        "green": false
+      },
+      "G-main-10": {
+        "H": null,
+        "green": false
+      },
+      "G-main-11": {
+        "H": null,
+        "green": false
+      },
+      "G-main-12": {
+        "H": null,
+        "green": false
+      },
+      "G-main-13": {
+        "H": null,
+        "green": false
+      },
+      "G-main-14": {
+        "H": null,
+        "green": false
+      },
+      "G-main-15": {
+        "H": null,
+        "green": false
+      },
+      "G-main-16": {
+        "H": null,
+        "green": false
+      },
+      "G-main-17": {
+        "H": "SUCCESS",
+        "green": true
+      },
+      "G-main-18": {
+        "H": null,
+        "green": false
+      },
+      "G-main-19": {
+        "H": "SUCCESS",
+        "green": true
+      },
+      "G-main-20": {
+        "H": null,
+        "green": false
+      },
+      "G-main-21": {
+        "H": null,
+        "green": false
+      },
+      "G-main-22": {
+        "H": null,
+        "green": false
+      },
+      "G-main-23": {
+        "H": null,
+        "green": false
+      },
+      "G-main-24": {
+        "H": null,
+        "green": false
+      },
+      "G-main-25": {
+        "H": "SUCCESS",
+        "green": true
+      },
+      "G-main-26": {
+        "H": null,
+        "green": false
+      },
+      "G-main-27": {
+        "H": null,
+        "green": false
+      },
+      "G-main-28": {
+        "H": null,
+        "green": false
+      },
+      "G-main-29": {
+        "H": null,
+        "green": false
+      },
+      "G-main-30": {
+        "H": null,
+        "green": false
+      },
+      "G-main-31": {
+        "H": null,
+        "green": false
+      },
+      "G-main-32": {
+        "H": null,
+        "green": false
+      },
+      "G-main-33": {
+        "H": null,
+        "green": false
+      },
+      "G-main-34": {
+        "H": null,
+        "green": false
+      },
+      "G-main-35": {
+        "H": "SUCCESS",
+        "green": true
+      },
+      "G-main-36": {
+        "H": null,
+        "green": false
+      },
+      "G-main-37": {
+        "H": null,
+        "green": false
+      },
+      "G-main-38": {
+        "H": null,
+        "green": false
+      },
+      "G-main-39": {
+        "H": null,
+        "green": false
+      },
+      "G-main-40": {
+        "H": null,
+        "green": false
+      },
+      "G-main-41": {
+        "H": null,
+        "green": false
+      },
+      "G-main-42": {
+        "H": null,
+        "green": false
+      },
+      "G-main-43": {
+        "H": null,
+        "green": false
+      },
+      "G-main-44": {
+        "H": null,
+        "green": false
+      },
+      "G-main-45": {
+        "H": null,
+        "green": false
+      },
+      "G-main-46": {
+        "H": null,
+        "green": false
+      },
+      "G-main-47": {
+        "H": null,
+        "green": false
+      },
+      "G-main-48": {
+        "H": null,
+        "green": false
+      },
+      "G-main-49": {
+        "H": null,
+        "green": false
+      },
+      "G-main-50": {
+        "H": null,
+        "green": false
+      }
+    }
+  },
+  "runtime": {
+    "main": "G-main-19",
+    "main_candidates": {
+      "G-main-01": {
+        "H": null,
+        "green": false
+      },
+      "G-main-02": {
+        "H": null,
+        "green": false
+      },
+      "G-main-03": {
+        "H": null,
+        "green": false
+      },
+      "G-main-04": {
+        "H": null,
+        "green": false
+      },
+      "G-main-05": {
+        "H": null,
+        "green": false
+      },
+      "G-main-06": {
+        "H": null,
+        "green": false
+      },
+      "G-main-07": {
+        "H": null,
+        "green": false
+      },
+      "G-main-08": {
+        "H": "FAIL",
+        "green": true
+      },
+      "G-main-09": {
+        "H": null,
+        "green": false
+      },
+      "G-main-10": {
+        "H": null,
+        "green": false
+      },
+      "G-main-11": {
+        "H": null,
+        "green": false
+      },
+      "G-main-12": {
+        "H": null,
+        "green": false
+      },
+      "G-main-13": {
+        "H": null,
+        "green": false
+      },
+      "G-main-14": {
+        "H": null,
+        "green": false
+      },
+      "G-main-15": {
+        "H": null,
+        "green": false
+      },
+      "G-main-16": {
+        "H": null,
+        "green": false
+      },
+      "G-main-17": {
+        "H": "SUCCESS",
+        "green": true
+      },
+      "G-main-18": {
+        "H": null,
+        "green": false
+      },
+      "G-main-19": {
+        "H": "SUCCESS",
+        "green": true
+      },
+      "G-main-20": {
+        "H": null,
+        "green": false
+      },
+      "G-main-21": {
+        "H": null,
+        "green": false
+      },
+      "G-main-22": {
+        "H": null,
+        "green": false
+      },
+      "G-main-23": {
+        "H": null,
+        "green": false
+      },
+      "G-main-24": {
+        "H": null,
+        "green": false
+      },
+      "G-main-25": {
+        "H": "SUCCESS",
+        "green": true
+      },
+      "G-main-26": {
+        "H": null,
+        "green": false
+      },
+      "G-main-27": {
+        "H": null,
+        "green": false
+      },
+      "G-main-28": {
+        "H": null,
+        "green": false
+      },
+      "G-main-29": {
+        "H": null,
+        "green": false
+      },
+      "G-main-30": {
+        "H": null,
+        "green": false
+      },
+      "G-main-31": {
+        "H": null,
+        "green": false
+      },
+      "G-main-32": {
+        "H": null,
+        "green": false
+      },
+      "G-main-33": {
+        "H": null,
+        "green": false
+      },
+      "G-main-34": {
+        "H": null,
+        "green": false
+      },
+      "G-main-35": {
+        "H": "SUCCESS",
+        "green": true
+      },
+      "G-main-36": {
+        "H": null,
+        "green": false
+      },
+      "G-main-37": {
+        "H": null,
+        "green": false
+      },
+      "G-main-38": {
+        "H": null,
+        "green": false
+      },
+      "G-main-39": {
+        "H": null,
+        "green": false
+      },
+      "G-main-40": {
+        "H": null,
+        "green": false
+      },
+      "G-main-41": {
+        "H": null,
+        "green": false
+      },
+      "G-main-42": {
+        "H": null,
+        "green": false
+      },
+      "G-main-43": {
+        "H": null,
+        "green": false
+      },
+      "G-main-44": {
+        "H": null,
+        "green": false
+      },
+      "G-main-45": {
+        "H": null,
+        "green": false
+      },
+      "G-main-46": {
+        "H": null,
+        "green": false
+      },
+      "G-main-47": {
+        "H": null,
+        "green": false
+      },
+      "G-main-48": {
+        "H": null,
+        "green": false
+      },
+      "G-main-49": {
+        "H": null,
+        "green": false
+      },
+      "G-main-50": {
+        "H": null,
+        "green": false
+      }
+    }
+  }
+}

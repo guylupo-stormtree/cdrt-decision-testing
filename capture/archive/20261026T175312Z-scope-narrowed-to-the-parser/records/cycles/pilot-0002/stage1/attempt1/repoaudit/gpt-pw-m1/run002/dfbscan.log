@@ -1,0 +1,6 @@
+2026-10-26 15:35:17,983 - INFO - Start data-flow bug scanning in parallel...
+2026-10-26 15:35:17,984 - INFO - Max number of workers: 4
+2026-10-26 15:35:17,984 - INFO - 0 bug(s) was/were detected in total.
+2026-10-26 15:35:17,984 - INFO - The bug report(s) has/have been dumped to /home/guylupo/dev/cdrt-decision-testing/vendor/proofweave-decision-assurance/vendor/RepoAudit/result/dfbscan/gpt-pw-m1/NPD/Python/target/2026-10-26-15-35-17-0/detect_info.json
+2026-10-26 15:35:17,984 - INFO - The log files are as follows:
+2026-10-26 15:35:17,984 - INFO - /home/guylupo/dev/cdrt-decision-testing/vendor/proofweave-decision-assurance/vendor/RepoAudit/log/dfbscan/gpt-pw-m1/NPD/Python/target/2026-10-26-15-35-17-0/dfbscan.log

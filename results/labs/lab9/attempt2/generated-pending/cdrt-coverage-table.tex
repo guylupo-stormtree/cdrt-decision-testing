@@ -1,0 +1,24 @@
+% BEGIN GENERATED:coverage_table
+% generator: cdrt.report 1 (coverage_table)
+% inputs: results/labs/lab7/attempt3/functional_records.jsonl ae1037b0d7c8; results/labs/lab8/attempt3/scale_stats.json 0b36e7e0accc; fixtures/out/parameters.json 2d3cdf7c84cb
+% lock_root: f26528d86fc2cca0bfd8f901298d801526814363c5f4a0f0edc5878543caafb5  campaign: campaign-003
+% commit: f5fc02f6d3e3b2d20e4d81a102ed87d258460e2b
+\begin{table*}[pos=t]
+\centering\small
+\caption{Green decisions on their own and composed. Rows follow capture order. \emph{Alone}: the decision's own coverage of the release manifest $M_q$ and the gateway reading if it relied on this decision only; \emph{share}: its part of the estate observed across all eligible decisions, with decisions below \FixTauRel{} marked narrow; \emph{composed}: coverage of $M_q$ by all decisions admitted so far. Requirement: \FixTauQ{} of \FixMq{} functions. The 45 decisions that were not green are not eligible and leave the composed coverage unchanged; they are not listed.}
+\label{tab:coverage}
+\begin{tabularx}{\textwidth}{@{}lcccccY@{}}
+\toprule
+Decision & Conformant & Alone & Share & Gateway alone & Composed & Gateway composed \\
+\midrule
+\texttt{G-main-19} & \Pass{} & 4/7 & 7/13 (narrow) & Hold & 4/7 & Hold \\
+\texttt{G-main-25} & \Pass{} & 5/7 & 12/13 & Hold & 5/7 & Hold \\
+\texttt{G-main-17} & \Pass{} & 4/7 & 7/13 (narrow) & Hold & 5/7 & Hold \\
+\texttt{G-main-35} & \Pass{} & 5/7 & 9/13 (narrow) & Hold & 5/7 & Hold \\
+\texttt{G-main-08} & \Fail{} & 0/7 & -- & Hold & 5/7 & Hold \\
+\midrule
+All eligible & & & & & 5/7 & Hold; slowest composed update 1.43\,s \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+% END GENERATED:coverage_table

@@ -1,0 +1,627 @@
+Network check  2026-10-27 02:37:58  devvm
+  OK   interface enp0s1  192.168.64.8/24  gw 192.168.64.1
+  OK   ping gateway 192.168.64.1
+  OK   ping 1.1.1.1
+  OK   DNS github.com
+  OK   TCP github.com:22
+  OK   TCP 1.1.1.1:443
+  OK   web https://www.google.com
+  All checks passed.
+guylupo@devvm:~/dev/cdrt-decision-testing$ cd ~/dev/cdrt-decision-testing
+source .venv/bin/activate
+cdrt lab run 2
+API key for openai:gpt-4.1 (kept in memory for this run only): 
+✗ key check: ✗ HTTP 401: {"message": "Incorrect API key provided: sk-proj-***********************************************************************************************************************************************************************************************************************************************************
+(.venv) guylupo@devvm:~/dev/cdrt-decision-testing$ cdrt lab run 2
+API key for openai:gpt-4.1 (kept in memory for this run only): 
+✓ key check: ✓ openai:gpt-4.1 answered (response model gpt-4.1-2025-04-14)
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 2 · The real audit runs
+────────────────────────────────────────────────────────────────────────────────────────────────
+  First we lock the audit's rules: the policy from the first look and the number of runs. From
+  now on they cannot be changed.
+
+  Now the real audit: RepoAudit runs 50 times on exactly the same code, with the same model
+  and the same question. Before every run we seal what was asked and which policy applies.
+  Every result is kept, good or bad.
+
+  Watch the verdicts. What each GREEN actually checked stays hidden for now.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+  resuming campaign cycle campaign-0001: recorded decisions are kept, the run that was cut off runs again
+  campaign cycle campaign-0001: 50 RepoAudit runs with openai:gpt-4.1, 1 standalone Semgrep scan(s)
+  Stage 1  Acquire and freeze evidence …
+    resuming Stage 1 attempt 1: recorded work is kept, the cut-off work runs again
+    Decision 1/50  G-main-42: kept from before the pause (not_green)
+    ► Run 1 of 50: NOT GREEN, kept from before the pause. GREEN so far: 0 of 1.
+    Decision 2/50  G-main-21: kept from before the pause (not_green)
+    ► Run 2 of 50: NOT GREEN, kept from before the pause. GREEN so far: 0 of 2.
+    Decision 3/50  G-main-19: kept from before the pause (green)
+    ► Run 3 of 50: GREEN, kept from before the pause. GREEN so far: 1 of 3.
+    Decision 4/50  G-main-25: kept from before the pause (green)
+    ► Run 4 of 50: GREEN, kept from before the pause. GREEN so far: 2 of 4.
+    Decision 5/50  G-main-04 · policy P1@1 · basis gpt-pw-m1/run005
+      gpt-pw-m1/run005: not GREEN · 380.322 s
+      decision G-main-04: not_green
+    ► Run 5 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 20 s). GREEN so far: 2 of 5.
+    Decision 6/50  G-main-47 · policy P1@1 · basis gpt-pw-m1/run006
+      gpt-pw-m1/run006: not GREEN · 348.382 s
+      decision G-main-47: not_green
+    ► Run 6 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 48 s). GREEN so far: 2 of 6.
+    Decision 7/50  G-main-50 · policy P1@1 · basis gpt-pw-m1/run007
+      gpt-pw-m1/run007: not GREEN · 374.119 s
+      decision G-main-50: not_green
+    ► Run 7 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 14 s). GREEN so far: 2 of 7.
+    Decision 8/50  G-main-49 · policy P1@1 · basis gpt-pw-m1/run008
+      gpt-pw-m1/run008: not GREEN · 361.51 s
+      decision G-main-49: not_green
+    ► Run 8 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 1 s). GREEN so far: 2 of 8.
+    Decision 9/50  G-main-29 · policy P1@1 · basis gpt-pw-m1/run009
+      gpt-pw-m1/run009: not GREEN · 317.497 s
+      decision G-main-29: not_green
+    ► Run 9 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 17 s). GREEN so far: 2 of 9.
+    Decision 10/50  G-main-27 · policy P1@1 · basis gpt-pw-m1/run010
+      gpt-pw-m1/run010: not GREEN · 361.928 s
+      decision G-main-27: not_green
+    ► Run 10 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 1 s). GREEN so far: 2 of 10.
+    Decision 11/50  G-main-03 · policy P1@1 · basis gpt-pw-m1/run011
+      gpt-pw-m1/run011: not GREEN · 374.016 s
+      decision G-main-03: not_green
+    ► Run 11 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 14 s). GREEN so far: 2 of 11.
+    Decision 12/50  G-main-48 · policy P1@1 · basis gpt-pw-m1/run012
+      gpt-pw-m1/run012: not GREEN · 310.303 s
+      decision G-main-48: not_green
+    ► Run 12 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 10 s). GREEN so far: 2 of 12.
+    Decision 13/50  G-main-43 · policy P1@1 · basis gpt-pw-m1/run013
+      gpt-pw-m1/run013: not GREEN · 358.908 s
+      decision G-main-43: not_green
+    ► Run 13 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 58 s). GREEN so far: 2 of 13.
+    Decision 14/50  G-main-31 · policy P1@1 · basis gpt-pw-m1/run014
+      gpt-pw-m1/run014: not GREEN · 370.893 s
+      decision G-main-31: not_green
+    ► Run 14 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 10 s). GREEN so far: 2 of 14.
+    Decision 15/50  G-main-34 · policy P1@1 · basis gpt-pw-m1/run015
+      gpt-pw-m1/run015: not GREEN · 358.405 s
+      decision G-main-34: not_green
+    ► Run 15 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 58 s). GREEN so far: 2 of 15.
+    Decision 16/50  G-main-11 · policy P1@1 · basis gpt-pw-m1/run016
+      gpt-pw-m1/run016: not GREEN · 333.462 s
+      decision G-main-11: not_green
+    ► Run 16 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 33 s). GREEN so far: 2 of 16.
+    Decision 17/50  G-main-33 · policy P1@1 · basis gpt-pw-m1/run017
+      gpt-pw-m1/run017: not GREEN · 344.965 s
+      decision G-main-33: not_green
+    ► Run 17 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 44 s). GREEN so far: 2 of 17.
+    Decision 18/50  G-main-39 · policy P1@1 · basis gpt-pw-m1/run018
+      gpt-pw-m1/run018: not GREEN · 334.145 s
+      decision G-main-39: not_green
+    ► Run 18 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 34 s). GREEN so far: 2 of 18.
+    Decision 19/50  G-main-17 · policy P1@1 · basis gpt-pw-m1/run019
+      gpt-pw-m1/run019: GREEN · 310.447 s                                       
+      decision G-main-17: green
+    ► Run 19 of 50: GREEN, RepoAudit found no bugs (5 min 10 s). GREEN so far: 3 of 19.
+    Decision 20/50  G-main-41 · policy P1@1 · basis gpt-pw-m1/run020
+      gpt-pw-m1/run020: not GREEN · 338.36 s
+      decision G-main-41: not_green
+    ► Run 20 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 38 s). GREEN so far: 3 of 20.
+    Decision 21/50  G-main-10 · policy P1@1 · basis gpt-pw-m1/run021
+      gpt-pw-m1/run021: not GREEN · 319.313 s
+      decision G-main-10: not_green
+    ► Run 21 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 19 s). GREEN so far: 3 of 21.
+    Decision 22/50  G-main-14 · policy P1@1 · basis gpt-pw-m1/run022
+      gpt-pw-m1/run022: not GREEN · 470.832 s
+      decision G-main-14: not_green
+    ► Run 22 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (7 min 50 s). GREEN so far: 3 of 22.
+    Decision 23/50  G-main-36 · policy P1@1 · basis gpt-pw-m1/run023
+      gpt-pw-m1/run023: not GREEN · 368.443 s
+      decision G-main-36: not_green
+    ► Run 23 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 8 s). GREEN so far: 3 of 23.
+    Decision 24/50  G-main-05 · policy P1@1 · basis gpt-pw-m1/run024
+      gpt-pw-m1/run024: not GREEN · 289.588 s
+      decision G-main-05: not_green
+    ► Run 24 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (4 min 49 s). GREEN so far: 3 of 24.
+    Decision 25/50  G-main-28 · policy P1@1 · basis gpt-pw-m1/run025
+      gpt-pw-m1/run025: not GREEN · 365.862 s
+      decision G-main-28: not_green
+    ► Run 25 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 5 s). GREEN so far: 3 of 25.
+    Decision 26/50  G-main-30 · policy P1@1 · basis gpt-pw-m1/run026
+^C  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 2 · The real audit runs · what happened
+────────────────────────────────────────────────────────────────────────────────────────────────
+  This step did not complete. In plain words: campaign finished (it was paused: `cdrt lab run
+  2` resumes it) (⏸ Stage 1 paused (Ctrl-C); recorded work is kept. Resume: the same command
+  with --resume). Nothing is lost: the attempt is recorded, and the step can be run again once
+  the cause is fixed.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+Lab 2 · Capture ─────────────────────────────────────────────── NOT PASSED ✗
+Inputs   Lab 1 hand-off a19e013ec5fa (re-verified)
+Checks   ✓ this host's UTC offset equals the declared log_utc_offset: host +00:00, declared +00:00
+         ✓ unfinished campaign resumed under its own lock, nothing rewritten or relocked: campaign-0001
+         ✗ campaign finished (it was paused: `cdrt lab run 2` resumes it): ⏸ Stage 1 paused (Ctrl-C); recorded work is kept. Resume: the same command with --resume
+         campaign cycle: campaign-0001
+         status: paused
+(.venv) guylupo@devvm:~/dev/cdrt-decision-testing$ cdrt lab run 2
+API key for openai:gpt-4.1 (kept in memory for this run only): 
+✓ key check: ✓ openai:gpt-4.1 answered (response model gpt-4.1-2025-04-14)
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 2 · The real audit runs
+────────────────────────────────────────────────────────────────────────────────────────────────
+  First we lock the audit's rules: the policy from the first look and the number of runs. From
+  now on they cannot be changed.
+
+  Now the real audit: RepoAudit runs 50 times on exactly the same code, with the same model
+  and the same question. Before every run we seal what was asked and which policy applies.
+  Every result is kept, good or bad.
+
+  Watch the verdicts. What each GREEN actually checked stays hidden for now.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+  resuming campaign cycle campaign-0001: recorded decisions are kept, the run that was cut off runs again
+  campaign cycle campaign-0001: 50 RepoAudit runs with openai:gpt-4.1, 1 standalone Semgrep scan(s)
+  Stage 1  Acquire and freeze evidence …
+    resuming Stage 1 attempt 1: recorded work is kept, the cut-off work runs again
+    Decision 1/50  G-main-42: kept from before the pause (not_green)
+    ► Run 1 of 50: NOT GREEN, kept from before the pause. GREEN so far: 0 of 1.
+    Decision 2/50  G-main-21: kept from before the pause (not_green)
+    ► Run 2 of 50: NOT GREEN, kept from before the pause. GREEN so far: 0 of 2.
+    Decision 3/50  G-main-19: kept from before the pause (green)
+    ► Run 3 of 50: GREEN, kept from before the pause. GREEN so far: 1 of 3.
+    Decision 4/50  G-main-25: kept from before the pause (green)
+    ► Run 4 of 50: GREEN, kept from before the pause. GREEN so far: 2 of 4.
+    Decision 5/50  G-main-04: kept from before the pause (not_green)
+    ► Run 5 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 5.
+    Decision 6/50  G-main-47: kept from before the pause (not_green)
+    ► Run 6 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 6.
+    Decision 7/50  G-main-50: kept from before the pause (not_green)
+    ► Run 7 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 7.
+    Decision 8/50  G-main-49: kept from before the pause (not_green)
+    ► Run 8 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 8.
+    Decision 9/50  G-main-29: kept from before the pause (not_green)
+    ► Run 9 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 9.
+    Decision 10/50  G-main-27: kept from before the pause (not_green)
+    ► Run 10 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 10.
+    Decision 11/50  G-main-03: kept from before the pause (not_green)
+    ► Run 11 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 11.
+    Decision 12/50  G-main-48: kept from before the pause (not_green)
+    ► Run 12 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 12.
+    Decision 13/50  G-main-43: kept from before the pause (not_green)
+    ► Run 13 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 13.
+    Decision 14/50  G-main-31: kept from before the pause (not_green)
+    ► Run 14 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 14.
+    Decision 15/50  G-main-34: kept from before the pause (not_green)
+    ► Run 15 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 15.
+    Decision 16/50  G-main-11: kept from before the pause (not_green)
+    ► Run 16 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 16.
+    Decision 17/50  G-main-33: kept from before the pause (not_green)
+    ► Run 17 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 17.
+    Decision 18/50  G-main-39: kept from before the pause (not_green)
+    ► Run 18 of 50: NOT GREEN, kept from before the pause. GREEN so far: 2 of 18.
+    Decision 19/50  G-main-17: kept from before the pause (green)
+    ► Run 19 of 50: GREEN, kept from before the pause. GREEN so far: 3 of 19.
+    Decision 20/50  G-main-41: kept from before the pause (not_green)
+    ► Run 20 of 50: NOT GREEN, kept from before the pause. GREEN so far: 3 of 20.
+    Decision 21/50  G-main-10: kept from before the pause (not_green)
+    ► Run 21 of 50: NOT GREEN, kept from before the pause. GREEN so far: 3 of 21.
+    Decision 22/50  G-main-14: kept from before the pause (not_green)
+    ► Run 22 of 50: NOT GREEN, kept from before the pause. GREEN so far: 3 of 22.
+    Decision 23/50  G-main-36: kept from before the pause (not_green)
+    ► Run 23 of 50: NOT GREEN, kept from before the pause. GREEN so far: 3 of 23.
+    Decision 24/50  G-main-05: kept from before the pause (not_green)
+    ► Run 24 of 50: NOT GREEN, kept from before the pause. GREEN so far: 3 of 24.
+    Decision 25/50  G-main-28: kept from before the pause (not_green)
+    ► Run 25 of 50: NOT GREEN, kept from before the pause. GREEN so far: 3 of 25.
+    Decision 26/50  G-main-30 · policy P1@1 · basis gpt-pw-m1/run026
+      gpt-pw-m1/run026: not GREEN · 327.826 s
+      decision G-main-30: not_green
+    ► Run 26 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 27 s). GREEN so far: 3 of 26.
+    Decision 27/50  G-main-20 · policy P1@1 · basis gpt-pw-m1/run027
+      gpt-pw-m1/run027: not GREEN · 783.04 s
+      decision G-main-20: not_green
+    ► Run 27 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (13 min 3 s). GREEN so far: 3 of 27.
+    Decision 28/50  G-main-16 · policy P1@1 · basis gpt-pw-m1/run028
+      gpt-pw-m1/run028: not GREEN · 384.209 s
+      decision G-main-16: not_green
+    ► Run 28 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 24 s). GREEN so far: 3 of 28.
+    Decision 29/50  G-main-12 · policy P1@1 · basis gpt-pw-m1/run029
+      gpt-pw-m1/run029: not GREEN · 384.564 s
+      decision G-main-12: not_green
+    ► Run 29 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 24 s). GREEN so far: 3 of 29.
+    Decision 30/50  G-main-07 · policy P1@1 · basis gpt-pw-m1/run030
+      gpt-pw-m1/run030: not GREEN · 381.96 s
+      decision G-main-07: not_green
+    ► Run 30 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 21 s). GREEN so far: 3 of 30.
+    Decision 31/50  G-main-02 · policy P1@1 · basis gpt-pw-m1/run031
+      gpt-pw-m1/run031: not GREEN · 400.541 s
+      decision G-main-02: not_green
+    ► Run 31 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 40 s). GREEN so far: 3 of 31.
+    Decision 32/50  G-main-24 · policy P1@1 · basis gpt-pw-m1/run032
+      gpt-pw-m1/run032: not GREEN · 390.795 s
+      decision G-main-24: not_green
+    ► Run 32 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 30 s). GREEN so far: 3 of 32.
+    Decision 33/50  G-main-37 · policy P1@1 · basis gpt-pw-m1/run033
+      gpt-pw-m1/run033: not GREEN · 530.923 s
+      decision G-main-37: not_green
+    ► Run 33 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (8 min 50 s). GREEN so far: 3 of 33.
+    Decision 34/50  G-main-46 · policy P1@1 · basis gpt-pw-m1/run034
+      gpt-pw-m1/run034: not GREEN · 340.098 s
+      decision G-main-46: not_green
+    ► Run 34 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (5 min 40 s). GREEN so far: 3 of 34.
+    Decision 35/50  G-main-18 · policy P1@1 · basis gpt-pw-m1/run035
+      gpt-pw-m1/run035: not GREEN · 503.122 s
+      decision G-main-18: not_green
+    ► Run 35 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (8 min 23 s). GREEN so far: 3 of 35.
+    Decision 36/50  G-main-13 · policy P1@1 · basis gpt-pw-m1/run036
+      gpt-pw-m1/run036: not GREEN · 408.788 s
+      decision G-main-13: not_green
+    ► Run 36 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (6 min 48 s). GREEN so far: 3 of 36.
+    Decision 37/50  G-main-40 · policy P1@1 · basis gpt-pw-m1/run037
+      gpt-pw-m1/run037: not GREEN · 431.78 s
+      decision G-main-40: not_green
+    ► Run 37 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (7 min 11 s). GREEN so far: 3 of 37.
+    Decision 38/50  G-main-22 · policy P1@1 · basis gpt-pw-m1/run038
+      gpt-pw-m1/run038: not GREEN · 588.292 s
+      decision G-main-22: not_green
+    ► Run 38 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (9 min 48 s). GREEN so far: 3 of 38.
+    Decision 39/50  G-main-23 · policy P1@1 · basis gpt-pw-m1/run039
+      gpt-pw-m1/run039: not GREEN · 948.438 s
+      decision G-main-23: not_green
+    ► Run 39 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (15 min 48 s). GREEN so far: 3 of 39.
+    Decision 40/50  G-main-38 · policy P1@1 · basis gpt-pw-m1/run040
+      gpt-pw-m1/run040: not GREEN · 1404.552 s
+      decision G-main-38: not_green
+    ► Run 40 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (23 min 24 s). GREEN so far: 3 of 40.
+    Decision 41/50  G-main-45 · policy P1@1 · basis gpt-pw-m1/run041
+      gpt-pw-m1/run041: not GREEN · 3336.314 s
+      decision G-main-45: not_green
+    ► Run 41 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (55 min 36 s). GREEN so far: 3 of 41.
+    Decision 42/50  G-main-01 · policy P1@1 · basis gpt-pw-m1/run042
+      gpt-pw-m1/run042: not GREEN · 1556.509 s
+      decision G-main-01: not_green
+    ► Run 42 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (25 min 56 s). GREEN so far: 3 of 42.
+    Decision 43/50  G-main-06 · policy P1@1 · basis gpt-pw-m1/run043
+      gpt-pw-m1/run043: not GREEN · 1957.972 s
+      decision G-main-06: not_green
+    ► Run 43 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (32 min 37 s). GREEN so far: 3 of 43.
+    Decision 44/50  G-main-35 · policy P1@1 · basis gpt-pw-m1/run044
+      gpt-pw-m1/run044: GREEN · 3383.371 s
+      decision G-main-35: green
+    ► Run 44 of 50: GREEN, RepoAudit found no bugs (56 min 23 s). GREEN so far: 4 of 44.
+    Decision 45/50  G-main-26 · policy P1@1 · basis gpt-pw-m1/run045
+      gpt-pw-m1/run045: not GREEN · 911.682 s
+      decision G-main-26: not_green
+    ► Run 45 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (15 min 11 s). GREEN so far: 4 of 45.
+    Decision 46/50  G-main-32 · policy P1@1 · basis gpt-pw-m1/run046
+      gpt-pw-m1/run046: not GREEN · 514.668 s
+      decision G-main-32: not_green
+    ► Run 46 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (8 min 34 s). GREEN so far: 4 of 46.
+    Decision 47/50  G-main-09 · policy P1@1 · basis gpt-pw-m1/run047
+      gpt-pw-m1/run047: not GREEN · 662.615 s
+      decision G-main-09: not_green
+    ► Run 47 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (11 min 2 s). GREEN so far: 4 of 47.
+    Decision 48/50  G-main-44 · policy P1@1 · basis gpt-pw-m1/run048
+      gpt-pw-m1/run048: not GREEN · 1614.835 s
+      decision G-main-44: not_green
+    ► Run 48 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (26 min 54 s). GREEN so far: 4 of 48.
+    Decision 49/50  G-main-15 · policy P1@1 · basis gpt-pw-m1/run049
+      gpt-pw-m1/run049: not GREEN · 1866.783 s
+      decision G-main-15: not_green
+    ► Run 49 of 50: NOT GREEN, RepoAudit reported a problem or did not finish (31 min 6 s). GREEN so far: 4 of 49.
+    Decision 50/50  G-main-08 · policy P1@1 · basis gpt-pw-m1/run050
+      gpt-pw-m1/run050: GREEN · 386.791 s
+      decision G-main-08: green
+    ► Run 50 of 50: GREEN, RepoAudit found no bugs (6 min 26 s). GREEN so far: 5 of 50.
+    Semgrep 1/1
+    ► Independent check 1 of 1: Semgrep, a conventional rule-based scanner that uses no AI, scans the same code.
+    ✓ every scheduled run accounted for
+    ✓ every output hashed in the sealed manifest
+    ✓ RepoAudit pinned and unmodified before and after
+    ✓ no API key in any retained output
+    ✓ every provider call attributed to a run
+    ✓ every scheduled decision recorded with a complete bundle
+    ✓ decision context written before its first basis run, decision after its last
+    ✓ every decision's basis runs retained
+  ✓ Stage 1 · RepoAudit GREEN 5/50 · Semgrep GREEN 0/1 · sealed 4325fed13887
+    decisions recorded 50 · green 5 · G-main 5/50 green
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 2 · The real audit runs · what happened
+────────────────────────────────────────────────────────────────────────────────────────────────
+  The real audit is complete: RepoAudit said GREEN in 5 of 50 runs. Every run, with what was
+  asked and the policy in force, is kept.
+
+  So far it looks like a clean bill of health. Next we look at what those GREENs actually rest
+  on.
+
+  This step passed all its checks.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+Lab 2 · Capture ─────────────────────────────────────────────────── PASSED ✓
+Inputs   Lab 1 hand-off a19e013ec5fa (re-verified)
+Checks   ✓ this host's UTC offset equals the declared log_utc_offset: host +00:00, declared +00:00
+         ✓ unfinished campaign resumed under its own lock, nothing rewritten or relocked: campaign-0001
+         ✓ Stage 1 passed every check (every run and decision kept, contexts sealed first, no key in any output)
+Outputs  protocol: capture/cdrt-protocol.yaml (a2e8d87e30b9)
+         lock: capture/protocol.lock.json (50a025c59587)
+         stage1: capture/records/cycles/campaign-0001/stage1 (68caa63ef079)
+         campaign cycle: campaign-0001
+         RepoAudit: 5/50 GREEN
+         decisions: {"G-main": {"decisions": 50, "green": 5, "recorded": 50}}
+         Semgrep: 0/1 GREEN
+Next     cdrt lab run 3-9   (offline from here: no key, no RepoAudit)
+(.venv) guylupo@devvm:~/dev/cdrt-decision-testing$ cdrt lab run 3-9
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 3 · Freezing the evidence
+────────────────────────────────────────────────────────────────────────────────────────────────
+  We hand every decision to ProofWeave, our evidence ledger. It binds together what was asked,
+  which policy applied, what RepoAudit decided, and exactly what it examined, and seals it so
+  that nothing can be changed afterwards.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+  pwexp Stage 2 on campaign-0001 …
+  ✓ Stage 2 · median 48.811 ms · max 84.91 ms · 101/101 within 5.0 s · corpus E 7aa7c04b5e21
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 3 · Freezing the evidence · what happened
+────────────────────────────────────────────────────────────────────────────────────────────────
+  All decisions are now in the evidence ledger: 14437 records, each traceable to RepoAudit's
+  own log, bound to its question, its decision and its policy, and sealed.
+
+  Decisions: G-main 5/50 green.
+
+  This step passed all its checks.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+Lab 3 · Build the corpus ────────────────────────────────────────── PASSED ✓
+Inputs   Lab 2 hand-off f5b388e07837 (re-verified)
+Checks   ✓ Stage 1 cycle handed over by Lab 2
+         ✓ pwexp Stage 2 passed all its checks
+         ✓ record view re-verified the corpus (hash, ledger chain, graph rebuild)
+         ✓ every scheduled decision is bound
+         ✓ every binding complete (basis resolves, basis root recomputes)
+Outputs  corpus: capture/records/cycles/campaign-0001/stage2/attempt1/corpus (7aa7c04b5e21)
+         corpus_sha256: 7aa7c04b5e217123d20cd207489ee03c6a04e054883d4640a6fa895cc4d8104e
+         records: 14437
+         decisions: G-main 5/50 green
+Next     cdrt lab run 4
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 4 · The reveal: same green, different checks
+────────────────────────────────────────────────────────────────────────────────────────────────
+  Now we look inside the GREEN verdicts: for each run, which of the places that needed
+  checking did RepoAudit actually follow?
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+  review pages: results/labs/lab4/attempt1/views
+  selection: main G-main-19
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 4 · The reveal: same green, different checks · what happened
+────────────────────────────────────────────────────────────────────────────────────────────────
+  Here is the problem. All 5 runs said GREEN. But behind the same answer, they checked between
+  0 and 5 of the 7 places that needed checking, along 3 different paths.
+
+  Same tool, same code, same question, same model: a different audit every time. The verdict
+  alone cannot tell a gateway which kind it got. We call this the Green Verdict Ambiguity.
+
+  Together, though, the runs reached 5 of the 7 places. Keep that number in mind.
+
+  One run is chosen by a rule fixed in advance to be tested in detail: G-main-19.
+
+  This step passed all its checks.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+Lab 4 · Review ProofWeave and freeze ────────────────────────────── PASSED ✓
+Inputs   Lab 3 hand-off 06c35f4a9890 (re-verified)
+Checks   ✓ review pages written (decisions, pathways, decision graphs)
+         ✓ frozen corpus re-verifies with the same corpus hash
+         ✓ frozen bundle is read-only
+         ✓ a main decision selected by the declared rule
+         ✓ the independent oracle makes the same selection and the same conformance judgements
+Outputs  bundle: capture/bundle (83a6131c6ad2)
+         views: results/labs/lab4/attempt1/views (4bb71885b4d5)
+         bundle_sha256: b7bc0a6c2dfe347f8483e5b30c3da1c472f927a440724173ea20795b86218fe3
+         review: results/labs/lab4/attempt1/views/pathways.html
+         selected: main G-main-19
+         captured G-main: 50 decisions, 5 GREEN
+         other GREEN G-main: G-main-25 H=SUCCESS, G-main-17 H=SUCCESS, G-main-35 H=SUCCESS, G-main-08 H=FAIL
+Next     cdrt lab run 5
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 5 · Today's requirement
+────────────────────────────────────────────────────────────────────────────────────────────────
+  We set out today's release requirement, written down before any test is run, and prepare the
+  test fixtures from the frozen evidence.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+  building fixtures into fixtures/out
+  scale plane for N ≈ 100: 1 synthetic copies of each of 5 green decisions' runs
+  scale plane for N ≈ 1000: 1 synthetic copies of each of 5 green decisions' runs
+  scale plane for N ≈ 10000: 8 synthetic copies of each of 5 green decisions' runs
+  scale plane for N ≈ 100000: 79 synthetic copies of each of 5 green decisions' runs
+  second build, to compare bytes (R-FIX-5)
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 5 · Today's requirement · what happened
+────────────────────────────────────────────────────────────────────────────────────────────────
+  Today's release requirement: at least 80% of the 7 places must have been checked, that is 6
+  or more.
+
+  The chosen run, on its own, checked 4/7.
+
+  The requirement was written down before any of the evidence was examined.
+
+  This step passed all its checks.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+Lab 5 · Build fixtures ──────────────────────────────────────────── PASSED ✓
+Inputs   Lab 4 hand-off 7e2f42715f82 (re-verified)
+Checks   ✓ tau_q and tau_rel declared in run_config before capture (not derived from the data): tau_q = 4/5, tau_rel = 4/5
+         ✓ profiles rev 1-3 and the one-decision observation profile written
+         ✓ every scale plane verified and checkpointed: N=1,270 · N=1,270 · N=10,160 · N=100,330
+         ✓ two builds give identical bytes (R-FIX-5): 1862 files
+Outputs  fixtures: fixtures/out (1baa103eed87)
+         macros_preview: results/labs/lab5/attempt1/fixture_macros.preview.tex (18a1bfa955e3)
+         captured decisions: 50 (5 GREEN)
+         c_obs (main alone): 4/7
+         tau_q: 4/5
+         t_e: 2026-10-27T12:27:39.342279Z
+         max_age_seconds (Delta_q): 39760
+         scale sizes (actual N): 1,270, 1,270, 10,160, 100,330
+         fixtures_sha256: 1baa103eed87b7df295fcd48780a6d26ea2e883bf54b7d5b4ec45e0bacdbea2d
+Next     cdrt lab run 6
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 6 · Locking the experiment
+────────────────────────────────────────────────────────────────────────────────────────────────
+  We lock the whole experiment: every file, every rule and every piece of code gets a
+  fingerprint. From here on nothing can be adjusted to fit the results; any change would be
+  detected.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 6 · Locking the experiment · what happened
+────────────────────────────────────────────────────────────────────────────────────────────────
+  The experiment is locked. Its fingerprint begins 21de6a1e1654. Every result from now on
+  carries this fingerprint, so anyone can check that nothing was changed.
+
+  This step passed all its checks.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+Lab 6 · Lock ────────────────────────────────────────────────────── PASSED ✓
+Inputs   Lab 5 hand-off 29f97e40565a (re-verified)
+Checks   ✓ verify-lock passes (every component recomputed)
+         ✓ workbench/ is excluded from the lock
+         ✓ oracle expectations were committed before the decision tests (R-ORC-1): expectations 41ebdbf6 · decision tests 5e9c7063
+         ✓ lock commit tagged: cdrt-protocol-v1
+Outputs  lock: protocol/protocol.lock.json (150d5416d17b)
+         lock_root: 21de6a1e1654dfd06e9e80d60b58a016887db669b6acc9408558395c6d1348ea
+         campaign_id: campaign-001
+         git_commit: 3404b0bc848a
+         pwexp: pw-v0.2.5 8d233e98bb7f
+         tag: cdrt-protocol-v1
+Next     cdrt lab run 7
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 7 · CDRT tests the decisions
+────────────────────────────────────────────────────────────────────────────────────────────────
+  CDRT now tests the recorded decisions without running the auditor again. First it asks: did
+  each decision follow the policy of its time? Then: is the evidence enough for today's
+  requirement? Then the requirement changes, and we watch the gateway react.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+  functional pass 1 of 2
+  rev 1  │ H SUCCESS       │ A —             │ TAIP pass         │ gateway proceed
+  rev 2  │ H SUCCESS       │ A FAIL          │ TAIP fail         │ gateway hold
+  rev 3  │ H SUCCESS       │ A FAIL          │ TAIP fail         │ gateway hold
+  functional pass 2 of 2
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 7 · CDRT tests the decisions · what happened
+────────────────────────────────────────────────────────────────────────────────────────────────
+  First question, did each decision follow the policy of its time? 4 of 5: yes.
+
+  Second question, is the evidence enough for today? The chosen run alone checked 4/7: the
+  gateway would say HOLD. 3 of the 5 GREEN runs were each too narrow on their own.
+
+  CDRT then combines the qualified runs: together they checked 5/7, and the gateway says HOLD.
+  The decision rests on independently tested, combined evidence, not on one GREEN verdict.
+
+  Now the requirement changes: an independent second check is also required, which no run had.
+  The past decisions still followed their own policy, but they are no longer enough: the
+  gateway says HOLD.
+
+  A late, outdated 'yes' from before the change arrives afterwards and is refused, so it
+  cannot switch the gateway back to proceed.
+
+  Throughout, the AI auditor was never run again.
+
+  This step passed all its checks.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+Lab 7 · Functional run (RQ1) ────────────────────────────────────── PASSED ✓
+Inputs   Lab 6 hand-off e0320e741df7 (re-verified)
+Checks   ✓ protocol lock verifies (R-LOCK-2): 21de6a1e1654
+         ✓ every step, the before/after judgements, the delayed result and the observation executed
+         ✓ every record carries the lock stamp (R-LOCK-4): 10 records
+         ✓ the control guard counted no call (R-ISO-1): 0 calls
+         ✓ the protocol ran 2 times for the replay comparison
+Outputs  functional_records: results/labs/lab7/attempt1/functional_records.jsonl (9d2ea4ebb40a)
+         acceptance: results/labs/lab7/attempt1/acceptance.json (d1daffb10b3e)
+         trace: results/labs/lab7/attempt1/trace.txt (23e90ed6089b)
+         A_comp: False
+         replay agrees: True
+         conditions: C1✗ C2✓ C3✗ C4✓
+         before (rev 2): H SUCCESS · A FAIL · gateway hold
+         after (rev 3): H SUCCESS · A FAIL · gateway hold
+         failing: C1: before; C3: delayed success rejected, step 2 proceed
+         observation: 5 GREEN decisions; alone (H, release coverage, share, gateway): G-main-08 FAIL 0/7 None hold, G-main-17 SUCCESS 4/7 7/13 narrow hold, G-main-19 SUCCESS 4/7 7/13 narrow hold, G-main-25 SUCCESS 5/7 12/13 hold, G-main-35 SUCCESS 5/7 9/13 narrow hold
+         records: results/labs/lab7/attempt1/functional_records.jsonl
+Next     cdrt lab run 8
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 8 · How fast is it?
+────────────────────────────────────────────────────────────────────────────────────────────────
+  How fast does this work? We make the evidence much larger, up to about a hundred thousand
+  records, and time how long a requirement change takes to reach the gateway, 400 times over,
+  against a 5-second limit.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+  loading plane N ≈ 100 (untimed)
+  loading plane N ≈ 1,000 (untimed)
+  loading plane N ≈ 10,000 (untimed)
+  loading plane N ≈ 100,000 (untimed)
+  warm-ups done for N = 1,270
+  warm-ups done for N = 1,270
+  warm-ups done for N = 10,160
+  warm-ups done for N = 100,330
+  block   1/100  N=1,270: slowest 0.039s (0 over)  N=1,270: slowest 0.040s (0 over)  N=10,160: slowest 0.100s (0 over)  N=100,330: slowest 1.204s (0 over)
+  block  10/100  N=1,270: slowest 0.048s (0 over)  N=1,270: slowest 0.051s (0 over)  N=10,160: slowest 0.109s (0 over)  N=100,330: slowest 1.338s (0 over)
+  block  20/100  N=1,270: slowest 0.052s (0 over)  N=1,270: slowest 0.051s (0 over)  N=10,160: slowest 0.119s (0 over)  N=100,330: slowest 1.338s (0 over)
+  block  30/100  N=1,270: slowest 0.052s (0 over)  N=1,270: slowest 0.051s (0 over)  N=10,160: slowest 0.127s (0 over)  N=100,330: slowest 1.375s (0 over)
+  block  40/100  N=1,270: slowest 0.054s (0 over)  N=1,270: slowest 0.051s (0 over)  N=10,160: slowest 0.147s (0 over)  N=100,330: slowest 1.375s (0 over)
+  block  50/100  N=1,270: slowest 0.054s (0 over)  N=1,270: slowest 0.058s (0 over)  N=10,160: slowest 0.147s (0 over)  N=100,330: slowest 1.672s (0 over)
+  block  60/100  N=1,270: slowest 0.054s (0 over)  N=1,270: slowest 0.058s (0 over)  N=10,160: slowest 0.160s (0 over)  N=100,330: slowest 1.672s (0 over)
+  block  70/100  N=1,270: slowest 0.054s (0 over)  N=1,270: slowest 0.058s (0 over)  N=10,160: slowest 0.160s (0 over)  N=100,330: slowest 1.672s (0 over)
+  block  80/100  N=1,270: slowest 0.054s (0 over)  N=1,270: slowest 0.058s (0 over)  N=10,160: slowest 0.160s (0 over)  N=100,330: slowest 1.672s (0 over)
+  block  90/100  N=1,270: slowest 0.057s (0 over)  N=1,270: slowest 0.058s (0 over)  N=10,160: slowest 0.160s (0 over)  N=100,330: slowest 1.756s (0 over)
+  block 100/100  N=1,270: slowest 0.057s (0 over)  N=1,270: slowest 0.058s (0 over)  N=10,160: slowest 0.160s (0 over)  N=100,330: slowest 1.756s (0 over)
+  
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 8 · How fast is it? · what happened
+────────────────────────────────────────────────────────────────────────────────────────────────
+  This step did not complete. In plain words: baseline verdicts are both SUCCESS at every size
+  (main-14 §4.5). Nothing is lost: the attempt is recorded, and the step can be run again once
+  the cause is fixed.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+Lab 8 · Scale run (RQ2) ─────────────────────────────────────── NOT PASSED ✗
+Inputs   Lab 7 hand-off 7e5e485692e9 (re-verified)
+Checks   ✓ protocol lock verifies (R-LOCK-2): 21de6a1e1654
+         ✓ all 400 timed cycles executed and recorded (R-SCL-4, R-SCL-5): 400 records
+         ✓ every record carries the lock stamp (R-LOCK-4)
+         ✓ the control guard counted no call (R-ISO-1): 0 calls
+         ✓ run manifest written (R-SCL-8)
+         ✗ baseline verdicts are both SUCCESS at every size (main-14 §4.5)
+Outputs  timing_records: results/labs/lab8/attempt1/timing_records.jsonl (602cb03c1241)
+         scale_stats: results/labs/lab8/attempt1/scale_stats.json (b26eded8c3c6)
+         run_manifest: results/labs/lab8/attempt1/run_manifest.json (4b84b5f27ad9)
+         slowest update (T_max): 1.756 s at N = 100,330
+         N = 1,270: slowest 0.058 s · 0/100 over 5 s
+         N = 10,160: slowest 0.160 s · 0/100 over 5 s
+         N = 100,330: slowest 1.756 s · 0/100 over 5 s
+         result: Every one of the 400 timed updates reached the gateway within the 5 s budget; the slowest took 1.76 s.
+(.venv) guylupo@devvm:~/dev/cdrt-decision-testing$ 

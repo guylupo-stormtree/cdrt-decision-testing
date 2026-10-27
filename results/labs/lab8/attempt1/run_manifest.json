@@ -1,0 +1,52 @@
+{
+  "baseline": {
+    "100": {
+      "release.adequacy": "FAIL",
+      "release.effectiveness": "SUCCESS"
+    },
+    "1000": {
+      "release.adequacy": "FAIL",
+      "release.effectiveness": "SUCCESS"
+    },
+    "10000": {
+      "release.adequacy": "FAIL",
+      "release.effectiveness": "SUCCESS"
+    },
+    "100000": {
+      "release.adequacy": "FAIL",
+      "release.effectiveness": "SUCCESS"
+    }
+  },
+  "blocks": 100,
+  "clock": {
+    "implementation": "clock_gettime(CLOCK_MONOTONIC)",
+    "resolution": 1e-09,
+    "source": "time.monotonic_ns"
+  },
+  "deadline_s": 5,
+  "hardware": {
+    "cpu": "Apple",
+    "cpus": 6,
+    "machine": "aarch64",
+    "memory": "11686776 kB"
+  },
+  "load_average_before": [
+    1.0107421875,
+    0.6220703125,
+    0.42578125
+  ],
+  "mark": "CAMPAIGN",
+  "max_wait_s": 60,
+  "os": "Linux-7.0.0-38-generic-aarch64-with-glibc2.43",
+  "pwexp_commit": "8d233e98bb7f2d822c4ce8945a56dca1847a87d4",
+  "python": "3.13.14",
+  "seed": 20261024,
+  "sizes": {
+    "100": 1270,
+    "1000": 1270,
+    "10000": 10160,
+    "100000": 100330
+  },
+  "uv_lock_sha256": "592d2d58f39832ce6a085c8da453f642f9b459a94c1a4f0360c18fa40529a49a",
+  "warmups": 5
+}

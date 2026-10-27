@@ -1,0 +1,15 @@
+{
+  "attempt": 1,
+  "dev": false,
+  "handoff": {},
+  "handoff_sha256": "eff89ae7b778e26bd1cdc7b4908c4531bd911429780ece818452d42d94b40a41",
+  "inputs_from": 0,
+  "inputs_handoff_sha256": "342fc549c29578534c97436ce39db97848a97f251a84b85459e6fdf809138354",
+  "lab": 1,
+  "name": "Pilot capture",
+  "outputs": {},
+  "summary": {
+    "pilot decisions": "{\"G-main-01\": {\"green\": true, \"coverage_M_h\": \"0/9\"}, \"G-main-02\": {\"green\": true, \"coverage_M_h\": \"0/9\"}, \"G-main-03\": {\"green\": true, \"coverage_M_h\": \"0/9\"}, \"G-main-04\": {\"green\": true, \"coverage_M_h\": \"0/9\"}, \"G-main-05\": {\"green\": true, \"coverage_M_h\": \"0/9\"}}"
+  },
+  "time": "2026-10-26T15:25:37Z"
+}

@@ -1,0 +1,13 @@
+Lab 2 · Capture ─────────────────────────────────────────────────── PASSED ✓
+Inputs   Lab 1 hand-off a19e013ec5fa (re-verified)
+Checks   ✓ this host's UTC offset equals the declared log_utc_offset: host +00:00, declared +00:00
+         ✓ unfinished campaign resumed under its own lock, nothing rewritten or relocked: campaign-0001
+         ✓ Stage 1 passed every check (every run and decision kept, contexts sealed first, no key in any output)
+Outputs  protocol: capture/cdrt-protocol.yaml (a2e8d87e30b9)
+         lock: capture/protocol.lock.json (50a025c59587)
+         stage1: capture/records/cycles/campaign-0001/stage1 (68caa63ef079)
+         campaign cycle: campaign-0001
+         RepoAudit: 5/50 GREEN
+         decisions: {"G-main": {"decisions": 50, "green": 5, "recorded": 50}}
+         Semgrep: 0/1 GREEN
+Next     cdrt lab run 3-9   (offline from here: no key, no RepoAudit)

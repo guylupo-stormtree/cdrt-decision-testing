@@ -1,0 +1,244 @@
+{
+  "attempt": 1,
+  "dev": false,
+  "handoff": {
+    "bundle": "capture/bundle",
+    "bundle_sha256": "b7bc0a6c2dfe347f8483e5b30c3da1c472f927a440724173ea20795b86218fe3",
+    "corpus_sha256": "7aa7c04b5e217123d20cd207489ee03c6a04e054883d4640a6fa895cc4d8104e",
+    "green": [
+      "G-main-08",
+      "G-main-17",
+      "G-main-19",
+      "G-main-25",
+      "G-main-35"
+    ],
+    "selection": {
+      "main": "G-main-19",
+      "main_candidates": {
+        "G-main-01": {
+          "H": null,
+          "green": false
+        },
+        "G-main-02": {
+          "H": null,
+          "green": false
+        },
+        "G-main-03": {
+          "H": null,
+          "green": false
+        },
+        "G-main-04": {
+          "H": null,
+          "green": false
+        },
+        "G-main-05": {
+          "H": null,
+          "green": false
+        },
+        "G-main-06": {
+          "H": null,
+          "green": false
+        },
+        "G-main-07": {
+          "H": null,
+          "green": false
+        },
+        "G-main-08": {
+          "H": "FAIL",
+          "green": true
+        },
+        "G-main-09": {
+          "H": null,
+          "green": false
+        },
+        "G-main-10": {
+          "H": null,
+          "green": false
+        },
+        "G-main-11": {
+          "H": null,
+          "green": false
+        },
+        "G-main-12": {
+          "H": null,
+          "green": false
+        },
+        "G-main-13": {
+          "H": null,
+          "green": false
+        },
+        "G-main-14": {
+          "H": null,
+          "green": false
+        },
+        "G-main-15": {
+          "H": null,
+          "green": false
+        },
+        "G-main-16": {
+          "H": null,
+          "green": false
+        },
+        "G-main-17": {
+          "H": "SUCCESS",
+          "green": true
+        },
+        "G-main-18": {
+          "H": null,
+          "green": false
+        },
+        "G-main-19": {
+          "H": "SUCCESS",
+          "green": true
+        },
+        "G-main-20": {
+          "H": null,
+          "green": false
+        },
+        "G-main-21": {
+          "H": null,
+          "green": false
+        },
+        "G-main-22": {
+          "H": null,
+          "green": false
+        },
+        "G-main-23": {
+          "H": null,
+          "green": false
+        },
+        "G-main-24": {
+          "H": null,
+          "green": false
+        },
+        "G-main-25": {
+          "H": "SUCCESS",
+          "green": true
+        },
+        "G-main-26": {
+          "H": null,
+          "green": false
+        },
+        "G-main-27": {
+          "H": null,
+          "green": false
+        },
+        "G-main-28": {
+          "H": null,
+          "green": false
+        },
+        "G-main-29": {
+          "H": null,
+          "green": false
+        },
+        "G-main-30": {
+          "H": null,
+          "green": false
+        },
+        "G-main-31": {
+          "H": null,
+          "green": false
+        },
+        "G-main-32": {
+          "H": null,
+          "green": false
+        },
+        "G-main-33": {
+          "H": null,
+          "green": false
+        },
+        "G-main-34": {
+          "H": null,
+          "green": false
+        },
+        "G-main-35": {
+          "H": "SUCCESS",
+          "green": true
+        },
+        "G-main-36": {
+          "H": null,
+          "green": false
+        },
+        "G-main-37": {
+          "H": null,
+          "green": false
+        },
+        "G-main-38": {
+          "H": null,
+          "green": false
+        },
+        "G-main-39": {
+          "H": null,
+          "green": false
+        },
+        "G-main-40": {
+          "H": null,
+          "green": false
+        },
+        "G-main-41": {
+          "H": null,
+          "green": false
+        },
+        "G-main-42": {
+          "H": null,
+          "green": false
+        },
+        "G-main-43": {
+          "H": null,
+          "green": false
+        },
+        "G-main-44": {
+          "H": null,
+          "green": false
+        },
+        "G-main-45": {
+          "H": null,
+          "green": false
+        },
+        "G-main-46": {
+          "H": null,
+          "green": false
+        },
+        "G-main-47": {
+          "H": null,
+          "green": false
+        },
+        "G-main-48": {
+          "H": null,
+          "green": false
+        },
+        "G-main-49": {
+          "H": null,
+          "green": false
+        },
+        "G-main-50": {
+          "H": null,
+          "green": false
+        }
+      }
+    }
+  },
+  "handoff_sha256": "7e2f42715f824b7bb9bbd5805ca18c66a734b8dd634f097db26366f613e6e4c2",
+  "inputs_from": 3,
+  "inputs_handoff_sha256": "06c35f4a9890a61d889994dbef35b04a448c193f962c88e2e05857ae5dd8fb38",
+  "lab": 4,
+  "name": "Review ProofWeave and freeze",
+  "outputs": {
+    "bundle": {
+      "path": "capture/bundle",
+      "sha256": "83a6131c6ad24d5f6c331d8a24f8a65c2799ef5e58453a9a2f42c68c926d20bc"
+    },
+    "views": {
+      "path": "results/labs/lab4/attempt1/views",
+      "sha256": "4bb71885b4d5d0a669edf7f46aa999240b7367a8121473b3bc7a1532fccc6d2c"
+    }
+  },
+  "summary": {
+    "bundle_sha256": "b7bc0a6c2dfe347f8483e5b30c3da1c472f927a440724173ea20795b86218fe3",
+    "captured G-main": "50 decisions, 5 GREEN",
+    "other GREEN G-main": "G-main-25 H=SUCCESS, G-main-17 H=SUCCESS, G-main-35 H=SUCCESS, G-main-08 H=FAIL",
+    "review": "results/labs/lab4/attempt1/views/pathways.html",
+    "selected": "main G-main-19"
+  },
+  "time": "2026-10-27T13:00:55Z"
+}

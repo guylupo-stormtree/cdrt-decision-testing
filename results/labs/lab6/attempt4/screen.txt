@@ -1,0 +1,32 @@
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 6 · Locking the experiment
+────────────────────────────────────────────────────────────────────────────────────────────────
+  We lock the whole experiment: every file, every rule and every piece of code gets a
+  fingerprint. From here on nothing can be adjusted to fit the results; any change would be
+  detected.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+ ▶ Lab 6 · Locking the experiment · what happened
+────────────────────────────────────────────────────────────────────────────────────────────────
+  The experiment is locked. Its fingerprint begins 59af9d417b60. Every result from now on
+  carries this fingerprint, so anyone can check that nothing was changed.
+
+  This step passed all its checks.
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+Lab 6 · Lock ────────────────────────────────────────────────────── PASSED ✓
+Inputs   Lab 5 hand-off 29f97e40565a (re-verified)
+Checks   ✓ verify-lock passes (every component recomputed)
+         ✓ workbench/ is excluded from the lock
+         ✓ oracle expectations were committed before the decision tests (R-ORC-1): expectations 41ebdbf6 · decision tests 5e9c7063
+         ✓ lock commit tagged: cdrt-protocol-v4
+Outputs  lock: protocol/protocol.lock.json (98a11a31f7e1)
+         lock_root: 59af9d417b6025e385258c7484e2f9349269299ffc8db46b78d8fda049da0dca
+         campaign_id: campaign-004
+         git_commit: 14a86e55f4ba
+         pwexp: pw-v0.2.5 8d233e98bb7f
+         tag: cdrt-protocol-v4
+Next     cdrt lab run 7

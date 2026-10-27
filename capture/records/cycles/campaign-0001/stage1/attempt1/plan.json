@@ -1,0 +1,539 @@
+{
+  "decision_schedule": true,
+  "decisions": [
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-42",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-21",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-19",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-25",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-04",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-47",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-50",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-49",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-29",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-27",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-03",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-48",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-43",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-31",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-34",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-11",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-33",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-39",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-17",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-41",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-10",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-14",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-36",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-05",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-28",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-30",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-20",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-16",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-12",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-07",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-02",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-24",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-37",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-46",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-18",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-13",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-40",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-22",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-23",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-38",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-45",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-01",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-06",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-35",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-26",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-32",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-09",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-44",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-15",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    },
+    {
+      "basis": [
+        "repoaudit"
+      ],
+      "control": "repoaudit",
+      "decision_id": "G-main-08",
+      "group": "G-main",
+      "policy": "P1@1",
+      "rule": "DR-11"
+    }
+  ],
+  "finished": "2026-10-27T12:17:40Z",
+  "models": [
+    {
+      "alias": "gpt-pw-m1",
+      "model": "gpt-4.1",
+      "provider": "openai",
+      "role": "repoaudit"
+    }
+  ],
+  "resumed": [
+    "2026-10-27T02:38:55Z",
+    "2026-10-27T05:30:58Z"
+  ],
+  "runs_per_model": 0,
+  "seed": 20261026,
+  "semgrep_runs": 1,
+  "started": "2026-10-27T01:30:23Z",
+  "subject_after": {
+    "head": "160f5bcd378a02a2417e32e999f93ef5fa0f5e64",
+    "pinned": true,
+    "tracked_files_modified": false
+  },
+  "subject_at_resume": {
+    "head": "160f5bcd378a02a2417e32e999f93ef5fa0f5e64",
+    "pinned": true,
+    "tracked_files_modified": false
+  },
+  "subject_before": {
+    "head": "160f5bcd378a02a2417e32e999f93ef5fa0f5e64",
+    "pinned": true,
+    "tracked_files_modified": false
+  },
+  "target": "/home/guylupo/dev/cdrt-decision-testing/capture/target",
+  "target_manifest_sha256": "fe292648ecbbf15e2dcfd8343e098400ac783ed8a9151a30c0c257853f59a04f"
+}

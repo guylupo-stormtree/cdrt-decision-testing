@@ -1,0 +1,12 @@
+Lab 3 · Build the corpus ────────────────────────────────────────── PASSED ✓
+Inputs   Lab 2 hand-off f5b388e07837 (re-verified)
+Checks   ✓ Stage 1 cycle handed over by Lab 2
+         ✓ pwexp Stage 2 passed all its checks
+         ✓ record view re-verified the corpus (hash, ledger chain, graph rebuild)
+         ✓ every scheduled decision is bound
+         ✓ every binding complete (basis resolves, basis root recomputes)
+Outputs  corpus: capture/records/cycles/campaign-0001/stage2/attempt1/corpus (7aa7c04b5e21)
+         corpus_sha256: 7aa7c04b5e217123d20cd207489ee03c6a04e054883d4640a6fa895cc4d8104e
+         records: 14437
+         decisions: G-main 5/50 green
+Next     cdrt lab run 4

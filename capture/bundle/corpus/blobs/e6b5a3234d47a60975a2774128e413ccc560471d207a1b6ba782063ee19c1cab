@@ -1,0 +1,9 @@
+{
+  "decision_id": "G-main-22",
+  "files": {
+    "decision.json": "6415e8ecb1b3b2619b47d15246739abdb4dd4d0b61a560f3ea1502e811e8384a",
+    "decision_context.json": "6e31ef87019685d5dedd880552a5283bdacf53ff182acd1c10c32e5d270f3940",
+    "policy/P1@1.json": "00d8fbaeea62721834d8d739a142a6785cf2986b5e4c4c33c3d4315ad203d4d4"
+  },
+  "kind": "decision"
+}

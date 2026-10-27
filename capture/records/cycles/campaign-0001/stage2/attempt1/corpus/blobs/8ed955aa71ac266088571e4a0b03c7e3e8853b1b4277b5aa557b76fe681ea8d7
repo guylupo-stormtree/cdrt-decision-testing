@@ -1,0 +1,19 @@
+{
+    "0": {
+        "bug_type": "NPD",
+        "buggy_value": "((None, /tmp/pwexp-subject-kt0_s4td/target/src/dateutil/parser/_parser.py, 1230, -1), ValueLabel.SRC)",
+        "relevant_functions": [
+            [
+                "/tmp/pwexp-subject-kt0_s4td/target/src/dateutil/parser/_parser.py"
+            ],
+            [
+                "_build_naive"
+            ],
+            [
+                "def _build_naive(self, res, default):\n        repl = {}\n        for attr in (\"year\", \"month\", \"day\", \"hour\",\n                     \"minute\", \"second\", \"microsecond\"):\n            value = getattr(res, attr)\n            if value is not None:\n                repl[attr] = value\n\n        if 'day' not in repl:\n            # If the default day exceeds the last day of the month, fall back\n            # to the end of the month.\n            cyear = default.year if res.year is None else res.year\n            cmonth = default.month if res.month is None else res.month\n            cday = default.day if res.day is None else res.day\n\n            if cday > monthrange(cyear, cmonth)[1]:\n                repl['day'] = monthrange(cyear, cmonth)[1]\n\n        naive = default.replace(**repl)\n\n        if res.weekday is not None and not res.day:\n            naive = naive + relativedelta.relativedelta(weekday=res.weekday)\n\n        return naive"
+            ]
+        ],
+        "explanation": "Explanation: The propagation path concerns the use of the variable default at line 14 in _build_naive: cday = default.day if res.day is None else res.day. The question is whether default could be None at this point, causing a None dereference (NPD) when accessing default.day. Looking at the code, default is a parameter to _build_naive and is not modified within the function. There are no checks or assignments that would prevent default from being None before line 14. Therefore, if _build_naive is called with default=None and res.day is None, the code will attempt to access default.day, causing an NPD. There are no branch conditions or guards in the code that would prevent this scenario, so the path is reachable.\nAnswer: Yes",
+        "is_human_confirmed_true": "False"
+    }
+}

@@ -1,0 +1,26 @@
+{
+  "cmd": [
+    "scan",
+    "--config",
+    "/home/guylupo/dev/cdrt-decision-testing/capture/../vendor/proofweave-decision-assurance/protocol/semgrep-rules/python-none-deref.yaml",
+    "--json",
+    "--metrics=off",
+    "--disable-version-check",
+    "--quiet",
+    "/home/guylupo/dev/cdrt-decision-testing/capture/target"
+  ],
+  "control": "semgrep",
+  "errors": 0,
+  "exit_code": 0,
+  "green": false,
+  "output_sha256": {
+    "console.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "semgrep.json": "10cfffa2fc5c395d35e1862a0a894aed01dd823902dc2ac68538a83f2e566d42"
+  },
+  "results": 1,
+  "ruleset_sha256": "06250b3dcea797f44cf61b39e1c3a79cb37f0e6594e000377dc0b28e838356a9",
+  "run": "semgrep/run001",
+  "start": "2026-10-27T12:17:39Z",
+  "start_us": "2026-10-27T12:17:39.342806Z",
+  "wall_clock_s": 1.61
+}

@@ -1,0 +1,16 @@
+{
+  "attempt": 2,
+  "dev": false,
+  "handoff": {},
+  "handoff_sha256": "509f7dc50883eb3e7f82f52f1379328795ed0db348f66a71aa0b6efa6da1396a",
+  "inputs_from": 1,
+  "inputs_handoff_sha256": "a19e013ec5fa3e414c06873b7b7969244554f64605dbce439b8b9bf5b0f17b7c",
+  "lab": 2,
+  "name": "Capture",
+  "outputs": {},
+  "summary": {
+    "campaign cycle": "campaign-0001",
+    "status": "paused"
+  },
+  "time": "2026-10-27T04:44:18Z"
+}

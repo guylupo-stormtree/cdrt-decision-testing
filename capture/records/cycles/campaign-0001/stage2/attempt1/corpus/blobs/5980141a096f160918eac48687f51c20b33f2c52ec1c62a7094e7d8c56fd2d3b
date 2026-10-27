@@ -1,0 +1,50 @@
+{
+  "alias": "gpt-pw-m1",
+  "cmd": [
+    "repoaudit.py",
+    "--scan-type",
+    "dfbscan",
+    "--language",
+    "Python",
+    "--model-name",
+    "gpt-pw-m1",
+    "--project-path",
+    "/tmp/pwexp-subject-a7ibk_ed/target",
+    "--bug-type",
+    "NPD",
+    "--is-reachable",
+    "--temperature",
+    "0.0",
+    "--call-depth",
+    "3",
+    "--max-neural-workers",
+    "4"
+  ],
+  "complete": true,
+  "control": "repoaudit",
+  "detect_info_source": "native",
+  "exit_code": 0,
+  "failed_calls": 0,
+  "findings": 3,
+  "green": false,
+  "input_tokens": 521462,
+  "output_sha256": {
+    "calls.jsonl": "b0c8576152d531a4bca0107a0d9c627e2cc55762528147dce17c9cd581c2e803",
+    "console.log": "894bc2119e02b514a99ac3be4c12de81f86cf15a24444b7a99796ce5fd17b808",
+    "detect_info.json": "805a2c732cc20d5062e6c1739a62f0523b07531efa465a31827f10e211ac67f8",
+    "dfbscan.log": "ec6018c3142a1c790ac5331195edaf2b65b9e2d7dd39cce16578d129e7b72e39"
+  },
+  "output_tokens": 169927,
+  "provider": "openai",
+  "provider_calls": 156,
+  "requested_model": "gpt-4.1",
+  "response_models_observed": [
+    "gpt-4.1-2025-04-14"
+  ],
+  "run": "gpt-pw-m1/run010",
+  "start": "2026-10-27T03:08:37Z",
+  "start_us": "2026-10-27T03:08:37.433510Z",
+  "temperature": 0.0,
+  "timed_out": false,
+  "wall_clock_s": 361.928
+}
