@@ -219,7 +219,7 @@ def texts(d: dict[str, Any], dev: bool) -> dict[str, str]:
         functional_short = "The functional transition did not match its expectation"
     abstract = f"{mark}{functional_short}; {timing}."
     intro = f"{mark}{functional_short[0].upper()}{functional_short[1:]}, and {timing}."
-    state = "development data, not a result" if dev else f"measured (campaign {tex(d['lock']['campaign_id'])})"
+    state = "development data, not a result" if dev else f"measured ({tex(d['lock']['campaign_id'])})"
     conclusion = (f"{mark}On the measured workload, $A_{{\\mathrm{{comp}}}}$ is {'true' if acc['A_comp'] else 'false'}, "
                   f"and the slowest of {total} updates, at up to {num(rows[-1]['N'])} basis records, took {w}, "
                   f"{'within' if h['within'] else 'beyond'} the {budget:g}\\,s budget.")
@@ -422,7 +422,9 @@ def coverage_blocks(d: dict[str, Any], dev: bool, root: Path, folder: str) -> tu
     from ..harness.scale import headline
     by = {r["id"]: r for r in d["functional"]}
     obs = (by.get("observation") or {}).get("observed") or {}
-    tl = (by.get("timeline") or {}).get("observed") or []
+    every = (by.get("timeline") or {}).get("observed") or []
+    tl = [r for r in every if r["admitted"] in obs]       # the green decisions; the others are never eligible
+    others = len(every) - len(tl)
     p = d["params"]
     tau = Fraction(p["tau_q"]["numerator"], p["tau_q"]["denominator"])
     word = {"SUCCESS": r"\Pass{}", "FAIL": r"\Fail{}", "INCONCLUSIVE": r"\Unknown{}"}
@@ -435,21 +437,23 @@ def coverage_blocks(d: dict[str, Any], dev: bool, root: Path, folder: str) -> tu
              r"\emph{Alone}: the decision's own coverage of the release manifest $M_q$ and the gateway reading if it relied "
              r"on this decision only; \emph{share}: its part of the estate observed across all eligible decisions, "
              r"with decisions below \FixTauRel{} marked narrow; \emph{composed}: coverage of $M_q$ by all decisions "
-             r"admitted so far. Requirement: \FixTauQ{} of \FixMq{} functions.}",
+             r"admitted so far. Requirement: \FixTauQ{} of \FixMq{} functions."
+             + (f" The {num(others)} decisions that were not green are not eligible and leave the composed coverage "
+                "unchanged; they are not listed." if others else "") + "}",
              r"\label{tab:coverage}",
-             r"\begin{tabularx}{\textwidth}{@{}lccccccY@{}}", r"\toprule",
-             r"Decision & Green & Conformant & Alone & Share & Gateway alone & Composed & Gateway composed \\", r"\midrule"]
+             r"\begin{tabularx}{\textwidth}{@{}lcccccY@{}}", r"\toprule",
+             r"Decision & Conformant & Alone & Share & Gateway alone & Composed & Gateway composed \\", r"\midrule"]
     for row in tl:
         dd = row["admitted"]
         o = obs.get(dd) or {}
         share_ = (o.get("rho") or "--") + (" (narrow)" if o.get("narrow") else "")
-        lines.append(f"\\texttt{{{tex(dd)}}} & yes & {word.get(o.get('H'), '--')} & {tex(o.get('coverage_alone', '--'))} & "
+        lines.append(f"\\texttt{{{tex(dd)}}} & {word.get(o.get('H'), '--')} & {tex(o.get('coverage_alone', '--'))} & "
                      f"{tex(share_)} & {gw(o.get('gateway_alone'))} & {tex(row['covered'])} & {gw(row['gateway'])} \\\\")
     last = tl[-1] if tl else {}
     lines += [r"\midrule",
-              f"All eligible & & & & & & {tex(last.get('covered', '--'))} & {gw(last.get('gateway'))}; slowest composed "
+              f"All eligible & & & & & {tex(last.get('covered', '--'))} & {gw(last.get('gateway'))}; slowest composed "
               f"update {secs(h['worst_s'])}\\,s \\\\" if h["worst_s"] is not None else
-              f"All eligible & & & & & & {tex(last.get('covered', '--'))} & {gw(last.get('gateway'))} \\\\",
+              f"All eligible & & & & & {tex(last.get('covered', '--'))} & {gw(last.get('gateway'))} \\\\",
               r"\bottomrule", r"\end{tabularx}", r"\end{table*}"]
     table = "\n".join(lines)
     fig = "\n".join([header("coverage_figure", d, ["functional_records", "parameters"], root),
@@ -457,8 +461,9 @@ def coverage_blocks(d: dict[str, Any], dev: bool, root: Path, folder: str) -> tu
                       r"\caption{Composed coverage as green decisions are admitted in capture order" + dmark + r". Bars: "
                       r"release functions each decision covered on its own; solid line: release functions covered by all "
                       r"decisions admitted so far; dashed line: the size of the observed estate; dotted line: the "
-                      r"requirement (\FixTauQ{} of \FixMq{}). The gateway reading after each admission is printed above. "
-                      r"\CoverageSentence{}}", r"\label{fig:coverage}", r"\end{figure}"])
+                      r"requirement (\FixTauQ{} of \FixMq{}). The gateway reading after each admission is printed above."
+                      + (f" Only green decisions are shown; the {num(others)} others are not eligible and do not change "
+                         "the composed coverage." if others else "") + "}", r"\label{fig:coverage}", r"\end{figure}"])
     return table, fig
 
 
@@ -467,7 +472,7 @@ def coverage_figure(d: dict[str, Any], dev: bool = False) -> str:
     estate (lines), the requirement line and the gateway reading."""
     by = {r["id"]: r for r in d["functional"]}
     obs = (by.get("observation") or {}).get("observed") or {}
-    tl = (by.get("timeline") or {}).get("observed") or []
+    tl = [r for r in (by.get("timeline") or {}).get("observed") or [] if r["admitted"] in obs]   # green only
     p = d["params"]
     n_q = p["M_q_size"]
     need = float(Fraction(p["tau_q"]["numerator"], p["tau_q"]["denominator"]) * n_q)
@@ -485,7 +490,7 @@ def coverage_figure(d: dict[str, Any], dev: bool = False) -> str:
            r"  tick label style={font=\scriptsize}, label style={font=\small},",
            r"  legend style={font=\scriptsize, at={(0.5,-0.36)}, anchor=north, draw=none, fill=none, legend columns=2,",
            r"    /tikz/every even column/.append style={column sep=6pt}}, legend cell align=left]",
-           r"\addplot[ybar, bar width=7pt, fill=black!15, draw=black!40, area legend] coordinates {" + " ".join(f"({x},{a})" for x, a in zip(xs, alone)) + "};",
+           r"\addplot[ybar, bar width=12pt, fill=black!15, draw=black!40, area legend] coordinates {" + " ".join(f"({x},{a})" for x, a in zip(xs, alone)) + "};",
            r"\addlegendentry{covered alone}",
            r"\addplot[thick, mark=*, mark size=1.5pt, black] coordinates {" + " ".join(f"({x},{c})" for x, c in zip(xs, comp)) + "};",
            r"\addlegendentry{composed}",
@@ -535,10 +540,10 @@ def record_block(d: dict[str, Any], dev: bool, root: Path, repoaudit_commit: str
     lines = [header("experiment_record", d, ["bundle", "protocol", "parameters", "run_manifest"], root),
              r"\subsection{Experiment record}", r"\label{sec:experiment-record}", "",
              ("Development data, not a result. " if dev else "") +
-             r"This subsection is generated from the locked campaign. Table~\ref{tab:experiment-record} identifies the "
+             r"Table~\ref{tab:experiment-record} identifies the "
              r"target, the control and its configuration, the captured decisions, the decision ledger, the sealed corpus, "
-             r"the protocol lock, the experiment code and the timing host. Every result in Section~\ref{sec:results} is "
-             r"generated from records that carry this lock root.", "",
+             r"the protocol lock, the experiment code and the timing host. Every result in Section~\ref{sec:results} "
+             r"comes from records that carry this lock root.", "",
              r"\begin{table}[pos=tbp]", r"\centering\small",
              r"\caption{Experiment record" + (" (development data, not a result)" if dev else "") +
              f", campaign \\texttt{{{tex(lk['campaign_id'])}}}.}}", r"\label{tab:experiment-record}",
