@@ -163,6 +163,12 @@ class LabBook:
         (adir / "running.pid").write_text(f"{os.getpid()}\n")   # lets `cdrt lab watch` tell a live run from a stopped one
         inputs = self.handoff(n - 1) if n != self.first() else None
         started = _now()
+        shown = progress
+
+        def progress(line: str) -> None:                  # what the screen shows is also kept with the attempt
+            shown(line)
+            with (adir / "screen.txt").open("a") as fh:
+                fh.write(line + "\n")
         from .. import narrate
         narrate.tell(n, "start", narrate.start(n, self.dev), self.dev, adir, progress)
 
@@ -197,6 +203,8 @@ class LabBook:
         failed = [c for c in res.checks if c.ok is not True]
         why = (failed[0].name + (f" ({failed[0].detail})" if failed[0].detail else "")) if failed else ""
         narrate.tell(n, "end", narrate.finish(n, self.dev, res.passed, handoff, why), self.dev, adir, progress)
+        with (adir / "screen.txt").open("a") as fh:          # the card follows on screen
+            fh.write(card + "\n")
         res.summary.setdefault("_card", card)
         return res
 

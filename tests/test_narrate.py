@@ -53,3 +53,10 @@ def test_commentator_counts_runs_kept_from_before_a_pause():
     c = narrate.Commentator()
     assert "kept from before the pause" in c("Decision 1/50  G-main-04: kept from before the pause (not_green)")
     assert "GREEN so far: 1 of 2" in c("Decision 2/50  G-main-19: green (completed after the pause)")
+
+
+def test_every_lab_keeps_its_screen_output(dev_bundle):
+    from cdrt import paths
+    att = max((paths.labs_dir(True) / "lab4").glob("attempt*"), key=lambda p: int(p.name[7:]))
+    screen = (att / "screen.txt").read_text()
+    assert "Lab 4" in screen and (att / "card.txt").read_text().strip() in screen
