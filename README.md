@@ -88,7 +88,7 @@ Labs 0–2 are run by the authors and need RepoAudit and a model. Labs 3–9 run
 
 ## Dependencies
 
-- **ProofWeave** (`pwexp`) is pinned as the git submodule `vendor/proofweave-decision-assurance` at tag `pw-v0.2.3` (decision binding, standalone Semgrep scans in decision protocols, RepoAudit run on a neutral copy of the target) and installed from it. CDRT imports only `pwexp.proofweave`, `pwexp.hashing`, `pwexp.chain` and the Stage 1/2 entry points, and drives capture through the `pwexp` command line; a test enforces this.
+- **ProofWeave** (`pwexp`) is pinned as the git submodule `vendor/proofweave-decision-assurance` at tag `pw-v0.2.4` (decision binding, standalone Semgrep scans in decision protocols, RepoAudit run on a neutral copy of the target, Stage 1 pause and resume) and installed from it. CDRT imports only `pwexp.proofweave`, `pwexp.hashing`, `pwexp.chain` and the Stage 1/2 entry points, and drives capture through the `pwexp` command line; a test enforces this.
 - **RepoAudit** is pinned inside the ProofWeave checkout (commit `160f5bc`) and runs only in Labs 1–2.
 - API keys are typed at a masked prompt for each run, held in memory only, and never written anywhere.
 
