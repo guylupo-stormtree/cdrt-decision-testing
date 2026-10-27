@@ -5,6 +5,10 @@ takes the capture lock, then runs the locked campaign through pwexp Stage 1 in a
 context sealed before its RepoAudit run, plus the standalone Semgrep scan(s), every outcome kept. pwexp refuses
 a campaign cycle unless the capture lock is valid and the model equals the locked one. Lab 3 then builds the
 corpus. The API key is the one typed and checked at the start of `cdrt lab run 1-2`.
+
+Pause and resume: Ctrl-C or a closed terminal pauses the campaign. `cdrt lab run 2` then resumes the same campaign
+cycle under the same lock (nothing is rewritten or relocked): recorded decisions are kept, the run that was cut off
+is kept as interrupted and run again. A campaign stopped by a kill or reboot resumes the same way.
 """
 from __future__ import annotations
 
@@ -28,26 +32,38 @@ def run(ctx: LabContext) -> LabResult:
         return LabResult(checks, {})
     records = capture.capture_dir() / "records"
     tau = Fraction(ctx.inputs["handoff"]["tau_h"])
-    proto = capture.write_protocol(cfg, capture.capture_dir(), int(cfg["runs"]["campaign"]),
-                                   int(cfg["runs"]["semgrep_standalone"]), tau)
-    rc, out = capture.pwexp(records, proto, "protocol", "lock")
-    checks.append(Check(f"capture protocol locked with {cfg['runs']['campaign']} campaign runs and tau_h {tau} (R-CAP-2)",
-                        rc == 0, out.strip().splitlines()[-1] if out.strip() else ""))
-    if rc:
-        return LabResult(checks, {})
     model = f"{cfg['model']['provider']}:{cfg['model']['model']}"
-    try:
-        cid = capture.new_cycle(records, proto, "campaign")
-    except capture.CaptureError as e:
-        return LabResult(checks + [Check("campaign cycle created under the capture lock", False, str(e))], {})
+    cid = capture.unfinished_campaign(records)
+    if cid:
+        proto = capture.capture_dir() / "cdrt-protocol.yaml"
+        checks.append(Check("unfinished campaign resumed under its own lock, nothing rewritten or relocked", True, cid))
+        ctx.progress(f"resuming campaign cycle {cid}: recorded decisions are kept, the run that was cut off runs again")
+        resume = ["--resume"]
+    else:
+        proto = capture.write_protocol(cfg, capture.capture_dir(), int(cfg["runs"]["campaign"]),
+                                       int(cfg["runs"]["semgrep_standalone"]), tau)
+        rc, out = capture.pwexp(records, proto, "protocol", "lock")
+        checks.append(Check(f"capture protocol locked with {cfg['runs']['campaign']} campaign runs and tau_h {tau} (R-CAP-2)",
+                            rc == 0, out.strip().splitlines()[-1] if out.strip() else ""))
+        if rc:
+            return LabResult(checks, {})
+        try:
+            cid = capture.new_cycle(records, proto, "campaign")
+        except capture.CaptureError as e:
+            return LabResult(checks + [Check("campaign cycle created under the capture lock", False, str(e))], {})
+        checks.append(Check("campaign cycle created under the capture lock", True, cid))
+        resume = []
     ctx.progress(f"campaign cycle {cid}: {cfg['runs']['campaign']} RepoAudit runs with {model}, "
                  f"{cfg['runs']['semgrep_standalone']} standalone Semgrep scan(s)")
-    rc, _ = capture.pwexp(records, proto, "run-stage", "1", "--cycle", cid, *capture.model_args(cfg), "--key-stdin",
-                          key=key, progress=ctx.progress)
+    rc, out = capture.pwexp(records, proto, "run-stage", "1", "--cycle", cid, *capture.model_args(cfg), "--key-stdin",
+                            *resume, key=key, progress=ctx.progress)
     data = json.loads((records / "cycles" / cid / "cycle.json").read_text())
     st = data["stages"]["1"]
-    checks += [Check("campaign cycle created under the capture lock", True, cid),
-               Check("Stage 1 passed every check (every run and decision kept, contexts sealed first, no key in any output)",
+    if st["status"] in ("paused", "running"):
+        last = out.strip().splitlines()[-1] if out.strip() else f"exit {rc}"
+        return LabResult(checks + [Check("campaign finished (it was paused: `cdrt lab run 2` resumes it)", False, last)],
+                         {}, {"campaign cycle": cid, "status": st["status"]}, next_hint="cdrt lab run 2   (resumes the campaign)")
+    checks += [Check("Stage 1 passed every check (every run and decision kept, contexts sealed first, no key in any output)",
                      rc == 0 and st["status"] == "complete", ", ".join(k for k, v in (st.get("checks") or {}).items() if not v))]
     o = st.get("outcome") or {}
     summary = {"campaign cycle": cid, "RepoAudit": f"{o.get('repoaudit_green')}/{o.get('repoaudit_runs')} GREEN",

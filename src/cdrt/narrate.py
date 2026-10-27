@@ -279,6 +279,15 @@ class Commentator:
         self.secs: float | None = None
 
     def __call__(self, raw: str) -> str | None:
+        if m := re.search(r"Decision (\d+)/(\d+)\s+G-\S+: (?:kept from before the pause \((green|not_green)\)"
+                          r"|(green|not_green) \(completed after the pause\))", raw):
+            k, total, verdict = int(m.group(1)), int(m.group(2)), m.group(3) or m.group(4)
+            self.k, self.total = k, total
+            self.done += 1
+            self.greens += verdict == "green"
+            how = "kept from before the pause" if m.group(3) else "its audit had finished before the pause"
+            return (f"  ► Run {k} of {total}: {'GREEN' if verdict == 'green' else 'NOT GREEN'}, {how}. "
+                    f"GREEN so far: {self.greens} of {self.done}.")
         if m := re.search(r"Decision (\d+)/(\d+)\s+G-", raw):
             self.k, self.total, self.secs = int(m.group(1)), int(m.group(2)), None
         elif m := re.search(r"run\d+: (?:GREEN|not GREEN) · ([\d.]+) s", raw):

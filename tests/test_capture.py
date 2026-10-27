@@ -157,3 +157,34 @@ def test_scope_omit_approval_bound_to_snapshot_campaign_size_and_reset(root):
         capture.set_campaign_runs(20)
     with pytest.raises(capture.CaptureError, match="campaign"):
         capture.reset("again")
+
+
+def _campaign(root, cid, status):
+    d = root / "capture" / "records" / "cycles" / cid
+    d.mkdir(parents=True)
+    (d / "cycle.json").write_text(json.dumps({"id": cid, "mode": "campaign", "stages": {"1": {"status": status}}}))
+
+
+def test_lab2_resumes_an_unfinished_campaign_without_relocking(root, monkeypatch):
+    from cdrt.labs import lab2_capture
+    from cdrt.labs.framework import LabContext
+    records = root / "capture" / "records"
+    assert capture.unfinished_campaign(records) is None
+    _campaign(root, "campaign-0001", "paused")
+    assert capture.unfinished_campaign(records) == "campaign-0001"
+    calls = []
+
+    def fake_pwexp(rec, proto, *args, key=None, progress=None):
+        calls.append(args)
+        return 3, "⏸ Stage 1 paused (Ctrl-C)"
+    monkeypatch.setattr(capture, "pwexp", fake_pwexp)
+    monkeypatch.setattr(capture, "declaration", lambda: decl())
+    monkeypatch.setattr(capture, "host_utc_offset", lambda: decl()["log_utc_offset"])
+    monkeypatch.setattr(capture, "write_protocol", lambda *a: pytest.fail("a resume must not rewrite the protocol"))
+    ctx = LabContext(2, False, root, {"handoff": {"tau_h": "2/5"}}, progress=lambda m: None, secrets={"key": "k"})
+    res = lab2_capture.run(ctx)
+    assert [a[:2] for a in calls] == [("run-stage", "1")] and "--resume" in calls[0]
+    assert not res.passed and "cdrt lab run 2" in res.next_hint and res.summary["status"] == "paused"
+    (records / "cycles" / "campaign-0001" / "cycle.json").write_text(json.dumps(
+        {"id": "campaign-0001", "mode": "campaign", "stages": {"1": {"status": "complete"}}}))
+    assert capture.unfinished_campaign(records) is None

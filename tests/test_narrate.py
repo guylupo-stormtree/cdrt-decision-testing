@@ -47,3 +47,9 @@ def test_failure_is_told_plainly_and_needs_no_network(cdrt_root):
 
 def test_watch_line(dev_bundle):
     assert watch_line(True) == "No lab is running."
+
+
+def test_commentator_counts_runs_kept_from_before_a_pause():
+    c = narrate.Commentator()
+    assert "kept from before the pause" in c("Decision 1/50  G-main-04: kept from before the pause (not_green)")
+    assert "GREEN so far: 1 of 2" in c("Decision 2/50  G-main-19: green (completed after the pause)")

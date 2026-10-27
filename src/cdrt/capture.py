@@ -336,14 +336,20 @@ def pwexp(records_root: Path, proto: Path, *args: str, key: str | None = None,
         p.stdin.write((key + "\n") if key else "")
         p.stdin.close()
         lines = []
-        for line in p.stdout:
-            lines.append(line.rstrip("\n"))
-            if progress:
-                progress(line.rstrip("\n"))
+        try:
+            for line in p.stdout:
+                lines.append(line.rstrip("\n"))
+                if progress:
+                    progress(line.rstrip("\n"))
+        except KeyboardInterrupt:   # Ctrl-C reached pwexp too: it pauses and says so; keep its last lines
+            lines += p.communicate(timeout=60)[0].splitlines()
         p.wait()
     finally:
-        if p.poll() is None:
-            p.kill()
+        if p.poll() is None:   # Ctrl-C reached pwexp too: give it time to record the pause before stopping it
+            try:
+                p.wait(timeout=60)
+            except subprocess.TimeoutExpired:
+                p.kill()
     return p.returncode, "\n".join(lines)
 
 
@@ -362,6 +368,15 @@ def new_cycle(records_root: Path, proto: Path, mode: str) -> str:
 
 
 # ------------------------------------------------------------------ before a capture: reset, campaign size
+def unfinished_campaign(records_root: Path) -> str | None:
+    """The campaign cycle whose Stage 1 was paused or stopped before it finished (Lab 2 resumes it), if any."""
+    for f in sorted((records_root / "cycles").glob("campaign-*/cycle.json")):
+        d = json.loads(f.read_text())
+        if d["stages"]["1"]["status"] in ("paused", "running"):
+            return d["id"]
+    return None
+
+
 def campaign_started() -> bool:
     return any(json.loads(p.read_text()).get("mode") == "campaign"
                for p in (capture_dir() / "records" / "cycles").glob("*/cycle.json"))

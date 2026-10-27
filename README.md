@@ -36,6 +36,9 @@ uv venv --python 3.13 .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e '.[dev]'
 4. Optional, before the campaign: `cdrt capture campaign-runs N` sets the campaign size from the pilot's cost.
 5. `cdrt lab run 2`: asks for the key again, locks the campaign protocol (tau_h and the campaign size), then runs
    the campaign. (`cdrt lab run 1-2` does both in one go, without the pause.)
+   The campaign can be paused and resumed: Ctrl-C or a dropped connection pauses it, and `cdrt lab run 2` resumes
+   the same campaign under the same lock (also after a reboot). Recorded runs are kept; the run that was cut off is
+   kept as interrupted and run again, so a pause costs at most one run.
 6. `cdrt lab run 3-9`: corpus, review and freeze, fixtures, lock, RQ1, RQ2, report.
 
 Every lab tells what it is about to do and, when it ends, what happened, in plain language for a non-technical
