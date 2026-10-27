@@ -9,7 +9,7 @@ description = "Composable CDRT experiment: control-decision risk testing over Pr
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "pwexp",          # ProofWeave, pinned by the vendor/proofweave-decision-assurance submodule at pw-v0.2.4
+    "pwexp",          # ProofWeave, pinned by the vendor/proofweave-decision-assurance submodule at pw-v0.2.5
     "pyyaml>=6",
     "jsonschema>=4",
 ]

@@ -188,3 +188,23 @@ def test_lab2_resumes_an_unfinished_campaign_without_relocking(root, monkeypatch
     (records / "cycles" / "campaign-0001" / "cycle.json").write_text(json.dumps(
         {"id": "campaign-0001", "mode": "campaign", "stages": {"1": {"status": "complete"}}}))
     assert capture.unfinished_campaign(records) is None
+
+
+def test_lab4_refreezes_only_a_bundle_no_passed_attempt_used(root):
+    from cdrt import paths
+    from cdrt.labs import lab4_review
+    bundle = paths.bundle_dir(False)
+    (bundle / "corpus").mkdir(parents=True)
+    (bundle / "corpus" / "x.json").write_text("{}")
+    lab4_review._read_only(bundle)
+    said = []
+    assert lab4_review._clear_bundle(bundle, False, said.append) is None          # stopped attempt: kept aside
+    aside = list((root / "capture" / "archive").glob("*-bundle-from-stopped-lab4"))
+    assert not bundle.exists() and len(aside) == 1 and (aside[0] / "corpus" / "x.json").exists() and said
+    bundle.mkdir(parents=True)
+    passed = paths.labs_dir(False) / "lab4" / "attempt1"
+    passed.mkdir(parents=True)
+    (passed / "handoff.json").write_text("{}")
+    assert "already frozen" in lab4_review._clear_bundle(bundle, False, said.append)  # used by later labs: never
+    assert bundle.exists()
+    lab4_review._writable(aside[0])

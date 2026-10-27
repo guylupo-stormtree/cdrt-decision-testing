@@ -40,6 +40,28 @@ def _writable(root: Path) -> None:
         p.chmod(p.stat().st_mode | stat.S_IWUSR)
 
 
+def _clear_bundle(bundle: Path, dev: bool, progress) -> str | None:
+    """Make way for a new freeze, or say why not. The real bundle is frozen once: it is refused if a Lab 4 attempt
+    passed (later labs may have used it). One frozen by a Lab 4 attempt stopped before it passed was used by
+    nothing: it is kept aside, read-only, under capture/archive/, and frozen again."""
+    if not bundle.exists():
+        return None
+    if dev:
+        _writable(bundle)
+        shutil.rmtree(bundle)
+        return None
+    if any(paths.labs_dir(False).glob("lab4/attempt*/handoff.json")):
+        return f"{rel(bundle)} is already frozen"
+    from datetime import datetime, timezone
+    aside = paths.root() / "capture" / "archive" / f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-bundle-from-stopped-lab4"
+    aside.parent.mkdir(parents=True, exist_ok=True)
+    bundle.chmod(bundle.stat().st_mode | stat.S_IWUSR)   # a directory moves to a new parent only if writable
+    shutil.move(str(bundle), str(aside))
+    _read_only(aside)
+    progress(f"a bundle frozen by a stopped Lab 4 attempt was moved to {rel(aside)}; freezing again")
+    return None
+
+
 def _protocol_files(proto_file: Path) -> list[Path]:
     import yaml
     proto = yaml.safe_load(proto_file.read_text())
@@ -95,11 +117,9 @@ def run(ctx: LabContext) -> LabResult:
     ctx.progress(f"review pages: {rel(pages)}")
 
     bundle = paths.bundle_dir(ctx.dev)
-    if bundle.exists():
-        if not ctx.dev:
-            return LabResult([Check("no frozen bundle exists yet", False, f"{rel(bundle)} is already frozen")], {})
-        _writable(bundle)
-        shutil.rmtree(bundle)
+    refused = _clear_bundle(bundle, ctx.dev, ctx.progress)
+    if refused:
+        return LabResult([Check("no frozen bundle exists yet", False, refused)], {})
     shutil.copytree(corpus, bundle / "corpus")
     shutil.copytree(s1, bundle / "stage1")
     shutil.copytree(target, bundle / "target")

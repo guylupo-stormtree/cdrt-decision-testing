@@ -40,6 +40,8 @@ uv venv --python 3.13 .venv && VIRTUAL_ENV=$PWD/.venv uv pip install -e '.[dev]'
    the same campaign under the same lock (also after a reboot). Recorded runs are kept; the run that was cut off is
    kept as interrupted and run again, so a pause costs at most one run.
 6. `cdrt lab run 3-9`: corpus, review and freeze, fixtures, lock, RQ1, RQ2, report.
+   Offline (no key, no cost). If a lab is stopped, run again from that lab (e.g. `cdrt lab run 8-9`); it starts
+   that lab over. Labs 3 and 4 are never repeated once passed: the corpus and the frozen bundle are built once.
 
 Every lab tells what it is about to do and, when it ends, what happened, in plain language for a non-technical
 audience; during the capture each audit run gets one plain line. Every number comes from the run's own records
@@ -88,7 +90,7 @@ Labs 0–2 are run by the authors and need RepoAudit and a model. Labs 3–9 run
 
 ## Dependencies
 
-- **ProofWeave** (`pwexp`) is pinned as the git submodule `vendor/proofweave-decision-assurance` at tag `pw-v0.2.4` (decision binding, standalone Semgrep scans in decision protocols, RepoAudit run on a neutral copy of the target, Stage 1 pause and resume) and installed from it. CDRT imports only `pwexp.proofweave`, `pwexp.hashing`, `pwexp.chain` and the Stage 1/2 entry points, and drives capture through the `pwexp` command line; a test enforces this.
+- **ProofWeave** (`pwexp`) is pinned as the git submodule `vendor/proofweave-decision-assurance` at tag `pw-v0.2.5` (decision binding, standalone Semgrep scans in decision protocols, RepoAudit run on a neutral copy of the target, Stage 1 pause and resume, stopped Stages 2-4 rerun) and installed from it. CDRT imports only `pwexp.proofweave`, `pwexp.hashing`, `pwexp.chain` and the Stage 1/2 entry points, and drives capture through the `pwexp` command line; a test enforces this.
 - **RepoAudit** is pinned inside the ProofWeave checkout (commit `160f5bc`) and runs only in Labs 1–2.
 - API keys are typed at a masked prompt for each run, held in memory only, and never written anywhere.
 
